@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "Package: GGUM\nTitle: Generalized Graded Unfolding Model\nVersion: 0.1.0\nAuthors@R: c(person(c(\"Jorge\", \"N.\"), \"Tendeiro\", email = \"j.n.tendeiro@rug.nl\",\n          role = c(\"aut\",\"cre\")),\n          person(\"Sebastian\",c(\"Castro\", \"Alvarez\"), email = \"s.castro.alvarez@student.rug.nl\",\n          role = c(\"aut\")))\nAuthor: Jorge N. Tendeiro [aut, cre],\n        Sebastian Castro Alvarez [aut]\nMaintainer: Jorge N. Tendeiro <j.n.tendeiro@rug.nl>\nDescription: An implementation of the Generalized Graded Unfolding Model (GGUM) in R.\n    It allows to simulate data sets base on the GGUM. It also fits the GGUM, and it\n    retrieves item and person parameter estimates.Characteristic curves and information \n    curves plots are also available. Additionally, there are some functions that facilitate\n    the communication between R and GGUM2004.\nDepends: R (>= 3.4.1)\nImports: \n    psych,\n    abind,\n    viridis\nLicense: GPL-2, GPL-3\nLazyData: true\nRoxygenNote: 6.0.1\n",
+    "created" : 1504609462752.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2568823287",
+    "id" : "15555545",
+    "lastKnownWriteTime" : 1504531698,
+    "last_content_update" : 1504531698,
+    "path" : "C:/Users/Sebastian/Dropbox/Research_Master/2016-2017/Student_Assitant_ship/Pack/GGUM/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "dcf"
+}
