@@ -13,23 +13,30 @@
 #' @param ConstantC indicates whether C is constant or not. Use "Y" if C is
 #'   constant, otherwise use "N".
 #' @param cutoff either a number or a vector which defines the cutoff value.
+#' @param model indicates what unfolding model will be used. It could be "GUM"
+#'   or "GGUM".
 #' @param cmd.dir the directory for GGUM2004 program. It is predefined as
-#'   "C:/GGUM2004"
+#'   "C:/GGUM2004".
 #' @export
 
-write.GGUM2004<-function(cmd.file,data.file,I,C,ConstantC=c("Y","N"),cutoff=2,cmd.dir="C:/GGUM2004"){
+write.GGUM2004<-function(cmd.file,data.file, I, C, ConstantC = c("Y","N"), cutoff = 2,
+                         model = c("GUM", "GGUM"), cmd.dir="C:/GGUM2004"){
+  if(model == "GUM" && ConstantC == "N"){
+    stop("GUM does not allow different number of categories across items. If you choose GUM, ConstantC must be 'N'.")
+  }
+  if(model == "GUM"){model = 3} else { model = 8}
   if(ConstantC=="Y"){response<-paste(C[1]+1,"NUMBER OF RESPONSE CATEGORIES",sep=" ")}
   if(ConstantC=="N"){response<-C+1}
-  ifelse(length(cutoff)>=2,ConstantCO<-"N",ConstantCO<-"Y")
+  ifelse(length(cutoff)>=2,ConstantCO <-"N",ConstantCO<-"Y")
   if(ConstantCO=="Y"){responseCO<-paste(cutoff,"RESPONSE CUTOFF",sep=" ")}
   if(ConstantCO=="N"){responseCO<-cutoff}
   olddir<-getwd()
-  out<-list("8 ESTIMATE PARAMETERS OF MODEL 8",
+  out<-list(paste(model, "ESTIMATE PARAMETERS OF MODEL", model, sep = " "),
             "N CONSTRAINTS ARE NOT USED",
             "N DO NOT CHANGE THE SIGN OF INITIAL PARAMETER ESTIMATES",
             "30 NUMBER OF QUADRATURE POINTS",
             paste0("C:\\GGUM2004\\",data.file),
-            paste(paste("(i4,1x,",I,sep=""),"i2)",sep=""),
+            paste0("(i4,1x,",I,"i2)"),
             paste(I,"NUMBER OF ITEMS",sep=" "),
             paste(ConstantC,"IS NUMBER OF CATEGORIES CONSTANT?",sep=" "),
             response,
@@ -73,7 +80,7 @@ read.person.GGUM2004<-function(N,tempfolder="C:/GGUM2004/TEMPFILE"){
   th<-grep(pattern= "THETA",GGUM.file)
   theta<-read.table(textConnection(GGUM.file[th]))
   for(i in 1:N){
-    if(length(theta$V2[theta$V2==i])!=0){out[i,]<-c(theta$V4[theta$V2==i],theta$V6[theta$V2==i])}
+    if(length(theta$V2[theta$V2==i])!= 0){out[i,]<-c(theta$V4[theta$V2==i],theta$V6[theta$V2==i])}
   }
   setwd(olddir)
   return(out)
@@ -88,6 +95,8 @@ read.person.GGUM2004<-function(N,tempfolder="C:/GGUM2004/TEMPFILE"){
 #' @param I the number of items.
 #' @param C either a number or a vector. C is the number of observable response
 #'   categories minus 1.
+#' @param model indicates what unfolding model was used. It could be "GUM"
+#'   or "GGUM".
 #' @param tempfolder the path where GGUM2004 save its output.By default it is
 #'   "C:/GGUM2004/TEMPFILE".
 #' @return \code{read.item.GGUM2004} returns a list cointaning the following
@@ -97,7 +106,7 @@ read.person.GGUM2004<-function(N,tempfolder="C:/GGUM2004/TEMPFILE"){
 #'   errors \item \code{alphaSE} a vector with alpha standard errors \item
 #'   \code{tausSE} a matrix with taus standard errors }
 #' @export
-read.item.GGUM2004<-function(I,C,tempfolder="C:/GGUM2004/TEMPFILE"){
+read.item.GGUM2004<-function(I, C, model = c("GUM", "GGUM"), tempfolder="C:/GGUM2004/TEMPFILE"){
   olddir <- getwd()
   setwd(tempfolder)
   # Clean up of GGUM2004 output item's parameters file
@@ -106,46 +115,46 @@ read.item.GGUM2004<-function(I,C,tempfolder="C:/GGUM2004/TEMPFILE"){
   GGUM.file<-gsub("************", "NaN", GGUM.file,fixed=TRUE) # Replace NA when GGUM2004 don't converge
   writeLines(GGUM.file,"FT16F001_Copy")
   it.est<-read.table("FT16F001_Copy",skip=4,h=FALSE,comment.char ="",fill=TRUE)
+  setwd(olddir)
   it.est<-split(it.est,it.est$V1)
   delta<-it.est$`ITEM#`[,6]
   deltaSE<-it.est$`ITEM#`[,8]
-  alpha<-it.est$`ITEM#`[,10]
-  alphaSE<-it.est$`ITEM#`[,12]
-  if(length(C)==1){C<-rep(C,I)}
-  Cx<-C+1
-  taus<- matrix(0, nrow = I, ncol = max(Cx))
-  tausSE<-taus
-  n<-max(Cx):1
-  taus.or<-taus
-    for(i in 1:length(C)){
-      x<-rev(n[1:Cx[i]])
-      if(length(x)==max(Cx)){taus.or[i,]<-x}else
-        {taus.or[i,]<-c(x,rep(0,max(Cx)-length(x)))}
-      }
-  taus.or<-c(t(taus.or)[t(taus.or)!=0])
-  h<-rep(1:I,times=Cx)
-  threshold<-cbind(h,taus.or,it.est$`THRESHOLD#`[,c(2,6,8)])
-  l<-paste0(threshold$h,threshold$taus.or)
-  threshold<-cbind(l,threshold)
-    for(i in 1:I){
-      for(j in 1:max(Cx)){
-        x<-paste(i,j,sep="")
-        if(length(threshold$l[threshold$l==x])!=0){taus[i,j]<-threshold$V6[threshold$l==x]}
-      }
-    }
-# Replace the taus SE in the tausSE matrix
-    for(i in 1:I){
-      for(j in 1:max(Cx)){
-        x<-paste(i,j,sep="")
-        if(length(threshold$l[threshold$l==x])!=0){tausSE[i,j]<-threshold$V8[threshold$l==x]}
-      }
-    }
-  setwd(olddir)
-  taus.new<-cbind(taus[,2:max(Cx)],rep(0,I),taus[,max(Cx):2]*-1)
-  tausSE.new<-tausSE[,max(Cx):2]
-  return(list("delta"=delta,"alpha"=alpha,"taus"=taus.new,
-              "deltaSE"=deltaSE,"alphaSE"=alphaSE,"tausSE"=tausSE.new))
+  if(model == "GGUM"){
+    alpha<-it.est$`ITEM#`[,10]
+    alphaSE<-it.est$`ITEM#`[,12]
   }
+  if(length(C) == 1){C <- rep(C,I)}
+  Cplus1 <- C+1
+  threshold <- it.est$`THRESHOLD#`[,6]
+  thresholdSE <- it.est$`THRESHOLD#`[,8]
+  if(model == "GUM"){
+    taushalf <- matrix(rep(threshold[2:max(Cplus1)], I), nrow = I, ncol = max(C),
+                   byrow = TRUE)
+    taushalfSE <- matrix(rep(thresholdSE[2:max(Cplus1)], I), nrow = I, ncol = max(C),
+                   byrow = TRUE)
+    taus <- cbind(taushalf, rep(0, I), taushalf[, max(C):1]*(-1))
+    tausSE <- cbind(taushalfSE, rep(0, I), taushalfSE[, max(C):1])
+
+    return(list("delta"=delta,"taus"=taus,
+                "deltaSE"=deltaSE,"tausSE"=tausSE))
+  }
+  else
+  {
+    taushalf<- matrix(NA, nrow = I, ncol = max(C))
+    taushalfSE<-taushalf
+    taushalf[1,] <- c(rep(0, max(C)- C[1]), threshold[2:Cplus1[1]])
+    taushalfSE[1,] <- c(rep(0, max(C)- C[1]), thresholdSE[2:Cplus1[1]])
+    for(i in 2:I){
+      taushalf[i,] <- c(rep(0, max(C)- C[i]), threshold[(sum(Cplus1[1:(i-1)]) + 2):sum(Cplus1[1:i])])
+      taushalfSE[i,] <- c(rep(0, max(C)- C[i]), thresholdSE[(sum(Cplus1[1:(i-1)]) + 2):sum(Cplus1[1:i])])
+    }
+    taus <- cbind(taushalf, rep(0, I), taushalf[, max(C):1]*(-1))
+    tausSE <- cbind(taushalfSE, rep(0, I), taushalfSE[, max(C):1])
+
+    return(list("delta"=delta,"alpha"=alpha,"taus"=taus,
+                "deltaSE"=deltaSE,"alphaSE"=alphaSE,"tausSE"=tausSE))
+  }
+}
 
 
 #' @title Runs GGUM2004
@@ -158,6 +167,8 @@ read.item.GGUM2004<-function(I,C,tempfolder="C:/GGUM2004/TEMPFILE"){
 #' @param C either a number or a vector. C is the number of observable response
 #'   categories minus 1.
 #' @param N the number of persons to be read.
+#' @param model indicates what unfolding model will be used. It could be "GUM"
+#'   or "GGUM".
 #' @param cmd.dir the directory of GGUM2004 program. It is predefined as
 #'   "C:/GGUM2004"
 #' @return \code{run.GGUM2004} returns a list cointaning the following
@@ -166,17 +177,24 @@ read.item.GGUM2004<-function(I,C,tempfolder="C:/GGUM2004/TEMPFILE"){
 #'   vector with alpha estimates \item \code{taus} a matrix with taus estimates
 #'   \item \code{theta} a vector with theta estimates}
 #' @export
-run.GGUM2004<-function(cmd.file,I,C,N, cmd.dir="C:/GGUM2004"){
+run.GGUM2004<-function(cmd.file, I, C, N, model = c("GUM", "GGUM"), cmd.dir="C:/GGUM2004"){
   tempfolder<-paste(cmd.dir ,"TEMPFILE", sep="/")
   cmd<-paste(paste(cmd.dir ,"ggumnsf", sep="/"), paste(cmd.dir,cmd.file,sep="/"), tempfolder,sep=" ")
   cat("\n")
   t0<-proc.time()
   system(cmd)
   t1<-proc.time()
-  items <- read.item.GGUM2004(I,C,tempfolder=tempfolder)
-  theta <- read.person.GGUM2004(N,tempfolder=tempfolder)[,1]
-  return(list("time"=t1-t0,"delta"=items$delta,"alpha"=items$alpha,
-              "taus"=items$taus,"theta"=theta))
+  items <- read.item.GGUM2004(I, C, model = model, tempfolder = tempfolder)
+  theta <- read.person.GGUM2004(N, tempfolder = tempfolder)[,1]
+  if (model == GUM){
+    return(list("time" = t1 - t0, "delta" = items$delta,
+                "taus" = items$taus, "theta" = theta))
+  }
+  else
+  {
+    return(list("time" = t1 - t0, "delta" = items$delta, "alpha" = items$alpha,
+              "taus" = items$taus, "theta" = theta))
+    }
 }
 
 #' @title Exports Data to GGUM2004 Format
