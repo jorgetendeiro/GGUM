@@ -18,6 +18,15 @@ Sanity.C <- function(C, I)
     }
 }
 
+# Sanity.Cfixed(): Sanity check - C fixed ----
+Sanity.Cfixed <- function(C) 
+{
+  if (max(C) - min(C) > 0)
+  {
+    stop('C needs to be constant across items under the the GUM. Aborted.')
+  }
+}
+
 # Sanity.data(): Sanity check - data ----
 Sanity.data <- function(data)
 {

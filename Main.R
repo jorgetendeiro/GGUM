@@ -26,9 +26,9 @@ source("R/GGUM2004.R")
 # 1. Set up parameters ----
 # 
 set.seed(738)
-N <- 10
+N <- 500
 I <- 5
-C <- 1# sample(5:6, I, replace = TRUE)
+C <- 5 # sample(2:6, I, replace = TRUE)
 # END SECTION
 
 # 2. Generate data ----
@@ -39,7 +39,7 @@ pos.NA   <- matrix(rbinom(N * I, 1, .80), nrow = N)
 pos.NA[pos.NA == 0] <- NA
 data.NA  <- data * pos.NA
 # Export to GGUM2004:
-export.GGUM2004(data.NA, file.name = "DataCVaried")
+# export.GGUM2004(data.NA, file.name = "DataCVaried")
 # END SECTION
 
 # 3. Run GUM ----

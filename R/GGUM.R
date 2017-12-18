@@ -1,555 +1,131 @@
-# Eight possible models:
-#    Model1 = constant unit
-#    Model2 = multiple unit
-#    Model3 = rating scale (GUM)
-#    Model4 = partial credit
-#    Model5 = generalized constant unit
-#    Model6 = generalized multiple unit
-#    Model7 = generalized rating scale
-#    Model8 = generalized graded unfolding (GGUM)
-
-# Generate.GGUM ----
-Generate.Data.Unfold <- function(N, I, C, model = 8, seed = 123)
+#' @title Fit the generalized graded unfolding model (GGUM)
+#'
+#' @description \code{GGUM} estimates all item parameters for the GGUM.
+#'
+#' @param data The data matrix. The item scores are coded 0, 1, ..., C for an item 
+#' with (C+1) observable response categories.
+#' @param C C is the number of observable response categories minus 1 (i.e., the
+#' item scores will be in the set \{0, 1, ..., C\}). It should either be a vector 
+#' of I elements or a scalar. In the latter case it is assumed that C applies to
+#' all items.
+#' @param SE Logical value: Estimate the standard errors of the theta estimates?  
+#' Default is \code{TRUE}. 
+#' @param precision Number of decimal places of the results (default = 4).
+#' @param N.nodes Number of nodes for numerical integration (default = 30).
+#' @param max.outer Maximum number of outer iterations (default = 60).
+#' @param max.inner Maximum number of inner iterations (default = 60).
+#' @param tol Convergence tolerance (default = .001).
+#' 
+#' @return The function returns a list with five elements: HERE!!!!!!!!!
+#' \item{alpha.gen}{The discrimination parameters.}
+#' \item{delta.gen}{The difficulty parameters.}
+#' \item{taus.gen}{The threshold parameters.}
+#' \item{theta.gen}{The person parameters.}
+#' \item{data}{The (NxI) data matrix. The item scores are coded 0, 1, ..., 
+#' C for an item with (C+1) observable response categories.}
+#' 
+#' @section Details:
+#' The generalized graded unfolding model (GGUM; Roberts & Laughlin, 1996; 
+#' Roberts et al., 2000) is given by 
+#' \deqn{P(Z_i=z|\theta_n) = 
+#' \frac{f(z) + 
+#' f(M-z)}{\sum_{w=0}^C\left[f(w)+f(M-w)\right]}, }{P(Z_i = z|t_n) = 
+#' ( f(z) + f(M-z) ) / (sum( f(w) + f(M - w); w = 0, ..., C )),}
+#' 
+#' \deqn{f(w) = exp\left\{\alpha_i\left[w(\theta_n-\delta_i)-
+#' \sum_{k=0}^w\tau_{ik}\right]\right\}, }{f(w) = exp( alpha_i ( w(t_n - delta_i) 
+#' - sum( tau_ik; k = 0, ..., w) ) ),}
+#' 
+#' where:
+#' \itemize{
+#' \item The subscripts \eqn{i} and \eqn{n} identify the item and person, 
+#' respectively.
+#' \item \eqn{z=0,\ldots,C}{z = 0, ..., C} denotes the observed answer 
+#' response.
+#' \item \eqn{M = 2C + 1} is the number of subjective response options minus 1.
+#' \item \eqn{\theta_n}{t_n} is the latent trait score for person \eqn{n}.
+#' \item \eqn{\alpha_i}{alpha_i} is the item slope (discrimination).
+#' \item \eqn{\delta_i}{delta_i} is the item location.
+#' \item \eqn{\tau_{ik}}{tau_ik} (\eqn{k=1,\ldots,M}{k = 1, ..., M} ) are the 
+#' threshold parameters.
+#' }
+#' 
+#' Parameter \eqn{\tau_{i0}}{tau_i0} is arbitrarily constrained to zero and the 
+#' threshold parameters are constrained to symmetry around zero, that is, 
+#' \eqn{\tau_{i(C+1)}=0}{tau_{i(C+1)} = 0} and 
+#' \eqn{\tau_{iz}=-\tau_{i(M-z+1)}}{tau_{iz} = -tau_{i(M-z+1)}} for 
+#' \eqn{z\not= 0}{z != 0}.
+#' 
+#' Parameters \eqn{\alpha_i}{alpha_i} are randomly uniformly drawn from the 
+#' (.5, 2) interval. Parameters \eqn{\delta_i}{delta_i} are randomly drawn 
+#' from the standard normal distribution bounded between \eqn{-2} and 2. The 
+#' threshold parameters are generated following the same procedure of Roberts, 
+#' Donoghue, and Laughlin (2002). Finally, the person parameters are randomly
+#' drawn from the standard normal distribution. 
+#' 
+#' If \code{model = "GUM"} the data based on the GUM (Roberts and Laughlin, 1996) 
+#' model are generated. The GUM is a constrained version of the GGUM, where all
+#' discrimination parameters are equalt to 1 and the item thresholds are shared
+#' by all items.
+#' 
+#' @importFrom Rdpack reprompt
+#' @references 
+#' \insertRef{Rpack:bibtex}{Rdpack}
+#' 
+#' \insertRef{Andrich1996}{GGUM}
+#' 
+#' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+#' 
+#' @examples
+#' gen1 <- GenData.GGUM(1000, 10, 5, seed = 456)
+#' gen1$data      # Retrieve the data.
+#' gen1$alpha.gen # The discrimination parameters.
+#' 
+#' # Generate data based on items varying in the number of observable response 
+#' categories:
+#' gen2 <- GenData.GGUM(1000, 5, c(5, 5, 5, 4, 4), seed = 789)
+#' 
+#' @export
+GGUM <- function(data, C, SE = TRUE, precision = 4, 
+                 N.nodes = 30, max.outer = 60, max.inner = 60, tol = .001)
 {
-  set.seed(seed)
-  if (model > 4) {alpha  <- round(runif(I, .5, 2), 4)} else {alpha <- rep(1, I)}
-  delta             <- sort(round(rnorm(I, 0, 1), 4))
-  delta[delta < -2] <- -2
-  delta[delta > 2]  <- 2
-  if (length(C) == 1) {C <- rep(C, I)}
-  C.max             <- max(C)
-
-  # Taus (models 4 / 8)
-  if ((model == 4) || (model == 8))
-  {
-    tau.half          <- matrix(NA, nrow = I, ncol = C.max)
-    tau.half[, 1]     <- round(runif(I, .4, 1), 4)
-    for (i in 2:C.max) {
-      tau.half[, i]   <- (i <= C) * (tau.half[, i - 1] + .25 + round(rnorm(I, 0, .04), 4))
-    }
-    taus              <- cbind(-tau.half[, C.max:1], 0, tau.half)
-  }
-  # Taus (models 3 / 7)
-  if ((model == 3) || (model == 7))
-  {
-    tau.half        <- rep(NA, C.max)
-    tau.half[1]     <- round(runif(1, .4, 1), 4)
-    for (i in 2:C.max) {
-      tau.half[i]   <- tau.half[i - 1] + .25 + round(rnorm(1, 0, .04), 4)
-    }
-    taus            <- c(0, tau.half)
-    taus            <- matrix(rep(taus, I), nrow = I, byrow = TRUE)
-    for (i in 1:I) {
-      if (C[i] < C.max) taus[i, (C[i] + 2):(C.max + 1)] <- 0
-    }
-    taus            <- cbind(-taus[, (C.max + 1):2], taus)
-  }
-
-  theta             <- round(rnorm(N, 0, 1), 4)
-  M                 <- 2 * C + 1
-  probs.array       <- array(NA, dim = c(N, I, C.max + 1))
-  for (z in 0:C.max)
-  {
-    probs.array[, , z + 1] <- P.Model.3478(z, alpha, delta, taus, theta, C)
-  }
-  res               <- apply(probs.array, 1:2, function(vec) {which( rmultinom(1, 1, vec) == 1) - 1 })
-  res               <- cbind(res, 1:N, NA)
-
-  # Add last column with absolute frequencies:
-  res.tmp  <- res[, 1:(I + 1)]
-  res.ext  <- matrix(NA, ncol = I + 1, nrow = 0)
-  ctrl     <- 0
-  while (ctrl == 0)
-  {
-    n.cand   <- nrow(res.tmp) - 1
-    diff     <- res.tmp[-1, 1:I] - matrix(rep(res.tmp[1, 1:I], n.cand), nrow = n.cand, byrow = TRUE)
-    rs       <- which(rowSums(abs(diff)) == 0)
-    res.ext  <- rbind(res.ext, c(res.tmp[1, 1:I], length(rs) + 1))
-    res[res.tmp[c(1, rs + 1), I + 1, drop = FALSE], I + 2] <- nrow(res.ext)
-    res.tmp  <- res.tmp[-c(1, rs + 1), , drop = FALSE]
-    if (nrow(res.tmp) == 1)
-    {
-      ctrl    <- 1
-      res.ext <- rbind(res.ext, c(res.tmp[1, 1:I], 1))
-      res[res.tmp[1, I + 1, drop = FALSE], I + 2] <- nrow(res.ext)
-    }
-    if (nrow(res.tmp) == 0) {ctrl <- 1}
-  }
-  res <- res[, 1:I]
-  return(list(data.condensed = res.ext, alpha.gen = alpha, delta.gen = delta, taus.gen = taus, theta.gen = theta, data.full = res))
-}
-
-# GGUM.data.condense ----
-# GGUM.data.condense <- function(data)
-# {
-#   N    <- nrow(data)
-#   I    <- ncol(data)
-#   res  <- cbind(data, 1:N, NA)
-#
-#   # Add last column with absolute frequencies:
-#   res.tmp  <- res[, 1:(I + 1)]
-#   res.ext  <- matrix(NA, ncol = I + 1, nrow = 0)
-#   ctrl     <- 0
-#   while (ctrl == 0)
-#   {
-#     n.cand   <- nrow(res.tmp) - 1
-#     diff.NAs <- is.na(res.tmp[-1, 1:I]) * is.na(matrix(rep(res.tmp[1, 1:I], n.cand), nrow = n.cand, byrow = TRUE))
-#
-#     diff     <- res.tmp[-1, 1:I] == matrix(rep(res.tmp[1, 1:I], n.cand), nrow = n.cand, byrow = TRUE)
-#     rs       <- which(rowSums(abs(diff), na.rm = TRUE) + rowSums(diff.NAs) == I)
-#     res.ext  <- rbind(res.ext, c(res.tmp[1, 1:I], length(rs) + 1))
-#     res[res.tmp[c(1, rs + 1), I + 1, drop = FALSE], I + 2] <- nrow(res.ext)
-#     res.tmp  <- res.tmp[-c(1, rs + 1), , drop = FALSE]
-#     if (nrow(res.tmp) == 1)
-#     {
-#       ctrl    <- 1
-#       res.ext <- rbind(res.ext, c(res.tmp[1, 1:I], 1))
-#       res[res.tmp[1, I + 1, drop = FALSE], I + 2] <- nrow(res.ext)
-#     }
-#     if (nrow(res.tmp) == 0) {ctrl <- 1}
-#   }
-#   return(list(data.condensed = res.ext, ind = res[, I + 2]))
-# }
-GGUM.data.condense <- function(data)
-{
-  I       <- ncol(data)
-  idFac   <- as.integer(factor(apply(data, 1, paste, collapse = "")))
-  mat.ord <- cbind(data, idFac)[order(idFac), ]
-  mat.sub <- mat.ord[c(1, which(diff(sort(idFac)) == 1) + 1), 1:I]
-  return(list(data.condensed = cbind(mat.sub, table(idFac)), ind = idFac))
-}
-
-# GUM.initprm ----
-GUM.initprm <- function(data.condensed, C, threshold = 2)
-{
-  N              <- sum(data.condensed[, ncol(data.condensed)])
-  n.row          <- nrow(data.condensed)
-  I              <- ncol(data.condensed) - 1
-  data.full      <- matrix(unlist(sapply(1:n.row, function(x)
-  {
-    rep(data.condensed[x, 1:I], data.condensed[x, I + 1])
-  }
-  )), ncol = I, byrow = TRUE)
-  data.dich      <- matrix(NA, nrow = N, ncol = I)
-  threshold.int  <- rep(threshold, I)
-  threshold.int[which(C <= 2)] <- 1
-  threshold.mat  <- matrix(rep(threshold.int, N), nrow = N, byrow = TRUE)
-  data.dich[data.full >= threshold.mat] <- 1
-  data.dich[data.full <  threshold.mat] <- 0
-  delta.ini      <- rep(NA, I)
-  s.vec          <- colSums(data.dich, na.rm = TRUE)
-  sh             <- max(s.vec)
-  h              <- which(s.vec == sh)[1]
-  delta.ini[h]   <- 0
-  tau.B          <- -log(sh / (N - sh))
-  if (tau.B > 0) {tau.B <- -tau.B}
-  if ((tau.B < -3))
-  {
-    rescale.f <- (N * exp(2) / (1 + exp(2))) / sh
-    s.vec     <- rescale.f * s.vec
-    sh        <- max(s.vec)
-    tau.B     <- -log(sh / (N - sh))
-  }
-  for (i in (1:I)[-h])
-  {
-    func         <- function(dlt)
-    {
-      (exp(-dlt - tau.B) + exp(-2 * dlt - tau.B)) / (1 + exp(-dlt - tau.B) + exp(-2 * dlt - tau.B) + exp(-3 * dlt)) - s.vec[i] / N
-    }
-    my.root      <- try(uniroot(f = func, interval = c(0, 6), tol = 1e-20)$root, silent = TRUE)
-    delta.ini[i] <- if("try-error" %in% class(my.root)) 2 else my.root
-  }
-  # Delta signs:
-  delta.sgn <- sign(principal(data.full, nfactors = 1, rotate = "none", scores = FALSE)$loadings[, 1])
-  delta.ini <- delta.ini * delta.sgn
-  # Taus:
-  taus.ini <- matrix(0, nrow = I, ncol = 2 * max(C) + 1)
-  for (i in 1:I)
-  {
-    taus.ini[i, (max(C) - C[i] + 1): max(C)] <- (C[i] + 1 - 1:C[i]) * tau.B / (C[i] - threshold.int[i] + 1)
-  }
-  taus.ini[, (max(C) + 2):(2 * max(C) + 1)] <- -taus.ini[, max(C):1]
-  #
-  return(list(delta.ini = delta.ini, taus.ini = taus.ini))
-}
-
-# P(Xs|theta) ----
-# Ls   <- function(data.condensed, alpha, delta, taus, nodes, C)
-# {
-#   I           <- length(alpha)
-#   C.max       <- max(C)
-#   data.s      <- data.condensed[, -(I + 1), drop = FALSE]
-#   S           <- nrow(data.condensed)
-#   N.nodes     <- length(nodes)
-#   probs.array <- array(NA, dim = c(N.nodes, I, C.max + 1))                                # N.nodes x I x (C + 1)
-#   for (z in 0:C.max)
-#   {
-#     probs.array[, , z + 1] <- P.Model.3478(z, alpha, delta, taus, nodes, C)
-#   }
-#   res <- matrix(NA, nrow = S, ncol = N.nodes)
-#   for (s in 1:S)
-#   {
-#     ind     <- matrix(0, nrow = I, ncol = C.max + 1)
-#     ind[matrix(c(1:I, data.s[s, ] + 1), ncol = 2, byrow = FALSE)] <- 1
-#     ind     <- aperm(array(rep(ind, N.nodes), dim = c(I, C.max + 1, N.nodes)), c(3, 1, 2)) # N.nodes x I x (C + 1)
-#     product <- probs.array * ind
-#     ind     <- matrix(1, nrow = I, ncol = C.max + 1)
-#     ind[matrix(c(1:I, data.s[s, ] + 1), ncol = 2, byrow = FALSE)] <- 0
-#     ind     <- aperm(array(rep(ind, N.nodes), dim = c(I, C.max + 1, N.nodes)), c(3, 1, 2))
-#     product <- product + ind
-#     res[s, ] <- apply(product, 1, prod, na.rm = TRUE)
-#   }
-#   return(res)
-# }
-############
-Ls   <- function(data.condensed, alpha, delta, taus, nodes, C)
-{
-  I           <- length(alpha)
-  C.max       <- max(C)
-  data.s      <- data.condensed[, -(I + 1), drop = FALSE]
-  S           <- nrow(data.condensed)
-  N.nodes     <- length(nodes)
-  probs.array <- array(NA, dim = c(N.nodes, I, C.max + 1))                 # N.nodes x I x (C + 1)
-  for (z in 0:C.max)
-  {
-    probs.array[, , z + 1] <- P.Model.3478(z, alpha, delta, taus, nodes, C)
-  }
-  #
-  mat.ind <- t(data.s) + 1
-  ind.arr <- array(0, dim = c(I, S, C.max + 1))
-  for (i in 1:I) ind.arr[i, , ][cbind(1:S, mat.ind[i, ])] <- 1
-  #
-  res     <- matrix(NA, nrow = S, ncol = N.nodes)
-  for (f in 1:N.nodes)
-  {
-    probs.array.ext <- aperm(array(rep(probs.array[f, , ], S), dim=c(I, C.max + 1, S)), c(1, 3, 2))
-    res[, f]        <- apply(probs.array.ext * ind.arr + (1 - ind.arr), 2, prod)
-  }
-  return(res)
-}
-
-# P(Xs) ----
-P.tilde.s.vec <- function(Ls.mat, weights)
-{
-  return(as.vector(Ls.mat %*% weights))
-}
-
-# P(Zi = z|theta) ----
-P.izf   <- function(alpha, delta, taus, nodes, C)
-{
-  I           <- length(alpha)
-  C.max       <- max(C)
-  N.nodes     <- length(nodes)
-  probs.array <- array(NA, dim = c(N.nodes, I, C.max + 1))
-  for (z in 0:C.max)
-  {
-    probs.array[, , z + 1] <- P.Model.3478(z, alpha, delta, taus, nodes, C)
-  }
-  return(probs.array)
-}
-
-# Auxiliary functions ----
-# a.arr
-a.arr <- function(alpha, delta, taus, nodes, C)
-{
-  I        <- length(alpha)
-  N.nodes  <- length(nodes)
-  C.max    <- max(C)
-  taus.ext <- cbind(0, taus)[, 1:(C.max + 1), drop = FALSE]
-  res      <- array(NA, dim = c(I, C.max + 1, N.nodes))
-  for (z in 0:C.max)
-  {
-    sum.taus <- sapply(1:I, function(i)
-    {
-      if (((C.max - C[i]) + z+1) <= (C.max + 1)) {
-        sum(taus.ext[i, ((C.max - C[i]) + 1):((C.max - C[i]) + z +1), drop = FALSE])
-      } else {0}
-    })
-    vec.ind <- (z <= C)
-    for (f in 1:N.nodes)
-    {
-      res[, z+1, f] <- vec.ind * exp( alpha * ( z * (nodes[f] - delta) - sum.taus ) )
-    }
-  }
-  return(res)
-}
-# b.arr
-b.arr <- function(alpha, delta, taus, nodes, C)
-{
-  I        <- length(alpha)
-  N.nodes  <- length(nodes)
-  C.max    <- max(C)
-  M        <- 2 * C + 1
-  taus.ext <- cbind(0, taus)[, 1:(C.max + 1), drop = FALSE]
-  res      <- array(NA, dim = c(I, C.max + 1, N.nodes))
-  for (z in 0:C.max)
-  {
-    sum.taus <- sapply(1:I, function(i)
-    {
-      if (((C.max - C[i]) + z+1) <= (C.max + 1)) {
-        sum(taus.ext[i, ((C.max - C[i]) + 1):((C.max - C[i]) + z +1), drop = FALSE])
-      } else {0}
-    })
-    vec.ind <- (z <= C)
-    for (f in 1:N.nodes)
-    {
-      res[, z+1, f] <- vec.ind * exp( alpha * ( (M - z) * (nodes[f] - delta) - sum.taus ) )
-    }
-  }
-  return(res)
-}
-# q.mat
-q.mat <- function(taus, C)
-{
-  I        <- length(C)
-  C.max    <- max(C)
-  taus.ext <- cbind(0, taus)[, 1:(C.max + 1), drop = FALSE]
-  res       <- matrix(NA, nrow = I, ncol = C.max + 1)
-  for (z in 0:C.max)
-  {
-    sum.taus <- sapply(1:I, function(i)
-    {
-      if (((C.max - C[i]) + z +1) <= (C.max + 1)) {
-        sum(taus.ext[i, ((C.max - C[i]) + 1):((C.max - C[i]) + z+1), drop = FALSE])
-      } else {0}
-    })
-    res[, z+1] <- sum.taus
-  }
-  return(res)
-}
-# g.mat
-g.mat <- function(alpha, delta, taus, nodes, C)
-{
-  res <- apply(a.arr(alpha, delta, taus, nodes, C) + b.arr(alpha, delta, taus, nodes, C), c(1, 3), sum, na.rm = TRUE)
-  return(res)
-}
-# t.mat
-t.mat <- function(delta, nodes)
-{
-  I   <- length(delta)
-  res <- t(sapply(1:I, function(i) {nodes - delta[i]}))
-  return(res)
-}
-
-# dP.alpha.arr ----
-dP.alpha.arr <- function(alpha, delta, taus, nodes, C)
-{
-  I       <- length(alpha)
-  N.nodes <- length(nodes)
-  if (length(C) == 1) {C <- rep(C, I)}
-  C.max   <- max(C)
-  M       <- 2 * C + 1
-  #
-  arr.ind <- matrix(0, nrow = I, ncol = C.max + 1)
-  for (i in 1:I)
-  {
-    arr.ind[i, 1:(C[i] + 1)] <- 1
-  }
-  arr.ind <- array(rep(arr.ind, N.nodes), dim = c(I, C.max + 1, N.nodes))
-  #
-  z.arr   <- arr.ind * aperm(array(rep(0:C.max, I * N.nodes), dim = c(C.max + 1, I, N.nodes)), c(2, 1, 3))
-  t.arr   <- aperm(array(rep(t.mat(delta, nodes), C.max + 1), dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2))
-  g.arr   <- aperm(array(rep(g.mat(alpha, delta, taus, nodes, C), C.max + 1), dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2))
-  q.arr   <- array(rep(q.mat(taus, C), N.nodes), dim = c(I, C.max + 1, N.nodes))
-  #
-  a.res   <- a.arr(alpha, delta, taus, nodes, C)
-  b.res   <- b.arr(alpha, delta, taus, nodes, C)
-  #
-  num1    <- a.res * (z.arr * t.arr - q.arr) + b.res * ((M - z.arr) * t.arr - q.arr)
-  den1    <- g.arr
-  sum.w   <- apply(num1, c(1, 3), sum, na.rm = TRUE)
-  sum.w   <- aperm(array(rep(sum.w, C.max + 1), dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2))
-  num2    <- (a.res + b.res) * sum.w
-  den2    <- g.arr^2
-  return(aperm(num1 / den1 - num2 / den2, c(3, 1, 2))) # N.nodes x I x (C + 1)
-}
-
-# dP.delta.arr ----
-dP.delta.arr <- function(alpha, delta, taus, nodes, C)
-{
-  I         <- length(alpha)
-  N.nodes   <- length(nodes)
-  if (length(C) == 1) {C <- rep(C, I)}
-  C.max     <- max(C)
-  M         <- 2 * C + 1
-  #
-  arr.ind <- matrix(0, nrow = I, ncol = C.max + 1)
-  for (i in 1:I)
-  {
-    arr.ind[i, 1:(C[i] + 1)] <- 1
-  }
-  arr.ind <- array(rep(arr.ind, N.nodes), dim = c(I, C.max + 1, N.nodes))
-  #
-  alpha.arr <- array(rep(alpha, (C.max + 1) * N.nodes), dim = c(I, C.max + 1, N.nodes))
-  z.arr     <- arr.ind * aperm(array(rep(0:C.max, I * N.nodes), dim = c(C.max + 1, I, N.nodes)), c(2, 1, 3))
-  g.arr     <- aperm(array(rep(g.mat(alpha, delta, taus, nodes, C), C.max + 1), dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2))
-  #
-  a.res     <- a.arr(alpha, delta, taus, nodes, C)
-  b.res     <- b.arr(alpha, delta, taus, nodes, C)
-  #
-  num1      <- a.res * (-alpha.arr * z.arr) + b.res * (-alpha.arr * (M - z.arr))
-  den1      <- g.arr
-  sum.w     <- apply(num1, c(1, 3), sum, na.rm = TRUE)
-  sum.w     <- aperm(array(rep(sum.w, C.max + 1), dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2))
-  num2      <- (a.res + b.res) * sum.w
-  den2      <- g.arr^2
-  return(aperm(num1 / den1 - num2 / den2, c(3, 1, 2))) # N.nodes x I x (C + 1)
-}
-
-# dP.tau.arr ----
-dP.tau.arr <- function(alpha, delta, taus, nodes, C)
-{
-  I         <- length(alpha)
-  N.nodes   <- length(nodes)
-  if (length(C) == 1) {C <- rep(C, I)}
-  C.max     <- max(C)
-  #
-  arr.ind <- matrix(0, nrow = I, ncol = C.max + 1)
-  for (i in 1:I)
-  {
-    arr.ind[i, 1:(C[i] + 1)] <- 1
-  }
-  arr.ind <- array(rep(arr.ind, N.nodes), dim = c(I, C.max + 1, N.nodes))
-  #
-  a.res     <- a.arr(alpha, delta, taus, nodes, C)
-  b.res     <- b.arr(alpha, delta, taus, nodes, C)
-  #
-  alpha.arr <- array(rep(alpha, (C.max + 1) * N.nodes), dim = c(I, C.max + 1, N.nodes))
-  z.arr     <- arr.ind * aperm(array(rep(0:C.max, I * N.nodes), dim = c(C.max + 1, I, N.nodes)), c(2, 1, 3))
-  g.arr     <- aperm(array(rep(g.mat(alpha, delta, taus, nodes, C), C.max + 1), dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2))
-  #
-  res <- array(NA, dim = c(I, C.max + 1, N.nodes, C.max))
-  for (k in 1:C.max)
-  {
-    Uzk.arr <- array(0, dim = c(I, C.max + 1, N.nodes))
-    Uzk.arr[ , (k + 1):(C.max + 1), ] <- 1
-    sum.w   <- apply(a.res * (-alpha.arr * Uzk.arr) + b.res * (-alpha.arr * Uzk.arr), c(1, 3), sum, na.rm = TRUE)
-    sum.w   <- aperm(array(rep(sum.w, C.max + 1), dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2))
-    num     <- (a.res + b.res) * (g.arr * (-alpha.arr * Uzk.arr) - sum.w)
-    den     <- g.arr^2
-    res[ , , , k] <- num / den
-  }
-  return(aperm(res, c(3, 1, 2, 4)))
-}
-
-# dP.phi ----
-dP.phi <- function(alpha, delta, taus, nodes, C, param = "alphadelta")
-{
-  if (param == "alphadelta")
-  {
-    res <- list(alpha = dP.alpha.arr(alpha, delta, taus, nodes, C),
-                delta = dP.delta.arr(alpha, delta, taus, nodes, C),
-                taus  = NULL)
-  }
-  if (param == "delta")
-  {
-    res <- list(alpha = NULL,
-                delta = dP.delta.arr(alpha, delta, taus, nodes, C),
-                taus  = NULL)
-  }
-  if (param == "taus")
-  {
-    res <- list(alpha = NULL,
-                delta = NULL,
-                taus  = dP.tau.arr(alpha, delta, taus, nodes, C))
-  }
-  return(res)
-}
-
-# DlogL.dphi ----
-DlogL.dphi <- function(param = "alphadelta", dP, r.bar.izf, P.izf.arr)
-{
-  if (param == "alphadelta")
-  {
-    res.alpha <- apply(r.bar.izf * dP$alpha /  P.izf.arr, 2, sum, simplify = FALSE, na.rm = TRUE)
-    res.delta <- apply(r.bar.izf * dP$delta /  P.izf.arr, 2, sum, simplify = FALSE, na.rm = TRUE)
-    res.taus  <- NULL
-  }
-  if (param == "delta")
-  {
-    res.alpha <- NULL
-    res.delta <- apply(r.bar.izf * dP$delta /  P.izf.arr, 2, sum, simplify = FALSE, na.rm = TRUE)
-    res.taus  <- NULL
-  }
-  if (param == "taus")
-  {
-    res.alpha <- NULL
-    res.delta <- NULL
-    res.taus  <- apply(r.bar.izf * dP$taus / P.izf.arr, c(2, 4), sum, simplify = FALSE, na.rm = TRUE)
-  }
-  res <- list(alpha = res.alpha, delta = res.delta, taus = res.taus)
-  return(res)
-}
-
-# Fil GGUM ---
-# Use function Model8().
-
-# Estimate thetas and associated SE's ----
-Theta.EAP <- function(data, C, IP.res, N.nodes = 30, precision = 4)
-{
+  I <- ncol(data)
+  
+  # Sanity check - data:
+  Sanity.data(data)
+  # Sanity check - C:
+  Sanity.C(C, I)
+  
   tmp            <- GGUM.data.condense(data)
   data.condensed <- tmp$data.condensed
-  ind            <- tmp$ind
+  S              <- nrow(data.condensed)
   rm(tmp)
+  
+  if (length(C) == 1) {C <- rep(C, I)}
+  C.max           <- max(C)
+  M               <- 2 * C + 1
+  
+  # Initial values, Step 1 of 2 - derived from GUM:
+  cat("\nStep 1 of 3: Calibrating initial parameters by means of GUM... \n")
+  GUM.res        <- GUM(data, C, SE = FALSE, ctl = FALSE)
+  delta.old      <- GUM.res$delta
+  taus.old       <- GUM.res$taus
+  rm(GUM.res)
+  # Initial values, Step 2 of 2 - derived from Model 4, based on the estimates from GUM as initial values:
+  cat("\nStep 2 of 3: Calibrating initial parameters by means of GUM extended... \n")
+  Model4.res     <- Model4(data, C, Init.vals = list(delta = delta.old, taus = taus.old))
+  delta.old      <- Model4.res$delta
+  taus.old       <- Model4.res$taus
+  rm(Model4.res)
+  # 
+  alpha.old      <- rep(1, I)
+  alphadelta.old <- rbind(alpha.old, delta.old)
+  
   # Nodes and weights:
   nodes   <- seq(-4, 4, length.out = N.nodes)
   weights <- dnorm(nodes) / sum(dnorm(nodes))
-  #
-  S           <- nrow(data.condensed)
-  Ls.mat      <- Ls(data.condensed, IP.res$alpha, IP.res$delta, IP.res$taus, nodes, C) # S x N.nodes
-  nodes.mat   <- matrix(rep(nodes, S),   ncol = N.nodes, byrow = TRUE)           # S x N.nodes
-  weights.mat <- matrix(rep(weights, S), ncol = N.nodes, byrow = TRUE)           # S x N.nodes
-  num         <- rowSums(nodes.mat * Ls.mat * weights.mat)                       # S
-  den         <- rowSums(            Ls.mat * weights.mat)                       # S
-  res         <- num / den
-  #
-  return(list(Th.condensed = round(res, precision), Th.full = round(res[ind], precision)))
-}
-
-Theta.SE <- function(data, C, IP.res, thetas.est, N.nodes = 30, precision = 4)
-{
-  tmp            <- GGUM.data.condense(data)
-  data.condensed <- tmp$data.condensed
-  ind            <- tmp$ind
-  rm(tmp)
-  # Nodes and weights:
-  nodes   <- seq(-4, 4, length.out = N.nodes)
-  weights <- dnorm(nodes) / sum(dnorm(nodes))
-  #
-  S           <- nrow(data.condensed)
-  Ls.mat      <- Ls(data.condensed, IP.res$alpha, IP.res$delta, IP.res$taus, nodes, C)
-  nodes.mat   <- matrix(rep(nodes, S),            ncol = N.nodes, byrow = TRUE)
-  weights.mat <- matrix(rep(weights, S),          ncol = N.nodes, byrow = TRUE)
-  thetas.mat  <- matrix(rep(thetas.est$Th.condensed, N.nodes), ncol = N.nodes, byrow = FALSE)
-  num         <- rowSums(((nodes.mat - thetas.mat)^2) * Ls.mat * weights.mat)
-  den         <- rowSums(Ls.mat * weights.mat)
-  return(list(Th.SE.condensed = round(sqrt(num / den), precision), Th.SE.full = round(sqrt(num / den)[ind], precision)))
-}
-
-# SE of item parameters, Model 8 ----
-ItemParamModel8.SE <- function(data, C, IP.res, N.nodes = 30, precision = 4)
-{
-  tmp            <- GGUM.data.condense(data)
-  data.condensed <- tmp$data.condensed
-  ind            <- tmp$ind
-  rm(tmp)
-  #
-  N              <- nrow(data)
-  I              <- ncol(data)
-  if (length(C) == 1) {C <- rep(C, I)}
-  C.max          <- max(C)
-  # Nodes and weights:
-  nodes   <- seq(-4, 4, length.out = N.nodes)
-  weights <- dnorm(nodes) / sum(dnorm(nodes))
-  #
-  S           <- nrow(data.condensed)
-  Ls.mat      <- Ls(data.condensed, IP.res$alpha, IP.res$delta, IP.res$taus, nodes, C)
-  Ls.arr      <- array(rep(Ls.mat, I * (C.max + 1)), dim = c(S, N.nodes, I, C.max + 1))
-  P.tilde.s   <- P.tilde.s.vec(Ls.mat, weights)
-  P.OBS.s     <- data.condensed[, I + 1] / N
-  P.izf.arr   <- array(rep(P.izf(IP.res$alpha, IP.res$delta, IP.res$taus, nodes, C), S), dim = c(N.nodes, I, C.max + 1, S))
-  P.izf.arr   <- aperm(P.izf.arr, c(4, 1, 2, 3))
-  #
+  # 
+  rs.arr      <- array(rep(data.condensed[, I + 1], N.nodes * I * (C.max + 1)), dim = c(S, N.nodes, I, C.max + 1))
   weights.arr <- array(rep(weights, S * I * (C.max + 1)), dim = c(N.nodes, S, I, C.max + 1))
   weights.arr <- aperm(weights.arr, c(2, 1, 3, 4))
   H.siz       <- array(0, dim = c(S, I, C.max + 1))
@@ -561,444 +137,200 @@ ItemParamModel8.SE <- function(data, C, IP.res, N.nodes = 30, precision = 4)
   rm(s, i)
   H.siz  <- array(rep(H.siz, N.nodes), dim = c(S, I, C.max + 1, N.nodes))
   H.siz  <- aperm(H.siz, c(1, 4, 2, 3))
-  #
-  tmp      <- dP.phi(IP.res$alpha, IP.res$delta, IP.res$taus, nodes, C, param = "alphadelta")
-  dP.alpha <- aperm(array(rep(tmp$alpha, S), dim = c(N.nodes, I, C.max + 1, S)), c(4, 1, 2, 3))
-  dP.delta <- aperm(array(rep(tmp$delta, S), dim = c(N.nodes, I, C.max + 1, S)), c(4, 1, 2, 3))
-  tmp      <- dP.phi(IP.res$alpha, IP.res$delta, IP.res$taus, nodes, C, param = "taus")
-  # dP.taus  <- aperm(array(rep(tmp$taus, S), dim = c(N.nodes, I, C.max + 1, C.max, S)), c(5, 1, 2, 3, 4))
-  dP.taus  <- tmp$taus
-  rm(tmp)
-  #
-  dP.tilde.s.vec.alpha <- apply(Ls.arr * weights.arr * dP.alpha * H.siz / P.izf.arr, c(1, 3), sum, na.rm = TRUE)
-  dP.tilde.s.vec.delta <- apply(Ls.arr * weights.arr * dP.delta * H.siz / P.izf.arr, c(1, 3), sum, na.rm = TRUE)
-  rm(dP.alpha, dP.delta)
-  # Ls.arr.taus          <- array(rep(Ls.arr, C.max), dim = c(S, N.nodes, I, C.max + 1, C.max))
-  # rm(Ls.arr)
-  # weights.arr.taus     <- array(rep(weights.arr, C.max), dim = c(S, N.nodes, I, C.max + 1, C.max))
-  # rm(weights.arr)
-  # H.siz.taus           <- array(rep(H.siz, C.max), dim = c(S, N.nodes, I, C.max + 1, C.max))
-  # rm(H.siz)
-  # P.izf.arr.taus       <- array(rep(P.izf.arr, C.max), dim = c(S, N.nodes, I, C.max + 1, C.max))
-  # rm(P.izf.arr)
-  # dP.tilde.s.vec.taus  <- apply(Ls.arr.taus * weights.arr.taus * dP.taus * H.siz.taus / P.izf.arr.taus, c(1, 3, 5), sum, na.rm = TRUE)
-  dP.tilde.s.vec.taus <- array(NA, dim = c(S, I, C.max))
-  for (i in 1:C.max)
+  # 
+  
+  iter.outer <- 0
+  iter.inner <- 10 # just to pass the first 'while' test below.
+  
+  cat("\nStep 3 of 3: Estimating item parameters for GGUM... \n")
+  
+  while ((iter.outer <= (max.outer - 1)) && (iter.inner > 1))
   {
-    dP.taus.use <- aperm(array(rep(dP.taus[ , , , i], S), dim = c(N.nodes, I, C.max + 1, S)), c(4, 1, 2, 3))
-    dP.tilde.s.vec.taus[, , i] <- apply(Ls.arr * weights.arr * dP.taus.use * H.siz / P.izf.arr, c(1, 3), sum, na.rm = TRUE)
+    
+    cat("\r", "|", rep("-", iter.outer+1), rep(" ", max.outer - iter.outer-1), "|", sep = "")
+    flush.console()
+    
+    
+    iter.inner <- 0
+    curr.tol   <- 1
+    
+    # E stage: Compute r.bar.izf and N.bar.if, 
+    #             given the current alpha, delta, and taus.
+    # Ls:
+    Ls.mat <- Ls(data.condensed, alpha.old, delta.old, taus.old, nodes, C)
+    Ls.arr            <- array(rep(Ls.mat, I * (C.max + 1)), dim = c(S, N.nodes, I, C.max + 1))
+    # 
+    P.tilde.s.arr     <- array(rep(P.tilde.s.vec(Ls.mat, weights), N.nodes * I * (C.max + 1)), dim = c(S, N.nodes, I, C.max + 1))
+    r.bar.izf         <- apply(H.siz * rs.arr * Ls.arr * weights.arr / P.tilde.s.arr, 2:4, sum)
+    r.bar.izf.taus    <- array(rep(r.bar.izf, C.max), dim = c(N.nodes, I, C.max + 1, C.max))
+    N.bar.if          <- apply(r.bar.izf, 1:2, sum)
+    N.bar.if.arr      <- array(rep(N.bar.if, (C.max + 1)), c(N.nodes, I, C.max + 1))
+    N.bar.if.arr.taus <- array(rep(N.bar.if, (C.max + 1) *  C.max *  C.max), c(N.nodes, I, C.max + 1,  C.max,  C.max))
+    #
+    
+    while ((iter.inner <= (max.inner - 1)) && (max(curr.tol) > tol))
+    {
+      
+      
+      # M stage, part 1 of 2:
+      #     Update taus, for fixed alphas and deltas.
+      P.izf.arr      <- P.izf(alpha.old, delta.old, taus.old, nodes, C)
+      P.izf.arr.taus <- array(rep(P.izf.arr, C.max), dim = c(N.nodes, I, C.max+1, C.max))
+      
+      dP             <- dP.phi(alpha.old, delta.old, taus.old, nodes, C, param = "taus")
+      D1             <- DlogL.dphi (param = "taus", dP, r.bar.izf.taus, P.izf.arr.taus)
+      DlogL.taus     <- D1$taus
+      # 
+      P.izf.arr.taus.taus <- array(rep(P.izf.arr.taus, C.max), dim = c(N.nodes, I, C.max+1, C.max, C.max))
+      dP.taus.taus <- array(NA, c(N.nodes, I, C.max+1, C.max, C.max))
+      for (f in 1:N.nodes) {
+        for (i in 1:I) {
+          for (z in 0:C.max) {
+            dP.taus.taus[f, i, z+1, , ] <- dP$taus[f, i, z+1, ] %*% t(dP$taus[f, i, z+1, ])
+          }
+        }
+      }
+      rm(f, i, z)
+      Inf.arr <- apply(N.bar.if.arr.taus * dP.taus.taus / P.izf.arr.taus.taus, c(2, 4, 5), sum, na.rm = TRUE)
+      # 
+      taus.new <- matrix(0, nrow = I, ncol = C.max) 
+      for (i in 1:I)
+      {
+        c.use  <- C[i]
+        taus.new[i, (C.max - c.use + 1):C.max] <- 
+          c(taus.old[i, (C.max - c.use + 1):C.max]) + c(solve(Inf.arr[i, 1:c.use, 1:c.use]) %*% DlogL.taus[i, 1:c.use])
+      }
+      # Extra control (needed in cases of difficult convergence):
+      taus.new <- -abs(taus.new)
+      taus.new[taus.new < -10]  <- -10
+      # 
+      taus.new <- cbind(taus.new, 0, -taus.new[, C.max:1])
+      tol.taus <- max(abs(taus.old[, 1:C.max] - taus.new[, 1:C.max]))
+      taus.old <- taus.new
+      
+      # M stage, part 2 of 2:
+      #     Update alphas and deltas, for fixed taus.
+      P.izf.arr        <- P.izf(alpha.old, delta.old, taus.old, nodes, C)
+      dP               <- dP.phi(alpha.old, delta.old, taus.old, nodes, C, param = "alphadelta")
+      D1               <- DlogL.dphi (param = "alphadelta", dP, r.bar.izf, P.izf.arr)
+      DlogL.alphadelta <- rbind(D1$alpha, D1$delta)
+      # 
+      dP.alpha.alpha   <- (dP$alpha)^2
+      dP.alpha.delta   <- dP$alpha * dP$delta
+      dP.delta.delta   <- (dP$delta)^2
+      Inf.arr <- array(NA, c(I, 2, 2))
+      Inf.arr[, 1, 1] <- apply(N.bar.if.arr * dP.alpha.alpha / P.izf.arr, 2, sum, na.rm = TRUE)
+      Inf.arr[, 1, 2] <- apply(N.bar.if.arr * dP.alpha.delta / P.izf.arr, 2, sum, na.rm = TRUE)
+      Inf.arr[, 2, 1] <- Inf.arr[, 1, 2]
+      Inf.arr[, 2, 2] <- apply(N.bar.if.arr * dP.delta.delta / P.izf.arr, 2, sum, na.rm = TRUE)
+      # 
+      alphadelta.new <- matrix(NA, nrow = 2, ncol = I)
+      for (i in 1:I) { 
+        alphadelta.new[, i] <- c(alphadelta.old[, i] + solve(Inf.arr[i, , ]) %*% DlogL.alphadelta[, i])
+      }
+      # Extra control (needed in cases of difficult convergence):
+      alphadelta.new[1, ][alphadelta.new[1, ] < .1] <- .1 
+      alphadelta.new[1, ][alphadelta.new[1, ] >  10] <-  10
+      alphadelta.new[2, ][alphadelta.new[2, ] < -10] <- -10
+      alphadelta.new[2, ][alphadelta.new[2, ] >  10] <-  10
+      # 
+      tol.alphadelta <-  max(abs(alphadelta.old - alphadelta.new))
+      alphadelta.old <- alphadelta.new
+      alpha.old <- alphadelta.old[1, ]
+      delta.old <- alphadelta.old[2, ]
+      
+      curr.tol <- c(tol.taus, tol.alphadelta)
+      iter.inner <- iter.inner + 1
+    }
+    #
+    iter.outer <- iter.outer + 1
   }
-  rm(dP.taus, Ls.arr, weights.arr, H.siz, P.izf.arr, i, dP.taus.use)
-  #
-  SE.mat <- matrix(0, nrow = I, ncol = C.max + 2)
-  for (i in 1:I) {
-    dP.tilde      <- cbind(dP.tilde.s.vec.alpha[, i], dP.tilde.s.vec.delta[, i], dP.tilde.s.vec.taus[, i, ])
-    P.OBS.s.mat   <- matrix(rep(P.OBS.s  , C.max + 2), nrow = S, byrow = FALSE)
-    P.tilde.s.mat <- matrix(rep(P.tilde.s, C.max + 2), nrow = S, byrow = FALSE)
-    sum.arg       <- sqrt(P.OBS.s.mat) * dP.tilde / P.tilde.s.mat
-    Inf.i         <- N * (t(sum.arg) %*% sum.arg)
-    # SE.mat[i, ]   <- sqrt(diag(solve(Inf.i)))
-    SE.mat[i, 1:(C[i] + 2)]   <- sqrt(diag(solve(Inf.i[1:(C[i] + 2), 1:(C[i] + 2)])))
-  }
-
-  colnames(SE.mat) <- c("SE.alpha", "SE.delta", paste0("SE.tau", 1:C.max))
-  return(round(SE.mat, precision))
-}
-
-# SE of item parameters, Model 3 ----
-ItemParamModel3.SE <- function(data, C, IP.res, N.nodes = 30, precision = 4)
-{
-  tmp            <- GGUM.data.condense(data)
-  data.condensed <- tmp$data.condensed
-  ind            <- tmp$ind
-  rm(tmp)
-  #
-  N              <- nrow(data)
-  I              <- ncol(data)
-  if (length(C) == 1) {C <- rep(C, I)}
-  C.max          <- max(C)
-  # Nodes and weights:
-  nodes   <- seq(-4, 4, length.out = N.nodes)
-  weights <- dnorm(nodes) / sum(dnorm(nodes))
-  #
-  S           <- nrow(data.condensed)
-  Ls.mat      <- Ls(data.condensed, IP.res$alpha, IP.res$delta, IP.res$taus, nodes, C)
-  Ls.arr      <- array(rep(Ls.mat, I * (C.max + 1)), dim = c(S, N.nodes, I, C.max + 1))
-  P.tilde.s   <- P.tilde.s.vec(Ls.mat, weights)
-  P.OBS.s     <- data.condensed[, I + 1] / N
-  P.izf.arr   <- array(rep(P.izf(IP.res$alpha, IP.res$delta, IP.res$taus, nodes, C), S), dim = c(N.nodes, I, C.max + 1, S))
-  P.izf.arr   <- aperm(P.izf.arr, c(4, 1, 2, 3))
-  #
-  weights.arr <- array(rep(weights, S * I * (C.max + 1)), dim = c(N.nodes, S, I, C.max + 1))
-  weights.arr <- aperm(weights.arr, c(2, 1, 3, 4))
-  H.siz       <- array(0, dim = c(S, I, C.max + 1))
-  for (s in 1:S) {
+  cat("\n\n")
+  
+  # Information criteria:
+  N      <- nrow(data)
+  s.vec  <- data.condensed[, I+1]
+  Ls.mat <- Ls(data.condensed, alpha.old, delta.old, taus.old, nodes, C)
+  P.Xs   <- P.tilde.s.vec(Ls.mat, weights)
+  log.L  <- sum(s.vec * log(P.Xs))
+  k      <- I + I + sum(C)
+  AIC    <- -2 * log.L + k * 2
+  BIC    <- -2 * log.L + k * log(N)
+  CAIC   <- -2 * log.L + k * (log(N) + 1)
+  Inf.df <- data.frame(log.L, N.param = k, AIC, BIC, CAIC)
+  
+  # SE:
+  if (SE)
+  {
+    Ls.arr    <- array(rep(Ls.mat, I * (C.max + 1)), 
+                       dim = c(S, N.nodes, I, C.max + 1))
+    P.tilde.s <- P.tilde.s.vec(Ls.mat, weights)
+    P.OBS.s   <- data.condensed[, I + 1] / N
+    P.izf.arr <- array(rep(P.izf(alpha.old, delta.old, taus.old, nodes, C), S), 
+                       dim = c(N.nodes, I, C.max + 1, S))
+    P.izf.arr <- aperm(P.izf.arr, c(4, 1, 2, 3))
+    
+    # 
+    tmp      <- dP.phi(alpha.old, delta.old, taus.old, nodes, C, 
+                       param = "alphadelta")
+    dP.alpha <- aperm(array(rep(tmp$alpha, S), 
+                            dim = c(N.nodes, I, C.max + 1, S)), c(4, 1, 2, 3))
+    dP.delta <- aperm(array(rep(tmp$delta, S), 
+                            dim = c(N.nodes, I, C.max + 1, S)), c(4, 1, 2, 3))
+    tmp      <- dP.phi(alpha.old, delta.old, taus.old, nodes, C, 
+                       param = "taus")
+    dP.taus  <- tmp$taus
+    rm(tmp)
+    
+    #
+    dP.tilde.s.vec.alpha <- apply(Ls.arr * weights.arr * dP.alpha * H.siz / 
+                                    P.izf.arr, c(1, 3), sum, na.rm = TRUE)
+    dP.tilde.s.vec.delta <- apply(Ls.arr * weights.arr * dP.delta * H.siz / 
+                                    P.izf.arr, c(1, 3), sum, na.rm = TRUE)
+    rm(dP.alpha, dP.delta)
+    dP.tilde.s.vec.taus <- array(NA, dim = c(S, I, C.max))
+    for (i in 1:C.max)
+    {
+      dP.taus.use <- aperm(array(rep(dP.taus[ , , , i], S), 
+                                 dim = c(N.nodes, I, C.max + 1, S)), 
+                           c(4, 1, 2, 3))
+      dP.tilde.s.vec.taus[, , i] <- apply(Ls.arr * weights.arr * dP.taus.use * 
+                                            H.siz / P.izf.arr, c(1, 3), sum, 
+                                          na.rm = TRUE)
+    }
+    rm(dP.taus, Ls.arr, weights.arr, H.siz, P.izf.arr, i, dP.taus.use)
+    #
+    SE.mat <- matrix(0, nrow = I, ncol = C.max + 2)
     for (i in 1:I) {
-      H.siz[s, i, data.condensed[s, i] + 1] <- 1
+      dP.tilde      <- cbind(dP.tilde.s.vec.alpha[, i], 
+                             dP.tilde.s.vec.delta[, i], 
+                             dP.tilde.s.vec.taus[, i, ])
+      P.OBS.s.mat   <- matrix(rep(P.OBS.s  , C.max + 2), nrow = S, 
+                              byrow = FALSE)
+      P.tilde.s.mat <- matrix(rep(P.tilde.s, C.max + 2), nrow = S, 
+                              byrow = FALSE)
+      sum.arg       <- sqrt(P.OBS.s.mat) * dP.tilde / P.tilde.s.mat
+      Inf.i         <- N * (t(sum.arg) %*% sum.arg)
+      SE.mat[i, 1:(C[i] + 2)]   <- sqrt(diag(solve(Inf.i[1:(C[i] + 2), 
+                                                         1:(C[i] + 2)])))
     }
-  }
-  rm(s, i)
-  H.siz  <- array(rep(H.siz, N.nodes), dim = c(S, I, C.max + 1, N.nodes))
-  H.siz  <- aperm(H.siz, c(1, 4, 2, 3))
-  #
-  tmp      <- dP.phi(IP.res$alpha, IP.res$delta, IP.res$taus, nodes, C, param = "delta")
-  dP.delta <- aperm(array(rep(tmp$delta, S), dim = c(N.nodes, I, C.max + 1, S)), c(4, 1, 2, 3))
-  tmp      <- dP.phi(IP.res$alpha, IP.res$delta, IP.res$taus, nodes, C, param = "taus")
-  dP.taus  <- aperm(array(rep(tmp$taus, S), dim = c(N.nodes, I, C.max + 1, C.max, S)), c(5, 1, 2, 3, 4))
-  # dP.taus  <- apply(dP.taus, c(1:2, 4:5), sum, na.rm = TRUE)
-  rm(tmp)
-  #
-  dP.tilde.s.vec.delta <- apply(Ls.arr * weights.arr * dP.delta * H.siz / P.izf.arr, c(1, 3), sum, na.rm = TRUE)
-  rm(dP.delta)
-  Ls.arr.taus          <- array(rep(Ls.arr, C.max), dim = c(S, N.nodes, I, C.max + 1, C.max))
-  rm(Ls.arr)
-  weights.arr.taus     <- array(rep(weights.arr, C.max), dim = c(S, N.nodes, I, C.max + 1, C.max))
-  rm(weights.arr)
-  H.siz.taus           <- array(rep(H.siz, C.max), dim = c(S, N.nodes, I, C.max + 1, C.max))
-  # rm(H.siz)
-  P.izf.arr.taus       <- array(rep(P.izf.arr, C.max), dim = c(S, N.nodes, I, C.max + 1, C.max))
-  rm(P.izf.arr)
-  dP.tilde.s.vec.taus  <- apply(Ls.arr.taus * weights.arr.taus * dP.taus * H.siz.taus / P.izf.arr.taus, c(1, 5), sum, na.rm = TRUE)
-  rm(dP.taus, Ls.arr.taus, weights.arr.taus, H.siz.taus, P.izf.arr.taus)
-  #
-  Inf.mat <- matrix(0, nrow = I + C.max, ncol = I + C.max)
-#   for (i1 in 1:I) {
-#     for (i2 in i1:I) {
-#       dP.tilde        <- dP.tilde.s.vec.delta[, i1] * dP.tilde.s.vec.delta[, i2]
-#       Inf.mat[i1, i2] <- N * sum(P.OBS.s * dP.tilde / (P.tilde.s^2))
-#     }
-#   }
-  for (i1 in 1:I) {
-    dP.tilde        <- dP.tilde.s.vec.delta[, i1] * dP.tilde.s.vec.delta[, i1]
-    Inf.mat[i1, i1] <- N * sum(P.OBS.s * dP.tilde / (P.tilde.s^2))
-  }
-  for (i1 in 1:C.max) {
-    for (i2 in i1:C.max) {
-      dP.tilde        <- dP.tilde.s.vec.taus[, i1, drop = FALSE] * dP.tilde.s.vec.taus[, i2, drop = FALSE]
-      Inf.mat[I + i1, I + i2] <- N * sum(P.OBS.s * dP.tilde / (P.tilde.s^2))
-    }
-  }
-  for (i1 in 1:I) {
-    for (i2 in 1:C.max) {
-      dP.tilde        <- dP.tilde.s.vec.delta[, i1] * dP.tilde.s.vec.taus[, i2, drop = FALSE]
-      Inf.mat[i1, I + i2] <- N * sum(P.OBS.s * dP.tilde / (P.tilde.s^2))
-    }
-  }
-  Inf.mat <- Inf.mat + t(Inf.mat) - diag(diag(Inf.mat))
-  SE.mat  <- matrix(sqrt(diag(solve(Inf.mat))), ncol = 1)
-  rownames(SE.mat) <- c(paste0("SE.delta", 1:I), paste0("SE.tau", 1:C.max))
-  #
-  return(list(Delta = round(SE.mat[1:I, ], precision), Taus = round(SE.mat[(I+1):(I + C.max), ], precision)))
+    
+    colnames(SE.mat) <- c("SE.alpha", "SE.delta", paste0("SE.tau", 1:C.max))
+    SE.out <- round(SE.mat, precision)
+  } else {SE.out <- NULL}
+  
+  res <- list(
+    data            = data, 
+    C               = C, 
+    alpha           = round(alpha.old, precision), 
+    delta           = round(delta.old, precision), 
+    taus            = round(taus.old, precision), 
+    SE              = SE.out, 
+    N.nodes         = N.nodes, 
+    tol             = max(curr.tol), 
+    iter.inner      = iter.inner, 
+    model           = "GGUM", 
+    InformationCrit = Inf.df)
+  class(res) <- "GGUM"
+  return(res)
 }
-
-# Plot IRF ----
-plot.GGUM <- function(C, IP.res, items = NULL, x.lim = 4, ThetaminDelta = TRUE) {
-  if (length(C) == 1) {C <- rep(C, length(IP.res$alpha))}
-  M     <- 2 * C + 1
-  C.max <- max(C)
-
-  I         <- length(IP.res$alpha)
-  alpha     <- IP.res$alpha
-  delta     <- IP.res$delta
-  taus      <- IP.res$taus
-  if (ThetaminDelta == TRUE) {
-    th.lims   <- cbind(delta - x.lim, delta + x.lim)
-    th.vals   <- t(apply(th.lims, 1, function(vec) {seq(vec[1], vec[2], length.out = 100)}))
-    x         <- seq(-x.lim, x.lim, length.out = 100)
-  } else {
-    th.lims   <- t(sapply(delta, function(d) {c(-max(ceiling(d), 4), max(4, ceiling(d)))}))
-    th.vals   <- t(apply(th.lims, 1, function(vec) {seq(vec[1], vec[2], length.out = 100)}))
-    x         <- seq(-x.lim, x.lim, length.out = 100)
-  }
-  #
-  if (is.null(items)) {I.plot <- 1:I} else {I.plot <- items}
-  for (i in 1:length(I.plot)) {
-    it <- I.plot[i]
-    invisible(readline(prompt="Press [enter] to continue"))
-    #
-    plot(x, P.Model.3478(0, alpha[it], delta[it], taus[it, (C.max - C[it] + 1):(C.max - C[it] + M[it])], th.vals[it, ], C[it]),
-         type = "l", lty = 1, col = plasma(C[it] + 1)[1], lwd = 2,
-         xlim = c(-x.lim, x.lim), ylim = 0:1,
-         xaxt = "n", xlab = "", yaxt = "n", ylab = "", main = paste("Item", it))
-    for (c in 1:C[it]) {
-      points(x, P.Model.3478(c, alpha[it], delta[it], taus[it, (C.max - C[it] + 1):(C.max - C[it] + M[it])], th.vals[it, ], C[it]),
-             type = "l", lty = 1, col = plasma(C[it] + 1)[c + 1], lwd = 2,
-             xlim = c(-x.lim, x.lim), ylim = 0:1)
-    }
-    axis(1, at = seq(-x.lim, x.lim, 1))
-    axis(2, at = seq(0, 1, .20), las = 1)
-    if (ThetaminDelta == TRUE) {mtext(expression(paste(theta, " - ", delta)), side = 1, line = 2.5, cex = 1.2)} else {
-      mtext(expression(paste("Item location ", delta)), side = 1, line = 2.5, cex = 1.2)
-    }
-    mtext(expression(paste("P(X=1|", theta, ")")), side = 2, line = 2.5, cex = 1.2)
-    #
-    legend("top", paste0("C = ", 0:C[it]), col = plasma(C[it] + 1),
-           lty = 1, lwd = 2, inset = .01, cex = .8, ncol = 2)
-  }
-}
-
-# Plot test characteristic curve ----
-plot.TestCharacteristicCurve.GGUM <- function(data, C, IP.res, Th.res) {
-  if (length(C) == 1) {C <- rep(C, length(IP.res$alpha))}
-  M     <- 2 * C + 1
-  C.max <- max(C)
-  #
-  alpha     <- IP.res$alpha
-  delta     <- IP.res$delta
-  taus      <- IP.res$taus
-  theta     <- Th.res[[2]]
-  I         <- length(IP.res$alpha)
-  N         <- length(theta)
-  # Test characteristic curve:
-  OBS.scores      <- data
-  theta.exp       <- seq(min(-4, min(theta)), max(4, max(theta)), length.out = 1000)
-  N.groups        <- 100
-  int.lims        <- quantile(theta.exp, probs = seq(0, 1, 1 / (N.groups - 1)))
-  names(int.lims) <- NULL
-  #
-  scores.mat <- matrix(0, nrow = I, ncol = C.max + 1)
-  for (i in 1:I) {
-    scores.mat[i, 1:(C[i] + 1)] <- 0:C[i]
-  }
-  scores.arr <- aperm(array(rep(scores.mat, N), dim = c(I, C.max + 1, N.groups)), c(3, 1, 2))
-  EXP.scores <- apply(P.izf(alpha, delta, taus, int.lims, C) * scores.arr, 1, sum)
-  res        <- cbind(th =  int.lims, observed = rep(NA, N.groups), expected = EXP.scores)
-  for (int in 1:N.groups) {
-    pos.obs     <- which( (theta >= int.lims[int]) & (theta < int.lims[int + 1]))
-    if (length(pos.obs) > 0) {
-      res[int, 2] <- mean(rowSums(OBS.scores[pos.obs, , drop = FALSE], na.rm = TRUE))
-    }
-  }
-  #
-  plot(res[, 1], res[, 3], type = "l", lty = 1, lwd = 2,
-       xlim = c(theta.exp[1], theta.exp[1000]),
-       ylim = c(0, ceiling(max(res[, 3], na.rm = TRUE))),
-       xaxt = "n", xlab = "", yaxt = "n", ylab = "", main = "Test Characteristic Curve")
-  points(res[, 1], res[, 2], type = "p", pch = 21, bg = "grey")
-  axis(1, at = seq(floor(theta.exp[1]), ceiling(theta.exp[1000]), 1))
-  axis(2, at = seq(0, ceiling(max(res[, 3], na.rm = TRUE)), 10), las = 1)
-  mtext(expression(theta), side = 1, line = 2.5, cex = 1.2)
-  mtext("Total Score", side = 2, line = 2.5, cex = 1.2)
-  #
-  cor.OBS.EXP.means <- cor(res[, 2], res[, 3], use = "pairwise.complete.obs")
-  scores.arr.N      <- aperm(array(rep(scores.mat, N), dim = c(I, C.max + 1, N)), c(3, 1, 2))
-  EXP.scores.N      <- apply(P.izf(alpha, delta, taus, theta, C) * scores.arr.N, 1:2, sum)
-  cor.OBS.EXP.raw   <- cor(c(OBS.scores), c(EXP.scores.N), use = "pairwise.complete.obs")
-  #
-  res.out           <- res[, c(1, 3)]
-  colnames(res.out) <- c("Theta", "TotalScore")
-  return(list(res.out, cor.OBS.EXP.raw = round(cor.OBS.EXP.raw, 4), cor.OBS.EXP.means = round(cor.OBS.EXP.means, 4)))
-}
-
-# Plot item characteristic curves ----
-plot.ItemCharacteristicCurve.GGUM <- function(data, C, IP.res, Th.res, items = NULL) {
-  if (length(C) == 1) {C <- rep(C, length(IP.res$alpha))}
-  M     <- 2 * C + 1
-  C.max <- max(C)
-  #
-  alpha     <- IP.res$alpha
-  delta     <- IP.res$delta
-  taus      <- IP.res$taus
-  theta     <- Th.res[[2]]
-  I         <- length(IP.res$alpha)
-  N         <- length(theta)
-  # Item characteristic curves:
-  OBS.scores      <- data
-  theta.exp       <- seq(min(-4, min(theta)), max(4, max(theta)), length.out = 1000)
-  N.groups        <- 50
-  int.lims        <- quantile(theta.exp, probs = seq(0, 1, 1 / (N.groups - 1)))
-  names(int.lims) <- NULL
-  #
-  scores.mat <- matrix(0, nrow = I, ncol = C.max + 1)
-  for (i in 1:I) {
-    scores.mat[i, 1:(C[i] + 1)] <- 0:C[i]
-  }
-  scores.arr <- aperm(array(rep(scores.mat, N.groups), dim = c(I, C.max + 1, N.groups)), c(3, 1, 2))
-  EXP.scores <- apply(P.izf(alpha, delta, taus, int.lims, C) * scores.arr, 1:2, sum)
-  res        <- list(th =  int.lims, observed = matrix(NA, N.groups, I), expected = EXP.scores)
-  for (int in 1:N.groups) {
-    pos.obs     <- which( (theta >= int.lims[int]) & (theta < int.lims[int + 1]))
-    if (length(pos.obs) > 0) {
-      res[[2]][int, ] <- colMeans(OBS.scores[pos.obs, , drop = FALSE], na.rm = TRUE)
-    }
-  }
-  #
-  if (is.null(items)) {I.plot <- 1:I} else {I.plot <- items}
-  for (i in 1:length(I.plot)) {
-    it <- I.plot[i]
-    invisible(readline(prompt="Press [enter] to continue"))
-    #
-    plot(res[[1]], res[[3]][, it], type = "l", lty = 1, lwd = 2,
-         xlim = c(theta.exp[1], theta.exp[1000]),
-         ylim = c(0, ceiling(max(res[[3]][, it], na.rm = TRUE))),
-         xaxt = "n", xlab = "", yaxt = "n", ylab = "", main = paste0("Item Characteristic Curve (Item", it, ")"))
-    points(res[[1]], res[[2]][, it], type = "p", pch = 21, bg = "grey")
-    axis(1, at = seq(floor(theta.exp[1]), ceiling(theta.exp[1000]), 1))
-    axis(2, at = seq(0, ceiling(max(res[[3]][, it], na.rm = TRUE)), 1), las = 1)
-    mtext(expression(theta), side = 1, line = 2.5, cex = 1.2)
-    mtext("Item Score", side = 2, line = 2.5, cex = 1.2)
-    legend("topleft", c("Expected", "Observed"), col = "black",
-           lty = c(1, NA), pch = c(NA, 21), pt.bg = "grey", lwd = c(2, 1), inset = .01, cex = .8, pt.cex = 1)
-  }
-  #
-  scores.arr.N <- aperm(array(rep(scores.mat, N), dim = c(I, C.max + 1, N)), c(3, 1, 2))
-  EXP.scores.N <- apply(P.izf(alpha, delta, taus, theta, C) * scores.arr.N, 1:2, sum)
-  return(cor.OBS.EXP.items = round(diag(cor(OBS.scores, EXP.scores.N, use = "pairwise.complete.obs")), 4))
-}
-
-# dP.theta.arr (seems not needed; not fully debbuged) ----
-# dP.theta.arr <- function(alpha, delta, taus, nodes, C)
-# {
-#   I       <- length(alpha)
-#   N.nodes <- length(nodes)
-#   if (length(C) == 1) {C <- rep(C, I)}
-#   C.max   <- max(C)
-#   M       <- 2 * C + 1
-#   #
-#   arr.ind <- matrix(0, nrow = I, ncol = C.max + 1)
-#   for (i in 1:I)
-#   {
-#     arr.ind[i, 1:(C[i] + 1)] <- 1
-#   }
-#   arr.ind   <- array(rep(arr.ind, N.nodes), dim = c(I, C.max + 1, N.nodes))
-#   #
-#   alpha.arr <- array(rep(alpha, (C.max + 1) * N.nodes), dim = c(I, C.max + 1, N.nodes))
-#   z.arr     <- arr.ind * aperm(array(rep(0:C.max, I * N.nodes), dim = c(C.max + 1, I, N.nodes)), c(2, 1, 3))
-#   g.arr     <- aperm(array(rep(g.mat(alpha, delta, taus, nodes, C), C.max + 1), dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2))
-#   # data.arr  <-
-#   #
-#   a.res     <- a.arr(alpha, delta, taus, nodes, C)
-#   b.res     <- b.arr(alpha, delta, taus, nodes, C)
-#   #
-#   num1      <- a.res * alpha.arr * z.arr + b.res * alpha.arr * (M - z.arr)
-#   sum.w     <- apply(num1, c(1, 3), sum, na.rm = TRUE)
-#   sum.w     <- aperm(array(rep(sum.w, C.max + 1), dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2))
-#   num2      <- (a.res + b.res) * sum.w
-#   den       <- g.arr^2
-#   #
-#   res       <- ((num1 * g.arr) - num2) / den
-#   res       <- aperm(res, c(3, 1, 2))  # N x I x (C + 1)
-#   return(res)
-# }
-
-# d2logP.dtheta2.arr ----
-d2logP.dtheta2.arr <- function(data, alpha, delta, taus, theta, C)
-{
-  I <- length(alpha)
-  if (length(C) == 1) {C <- rep(C, I)}
-  C.max   <- max(C)
-  M       <- 2 * C + 1
-  # Nodes (weights seem not needed):
-  N.nodes <- 100
-  nodes   <- seq(min(-4, min(theta)), max(4, max(theta)), length.out = N.nodes)
-  #
-  arr.ind <- matrix(0, nrow = I, ncol = C.max + 1)
-  for (i in 1:I)
-  {
-    arr.ind[i, 1:(C[i] + 1)] <- 1
-  }
-  arr.ind   <- array(rep(arr.ind, N.nodes), dim = c(I, C.max + 1, N.nodes))
-  #
-  alpha.arr <- array(rep(alpha, (C.max + 1) * N.nodes), dim = c(I, C.max + 1, N.nodes))
-  z.arr     <- arr.ind * aperm(array(rep(0:C.max, I * N.nodes), dim = c(C.max + 1, I, N.nodes)), c(2, 1, 3))
-  g.arr     <- aperm(array(rep(g.mat(alpha, delta, taus, nodes, C), C.max + 1), dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2))
-  #
-  a.res     <- a.arr(alpha, delta, taus, nodes, C)
-  b.res     <- b.arr(alpha, delta, taus, nodes, C)
-  #
-  part1     <- (alpha.arr * (z.arr^2) * a.res + alpha * ((M - z.arr)^2) * b.res) / (a.res + b.res)
-  part2     <- (z.arr * a.res + (M - z.arr) * b.res) / (a.res + b.res)
-  part3     <- (alpha.arr * z.arr * a.res + alpha * (M - z.arr) * b.res) / (a.res + b.res)
-  part4     <- apply(part1 * (a.res + b.res), c(1, 3), sum, na.rm = TRUE)
-  part4     <- aperm(array(rep(part4, C.max + 1), dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2)) / g.arr
-  part5     <- apply(part3 * (a.res + b.res), c(1, 3), sum, na.rm = TRUE)
-  part5     <- aperm(array(rep(part5, C.max + 1), dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2)) / g.arr
-  part6     <- apply(part2 * (a.res + b.res), c(1, 3), sum, na.rm = TRUE)
-  part6     <- aperm(array(rep(part6, C.max + 1), dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2)) / g.arr
-  #
-  res  <- alpha.arr * (part1 - (part2 * part3) - part4 + (part5 * part6))
-  res  <- aperm(res, c(3, 1, 2))
-  return(list(d2logP.dtheta2 = res, N.nodes = N.nodes, nodes = nodes))
-}
-
-# Plot test information ----
-plot.TestInf <- function(data, C, IP.res, Th.res) {
-  if (length(C) == 1) {C <- rep(C, length(IP.res$alpha))}
-  alpha     <- IP.res$alpha
-  delta     <- IP.res$delta
-  taus      <- IP.res$taus
-  theta     <- Th.res[[2]]
-  #
-  d2res         <- d2logP.dtheta2.arr(data, alpha, delta, taus, theta, C)
-  # Nodes:
-  N.nodes <- d2res$N.nodes
-  nodes   <- d2res$nodes
-  #
-  probs         <- P.izf(alpha, delta, taus, nodes, C)
-  res           <- -apply(probs * (d2res$d2logP.dtheta2), 1, sum, na.rm = TRUE)
-  res           <- cbind(nodes, res)
-  colnames(res) <- c("Theta", "Inf")
-  #
-  plot(res[, 1], res[, 2], type = "l", lty = 1, lwd = 2,
-       xlim = c(nodes[1], nodes[N.nodes]),
-       ylim = c(0, ceiling(max(res[, 2], na.rm = TRUE)) + 1),
-       xaxt = "n", xlab = "", yaxt = "n", ylab = "", main = "Test Information Function")
-  axis(1, at = seq(floor(nodes[1]), ceiling(nodes[N.nodes]), 1))
-  axis(2, at = seq(0, ceiling(max(res[, 2], na.rm = TRUE) + 1), 10), las = 1)
-  mtext(expression(theta), side = 1, line = 2.5, cex = 1.2)
-  mtext("Information", side = 2, line = 2.5, cex = 1.2)
-  #
-  return(TestInformation = res)
-}
-
-# Plot item information ----
-plot.ItemInf <- function(data, C, IP.res, Th.res, items = NULL) {
-  if (length(C) == 1) {C <- rep(C, length(IP.res$alpha))}
-  alpha     <- IP.res$alpha
-  delta     <- IP.res$delta
-  taus      <- IP.res$taus
-  theta     <- Th.res[[2]]
-  I         <- length(alpha)
-  #
-  d2res         <- d2logP.dtheta2.arr(data, alpha, delta, taus, theta, C)
-  # Nodes:
-  N.nodes <- d2res$N.nodes
-  nodes   <- d2res$nodes
-  #
-  probs         <- P.izf(alpha, delta, taus, nodes, C)
-  res           <- -apply(probs * (d2res$d2logP.dtheta2), 1:2, sum, na.rm = TRUE)
-  res           <- cbind(nodes, res)
-  colnames(res) <- c("Theta", paste0("Inf", 1:I))
-  #
-  if (is.null(items)) {I.plot <- 1:I} else {I.plot <- items}
-  for (i in 1:length(I.plot)) {
-    it <- I.plot[i]
-    invisible(readline(prompt="Press [enter] to continue"))
-    #
-    plot(res[, 1], res[, it + 1], type = "l", lty = 1, lwd = 2,
-         xlim = c(nodes[1], nodes[N.nodes]),
-         ylim = c(0, ceiling(max(res[, 2:(I + 1)], na.rm = TRUE)) + 1),
-         xaxt = "n", xlab = "", yaxt = "n", ylab = "", main = paste0("Item Information Function (Item", it, ")"))
-    axis(1, at = seq(floor(nodes[1]), ceiling(nodes[N.nodes]), 1))
-    axis(2, at = seq(0, ceiling(max(res[, 2:(I + 1)], na.rm = TRUE) + 1), 2), las = 1)
-    mtext(expression(theta), side = 1, line = 2.5, cex = 1.2)
-    mtext("Information", side = 2, line = 2.5, cex = 1.2)
-  }
-  #
-  return(ItemInformation = res[, c(1, I.plot + 1)])
-}
-
-# Export data in MODFIT friendly format ----
-Export.MODFIT <- function(data, C, IP, file.name = "MyData") {
-  library(xlsx)
-  # Missing values: NA -> 9
-  data[is.na(data)] <- 9
-  write.xlsx2(data, paste0(file.name, "SCORES.xlsx"), col.names = FALSE, row.names = FALSE)
-  write.xlsx2(cbind(IP$alpha, IP$delta, IP$taus[, 1:C]), paste0(file.name, "IPs.xlsx"), col.names = FALSE, row.names = FALSE)
-}
-
-
-
-
-
-

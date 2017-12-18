@@ -1,6 +1,6 @@
-Model4 <- function(data, C, method = "MML", 
-                   N.nodes = 30, max.outer = 60, max.inner = 60, tol = .001, verbose = "intermediate", 
-                   Init.vals = NULL)
+Model4 <- function(data, C, 
+                   N.nodes = 30, max.outer = 60, max.inner = 60, tol = .001, 
+                   Init.vals)
 {
   data.condensed <- GGUM.data.condense(data)$data.condensed
   I              <- ncol(data.condensed) - 1
@@ -9,25 +9,19 @@ Model4 <- function(data, C, method = "MML",
   C.max          <- max(C)
   M              <- 2 * C + 1
   
-  # Initial values derived from Model 3:
-  if (is.null(Init.vals)) {
-    Model3.res    <- Model3(data, C, verbose = "intermediate")
-    delta.old     <- Model3.res$delta
-    taus.old      <- Model3.res$taus
-    rm(Model3.res)
-  } else {
-    delta.old     <- Init.vals$delta
-    taus.old      <- Init.vals$taus
-  }
+  # Initial values previously derived from GUM:
+  delta.old     <- Init.vals$delta
+  taus.old      <- Init.vals$taus
+  
   alpha          <- rep(1, I) # Constant throughout
   
   # Nodes and weights:
   nodes   <- seq(-4, 4, length.out = N.nodes)
   weights <- dnorm(nodes) / sum(dnorm(nodes))
   # 
-  rs.arr      <- array(rep(data.condensed[, I + 1], N.nodes * I * (C.max + 1)), dim = c(S, N.nodes, I, C.max + 1)) # S x N.nodes x I x (C+1)
+  rs.arr      <- array(rep(data.condensed[, I + 1], N.nodes * I * (C.max + 1)), dim = c(S, N.nodes, I, C.max + 1))
   weights.arr <- array(rep(weights, S * I * (C.max + 1)), dim = c(N.nodes, S, I, C.max + 1))
-  weights.arr <- aperm(weights.arr, c(2, 1, 3, 4))                                                                 # S x N.nodes x I x (C+1)
+  weights.arr <- aperm(weights.arr, c(2, 1, 3, 4))
   H.siz       <- array(0, dim = c(S, I, C.max + 1))
   for (s in 1:S) {
     for (i in 1:I) {
@@ -36,22 +30,18 @@ Model4 <- function(data, C, method = "MML",
   }
   rm(s, i)
   H.siz  <- array(rep(H.siz, N.nodes), dim = c(S, I, C.max + 1, N.nodes))
-  H.siz  <- aperm(H.siz, c(1, 4, 2, 3))                                                                            # S x N.nodes x I x (C+1)
+  H.siz  <- aperm(H.siz, c(1, 4, 2, 3))
   # 
   
   iter.outer <- 0
   iter.inner <- 10 # just to pass the first 'while' test below.
   
-  if (verbose == "intermediate") {cat("\nStep 2 of 3: Calibrating initial parameters by means of GUM extended... \n")}
   
   while ((iter.outer <= (max.outer - 1)) && (iter.inner > 1))
   {
-    if (verbose == "yes") {cat("\niter.outer = ", iter.outer + 1, "\n")}
-    if (verbose == "intermediate")
-    {
       cat("\r", "|", rep("-", iter.outer+1), rep(" ", max.outer - iter.outer-1), "|", sep = "")
       flush.console()
-    }
+    
     
     iter.inner <- 0
     curr.tol   <- 1
@@ -60,48 +50,31 @@ Model4 <- function(data, C, method = "MML",
     #             given the current delta, and taus.
     # Ls:
     Ls.mat <- Ls(data.condensed, alpha, delta.old, taus.old, nodes, C)
-    #     C.tab             <- table(C)
-    #     C.tab.vals        <- as.numeric(names(C.tab))
-    #     C.tab.frqs        <- as.vector(C.tab)
-    #     Ls.mat            <- sapply(1:length(C.tab), function(c)
-    #     {
-    #       c.use  <- C.tab.vals[c]
-    #       it.use <- (1:I)[which(C == c.use)]
-    #       Ls(data.condensed[, c(it.use, I + 1), drop = FALSE], rep(1, C.tab.frqs[c]), delta.old[it.use], 
-    #          taus.old[it.use, , drop = FALSE][, (C.max + 1 - c.use):(C.max + 1 + c.use)], nodes, c.use)
-    #     })
-    #     dim(Ls.mat)       <- c(S, N.nodes, length(C.tab))
-    #     Ls.mat            <- apply(Ls.mat, 1:2, prod)                                                 # S x N.nodes
-    Ls.arr            <- array(rep(Ls.mat, I * (C.max + 1)), dim = c(S, N.nodes, I, C.max + 1))   # S x N.nodes x I x (C+1)
+    Ls.arr <- array(rep(Ls.mat, I * (C.max + 1)), dim = c(S, N.nodes, I, C.max + 1))
     # 
-    P.tilde.s.arr     <- array(rep(P.tilde.s.vec(Ls.mat, weights), N.nodes * I * (C.max + 1)), dim = c(S, N.nodes, I, C.max + 1)) # S x N.nodes x I x (C+1)
-    r.bar.izf         <- apply(H.siz * rs.arr * Ls.arr * weights.arr / P.tilde.s.arr, 2:4, sum)             # N.nodes x I x (C+1)
-    r.bar.izf.taus    <- array(rep(r.bar.izf, C.max), dim = c(N.nodes, I, C.max + 1, C.max))                                   # N.nodes x I x (C+1) x C
+    P.tilde.s.arr     <- array(rep(P.tilde.s.vec(Ls.mat, weights), N.nodes * I * (C.max + 1)), dim = c(S, N.nodes, I, C.max + 1))
+    r.bar.izf         <- apply(H.siz * rs.arr * Ls.arr * weights.arr / P.tilde.s.arr, 2:4, sum)
+    r.bar.izf.taus    <- array(rep(r.bar.izf, C.max), dim = c(N.nodes, I, C.max + 1, C.max))
     N.bar.if          <- apply(r.bar.izf, 1:2, sum)
-    N.bar.if.arr      <- array(rep(N.bar.if, (C.max + 1)), c(N.nodes, I, C.max + 1))                                         # N.nodes x I x (C+1)
-    N.bar.if.arr.taus <- array(rep(N.bar.if, (C.max + 1) *  C.max *  C.max), c(N.nodes, I, C.max + 1,  C.max,  C.max))                           # N.nodes x I x (C+1) x C x C
+    N.bar.if.arr      <- array(rep(N.bar.if, (C.max + 1)), c(N.nodes, I, C.max + 1))
+    N.bar.if.arr.taus <- array(rep(N.bar.if, (C.max + 1) *  C.max *  C.max), c(N.nodes, I, C.max + 1,  C.max,  C.max))
     #
     
     while ((iter.inner <= (max.inner - 1)) && (max(curr.tol) > tol))
     {
-      if (verbose == "yes")
-      {
-        cat("\r", "|", rep("-", iter.inner+1), rep(" ", max.inner - iter.inner-1), "|", sep = "")
-        flush.console()
-      }
       
       # M stage, part 1 of 2:
       #     Update taus, for fixed deltas.
       # P.izf.arr:
       P.izf.arr      <- P.izf(alpha, delta.old, taus.old, nodes, C)
-      P.izf.arr.taus <- array(rep(P.izf.arr, C.max), dim = c(N.nodes, I, C.max + 1, C.max))         # N.nodes x I x (C+1) x C
+      P.izf.arr.taus <- array(rep(P.izf.arr, C.max), dim = c(N.nodes, I, C.max + 1, C.max))
       # dP:
       dP             <- dP.phi(alpha, delta.old, taus.old, nodes, C, param = "taus")
       D1             <- DlogL.dphi(param = "taus", dP, r.bar.izf.taus, P.izf.arr.taus)
       DlogL.taus     <- D1$taus # C.max
       # 
-      P.izf.arr.taus.taus <- array(rep(P.izf.arr.taus, C.max), dim = c(N.nodes, I, C.max + 1, C.max, C.max)) # N.nodes x I x (C+1) x C x C
-      dP.taus.taus        <- array(NA, c(N.nodes, I, C.max + 1, C.max, C.max))                                                   # N.nodes x I x (C+1) x C x C
+      P.izf.arr.taus.taus <- array(rep(P.izf.arr.taus, C.max), dim = c(N.nodes, I, C.max + 1, C.max, C.max))
+      dP.taus.taus        <- array(NA, c(N.nodes, I, C.max + 1, C.max, C.max))
       for (f in 1:N.nodes) {
         for (i in 1:I) {
           for (z in 0:C.max) {
@@ -110,8 +83,7 @@ Model4 <- function(data, C, method = "MML",
         }
       }
       rm(f, i, z)
-      Inf.arr <- apply(N.bar.if.arr.taus * dP.taus.taus / P.izf.arr.taus.taus, c(2, 4, 5), sum, na.rm = TRUE) #!#
-      # Inf.arr <- apply((N*I) * dP.taus.taus / P.izf.arr.taus.taus, c(4, 5), sum)
+      Inf.arr <- apply(N.bar.if.arr.taus * dP.taus.taus / P.izf.arr.taus.taus, c(2, 4, 5), sum, na.rm = TRUE)
       # 
       taus.new <- matrix(0, nrow = I, ncol = C.max) 
       for (i in 1:I)
@@ -137,8 +109,8 @@ Model4 <- function(data, C, method = "MML",
       D1             <- DlogL.dphi(param = "delta", dP, r.bar.izf, P.izf.arr)
       DlogL.delta    <- D1$delta
       # 
-      dP.delta.delta <- (dP$delta)^2                                                           # N.nodes x I x (C+1)
-      Inf.arr        <- apply(N.bar.if.arr * dP.delta.delta / P.izf.arr, 2, sum, na.rm = TRUE) #!# 
+      dP.delta.delta <- (dP$delta)^2
+      Inf.arr        <- apply(N.bar.if.arr * dP.delta.delta / P.izf.arr, 2, sum, na.rm = TRUE)
       # 
       delta.new <- delta.old + (1/Inf.arr) * DlogL.delta
       # Extra control (needed in weird cases):
@@ -154,5 +126,10 @@ Model4 <- function(data, C, method = "MML",
     #
     iter.outer <- iter.outer + 1
   }
-  return(list(delta = delta.old, taus = taus.old, N.nodes = N.nodes, tol = max(curr.tol), iter.inner = iter.inner))
+  return(list(
+      delta      = delta.old, 
+      taus       = taus.old, 
+      N.nodes    = N.nodes, 
+      tol        = max(curr.tol), 
+      iter.inner = iter.inner))
 }
