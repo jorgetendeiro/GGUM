@@ -5,7 +5,8 @@
 # 3. Run GUM
 # 4. Run GGUM
 # 5. Compare generated and estimated parameters
-# 
+# 6. Test GGUM2004 related functions
+#
 
 # 0. Prepare environment ----
 rm(list=ls())
@@ -35,8 +36,6 @@ data     <- data.gen$data
 pos.NA   <- matrix(rbinom(N * I, 1, .80), nrow = N)
 pos.NA[pos.NA == 0] <- NA
 data.NA  <- data * pos.NA
-# Export to GGUM2004:
-# export.GGUM2004(data.NA, file.name = "DataCVaried")
 # END SECTION
 
 # 3. Run GUM ----
@@ -55,6 +54,7 @@ plot.ItemCharacteristicCurve.GGUM(data, C, Model3.IP, Model3.Th, items = NULL)
 plot.TestInf(data, C, Model3.IP, Model3.Th)
 # Item information:
 plot.ItemInf(data, C, Model3.IP, Model3.Th, items = NULL)
+# END SECTION
 
 # 4. Run GGUM ----
 Model8.res <- GGUM      (data, C)
@@ -72,6 +72,7 @@ plot.ItemCharacteristicCurve.GGUM(data, C, Model8.res, Th.GGUM, items = NULL)
 plot.TestInf(data, C, Model8.res, Th.GGUM)
 # Item information:
 plot.ItemInf(data, C, Model8.res, Th.GGUM, items = NULL)
+# END SECTION
 
 # 5. Compare generated and estimated parameters ----
 IP.est <- Model8.res
@@ -94,6 +95,16 @@ cor.th     <- round(cor(    Th.est,  data.gen$theta.gen)     , 4)
 MAD.th     <- round(sum(abs(Th.est - sign(cor.th)*data.gen$theta.gen)) / N, 4)
 BIAS.th    <- round(sum(    Th.est - sign(cor.th)*data.gen$theta.gen)  / N, 4)
 
+# 6. Test GGUM2004 related functions ----
+# Export data to GGUM2004:
+export.GGUM2004(data.NA, file.name = "C:/GGUM2004/DataTest")
+write.GGUM2004("inputTest", "C:/GGUM2004/DataTest.txt", I, C,
+               cutoff = 2, model = "GUM"  )
+
+run.GGUM2004("inputTest", I, C, N, model = "GUM" )
+
+
+# END SECTION
 
 
 
