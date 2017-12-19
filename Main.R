@@ -13,14 +13,11 @@ if (!is.null(dev.list())) dev.off(dev.list()["RStudioGD"])
 library(psych) 
 library(abind)
 library(viridis) # new color palettes
-source("R/Accessory.R")
-source("R/IRT_models.R")
-source("R/GUM.R")
-source("R/Model4.R")
-source("R/GGUM.R")
-source("R/MODFIT.R")
-source("R/SanityChecks.R")
-source("R/GGUM2004.R")
+
+library(devtools)
+library(roxygen2)
+library(knitr)
+load_all()
 # END SECTION
 
 # 1. Set up parameters ----
