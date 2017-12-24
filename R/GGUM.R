@@ -2,27 +2,36 @@
 #'
 #' @description \code{GGUM} estimates all item parameters for the GGUM.
 #'
-#' @param data The data matrix. The item scores are coded 0, 1, ..., C for an item 
-#' with (C+1) observable response categories.
+#' @param data The \eqn{N\times I}{NxI} data matrix. The item scores are coded 
+#' 0, 1, ..., C for an item with (C+1) observable response categories.
 #' @param C C is the number of observable response categories minus 1 (i.e., the
 #' item scores will be in the set \{0, 1, ..., C\}). It should either be a vector 
 #' of I elements or a scalar. In the latter case it is assumed that C applies to
 #' all items.
-#' @param SE Logical value: Estimate the standard errors of the theta estimates?  
-#' Default is \code{TRUE}. 
+#' @param SE Logical value: Estimate the standard errors of the parameter 
+#' estimates? Default is \code{TRUE}. 
 #' @param precision Number of decimal places of the results (default = 4).
 #' @param N.nodes Number of nodes for numerical integration (default = 30).
 #' @param max.outer Maximum number of outer iterations (default = 60).
 #' @param max.inner Maximum number of inner iterations (default = 60).
 #' @param tol Convergence tolerance (default = .001).
 #' 
-#' @return The function returns a list with five elements: HERE!!!!!!!!!
-#' \item{alpha.gen}{The discrimination parameters.}
-#' \item{delta.gen}{The difficulty parameters.}
-#' \item{taus.gen}{The threshold parameters.}
-#' \item{theta.gen}{The person parameters.}
-#' \item{data}{The (NxI) data matrix. The item scores are coded 0, 1, ..., 
-#' C for an item with (C+1) observable response categories.}
+#' @return The function returns a list with 11 elements:
+#' \item{data}{Data matrix.}
+#' \item{C}{Vector C.}
+#' \item{alpha}{The estimated discrimination parameters for the GGUM. In case of
+#' the GUM this is simply a vector of 1s.}
+#' \item{delta}{The estimated difficulty parameters.}
+#' \item{taus}{The estimated threshold parameters.}
+#' \item{SE}{The standard errors of the item parameters estimates.}
+#' \item{N.nodes}{Number of nodes for numerical integration.}
+#' \item{tol.conv}{Tolerance value at convergence (it is smaller than \code{tol}
+#' upon convergence).}
+#' \item{iter.inner}{Number of inner iterations (it is equal to 1 upon 
+#' convergence.}
+#' \item{model}{Model fitted (\code{GUM} or \code{GGUM}).}
+#' \item{InformationCrit}{Loglikelihood, number of model parameters, AIC, BIC, 
+#' CAIC.}
 #' 
 #' @section Details:
 #' The generalized graded unfolding model (GGUM; Roberts & Laughlin, 1996; 
@@ -56,17 +65,8 @@
 #' \eqn{\tau_{iz}=-\tau_{i(M-z+1)}}{tau_{iz} = -tau_{i(M-z+1)}} for 
 #' \eqn{z\not= 0}{z != 0}.
 #' 
-#' Parameters \eqn{\alpha_i}{alpha_i} are randomly uniformly drawn from the 
-#' (.5, 2) interval. Parameters \eqn{\delta_i}{delta_i} are randomly drawn 
-#' from the standard normal distribution bounded between \eqn{-2} and 2. The 
-#' threshold parameters are generated following the same procedure of Roberts, 
-#' Donoghue, and Laughlin (2002). Finally, the person parameters are randomly
-#' drawn from the standard normal distribution. 
-#' 
-#' If \code{model = "GUM"} the data based on the GUM (Roberts and Laughlin, 1996) 
-#' model are generated. The GUM is a constrained version of the GGUM, where all
-#' discrimination parameters are equalt to 1 and the item thresholds are shared
-#' by all items.
+#' The marginal maximum likelihood algorithm of Roberts et al. (2000) was 
+#' implemented.
 #' 
 #' @importFrom Rdpack reprompt
 #' @references 
@@ -77,13 +77,28 @@
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #' 
 #' @examples
-#' gen1 <- GenData.GGUM(1000, 10, 5, seed = 456)
-#' gen1$data      # Retrieve the data.
-#' gen1$alpha.gen # The discrimination parameters.
+#' \dontrun{
+#' # Example 1 - Same value C across items:
+#' # Generate data:
+#' gen1 <- GenData.GGUM(2000, 10, 2, seed = 125)
+#' # Fit the GGUM:
+#' fit1 <- GGUM(gen1$data, 2)
+#' # Compare true and estimated item parameters:
+#' cbind(gen1$alpha, fit1$alpha)
+#' cbind(gen1$delta, fit1$delta)
+#' cbind(c(gen1$taus[, 4:5]), c(fit1$taus[, 4:5]))
 #' 
-#' # Generate data based on items varying in the number of observable response 
-#' categories:
-#' gen2 <- GenData.GGUM(1000, 5, c(5, 5, 5, 4, 4), seed = 789)
+#' # Example 2 - Different C across items:
+#' # Generate data:
+#' set.seed(1); C <- sample(3:5, 10, replace = TRUE)
+#' gen2 <- GenData.GGUM(2000, 10, C, seed = 125)
+#' # Fit the GGUM:
+#' fit2 <- GGUM(gen2$data, C)
+#' # Compare true and estimated item parameters:
+#' cbind(gen2$alpha, fit2$alpha)
+#' cbind(gen2$delta, fit2$delta)
+#' cbind(c(gen2$taus[, 7:11]), c(fit2$taus[, 7:11]))
+#' }
 #' 
 #' @export
 GGUM <- function(data, C, SE = TRUE, precision = 4, 
@@ -327,7 +342,7 @@ GGUM <- function(data, C, SE = TRUE, precision = 4,
     taus            = round(taus.old, precision), 
     SE              = SE.out, 
     N.nodes         = N.nodes, 
-    tol             = max(curr.tol), 
+    tol.conv        = max(curr.tol), 
     iter.inner      = iter.inner, 
     model           = "GGUM", 
     InformationCrit = Inf.df)

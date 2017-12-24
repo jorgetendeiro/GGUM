@@ -28,7 +28,7 @@ source("R/GGUM2004.R")
 set.seed(738)
 N <- 500
 I <- 5
-C <- 5 # sample(2:6, I, replace = TRUE)
+C <- sample(2:6, I, replace = TRUE)
 # END SECTION
 
 # 2. Generate data ----
