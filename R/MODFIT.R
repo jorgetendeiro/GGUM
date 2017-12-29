@@ -3,6 +3,7 @@
 # For the adjusted chisq to N=3000, see LaHuis, Clark, and O'Brien (2011, p. 14).
 # 
 
+
 MODFIT <- function(data, C, IP, model = "GGUM")
 {
   N <- nrow(data)
@@ -230,4 +231,12 @@ MODFIT <- function(data, C, IP, model = "GGUM")
   
   return(list(Singlets = round(singlets.res, 3), Doublets = round(doublets.res, 3), Triplets = round(triplets.res, 3), 
               Summary.table = all.table))
+}
+
+# Export data in MODFIT friendly format ----
+Export.MODFIT <- function(data, C, IP, file.name = "MyData") {
+  # Missing values: NA -> 9
+  data[is.na(data)] <- 9
+  write.xlsx2(data, paste0(file.name, "SCORES.xlsx"), col.names = FALSE, row.names = FALSE)
+  write.xlsx2(cbind(IP$alpha, IP$delta, IP$taus[, 1:C]), paste0(file.name, "IPs.xlsx"), col.names = FALSE, row.names = FALSE)
 }

@@ -126,7 +126,8 @@ read.person.GGUM2004<-function(N,tempfolder="C:/GGUM2004/TEMPFILE"){
 #'   errors \item \code{alphaSE} a vector with alpha standard errors \item
 #'   \code{tausSE} a matrix with taus standard errors }
 #' @export
-read.item.GGUM2004<-function(I, C, model = "GGUM", tempfolder="C:/GGUM2004/TEMPFILE"){
+read.item.GGUM2004<-function(I, C, model = "GGUM", tempfolder="C:/GGUM2004/TEMPFILE")
+{
   Sanity.model(model)
   Sanity.C(C, I)
   if(model == "GUM"){ Sanity.Cfixed(C)}
@@ -138,7 +139,7 @@ read.item.GGUM2004<-function(I, C, model = "GGUM", tempfolder="C:/GGUM2004/TEMPF
   GGUM.file<-gsub("=", "= ", GGUM.file)
   GGUM.file<-gsub("************", "NaN", GGUM.file,fixed=TRUE) # Replace NA when GGUM2004 don't converge
   writeLines(GGUM.file,"FT16F001_Copy")
-  it.est<-read.table("FT16F001_Copy",skip=4,h=FALSE,comment.char ="",fill=TRUE)
+  it.est<-read.table("FT16F001_Copy",skip=4,header=FALSE,comment.char ="",fill=TRUE)
   setwd(olddir)
   it.est<-split(it.est,it.est$V1)
   delta<-it.est$`ITEM#`[,6]
@@ -191,6 +192,7 @@ read.item.GGUM2004<-function(I, C, model = "GGUM", tempfolder="C:/GGUM2004/TEMPF
 #' @param C either a number or a vector. C is the number of observable response
 #'   categories minus 1.
 #' @param N the number of persons to be read.
+#' @param SE ?????????????????????????
 #' @param model A string identifying the model. Possible values are "GUM" or 
 #' "GGUM" (default).
 #' @param cmd.dir the directory of GGUM2004 program. It is predefined as
@@ -202,10 +204,12 @@ read.item.GGUM2004<-function(I, C, model = "GGUM", tempfolder="C:/GGUM2004/TEMPF
 #'   \item \code{theta} a vector with theta estimates}
 #' @export
 run.GGUM2004<-function(cmd.file, I, C, N, SE = TRUE, model = "GGUM", 
-                       cmd.dir="C:/GGUM2004"){
+                       cmd.dir="C:/GGUM2004")
+{
   Sanity.model(model)
   Sanity.C(C, I)
   if(model == "GUM"){ Sanity.Cfixed(C)}
+  C.max <- max(C)
   
   tempfolder<-paste(cmd.dir ,"TEMPFILE", sep="/")
   cmd<-paste(paste(cmd.dir ,"ggumnsf", sep="/"), paste(cmd.dir,cmd.file,sep="/"), tempfolder,sep=" ")

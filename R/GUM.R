@@ -52,12 +52,6 @@
 #' The marginal maximum likelihood algorithm of Roberts et al. (2000) was 
 #' implemented.
 #' 
-#' @importFrom Rdpack reprompt
-#' @references 
-#' \insertRef{Rpack:bibtex}{Rdpack}
-#' 
-#' \insertRef{Andrich1996}{GGUM}
-#' 
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #' 
 #' @examples
@@ -233,6 +227,7 @@ GUM <- function(data, C, SE = TRUE, precision = 4,
     #
     iter.outer <- iter.outer + 1
   }
+  cat("\n\n")
   
   # Information criteria:
   N      <- nrow(data)

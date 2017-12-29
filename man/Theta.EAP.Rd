@@ -4,54 +4,51 @@
 \alias{Theta.EAP}
 \title{Estimate thetas and their SEs (GUM, GGUM)}
 \usage{
-Theta.EAP(IP, SE = TRUE, N.nodes = 30, precision = 4)
+Theta.EAP(IP, SE = TRUE, precision = 4, N.nodes = 30)
 }
 \arguments{
-\item{IP}{Object of class \code{GGUM}.The GUM/ GGUM estimated item parameters
+\item{IP}{Object of class \code{GGUM}.The GUM/ GGUM estimated item parameters 
 via functions \code{GUM()}/ \code{GGUM()}, respectively.}
 
 \item{SE}{Logical value: Estimate the standard errors of the theta estimates?
 Default is \code{TRUE}.}
 
-\item{N.nodes}{Number of nodes for numerical integration.}
+\item{precision}{Number of decimal places of the results (default = 4).}
 
-\item{precision}{Number of decimal places of the results.}
+\item{N.nodes}{Number of nodes for numerical integration (default = 30).}
 }
 \value{
-If \code{SE = TRUE}, the function returns an \eqn{N\times 2}{Nx2}
-matrix with two columns (thetas, SEs), where \eqn{N}{N} is the number of
+If \code{SE = TRUE}, the function returns an \eqn{N\times 2}{Nx2} 
+matrix with two columns (thetas, SEs), where \eqn{N}{N} is the number of 
 rows in the data matrix (i.e., persons). If \code{SE = FALSE}, the function
 returns the theta estimates as a vector of length \eqn{N}{N}.
 }
 \description{
-\code{Theta.EAP} estimates the person theta parameters via
+\code{Theta.EAP} estimates the person theta parameters via 
 EAP.
 }
 \section{Details}{
 
-The EAP procedure used here is based on Roberts, Donoghue, and Laughlin
-(2000), namely Equation 25 for the \eqn{\theta}{theta} estimates and
-Equation 26 for corresponding standard errors. The EAP estimate is the
-posterior mean of the \eqn{\theta}{theta} distribution for the corresponding
-response pattern. The standard error is computed as an approximation to the
-standard deviation of the posterior distribution. See Roberts et al. (2000)
+The EAP procedure used here is based on Roberts, Donoghue, and Laughlin 
+(2000), namely Equation 25 for the \eqn{\theta}{theta} estimates and 
+Equation 26 for corresponding standard errors. The EAP estimate is the 
+posterior mean of the \eqn{\theta}{theta} distribution for the corresponding 
+response pattern. The standard error is computed as an approximation to the 
+standard deviation of the posterior distribution. See Roberts et al. (2000) 
 for more details.
 }
 
 \examples{
-# Generate data:
-data.gen <- GenData.GGUM(N = 500, I = 10, C = 3)
+\dontrun{
+# Generate data: 
+data.gen <- GenData.GGUM(2000, 10, 3, seed = 133)
 data     <- data.gen$data
 # Fit the GGUM:
 GGUM.res <- GGUM(data, C = 3)
 # Estimate the theta parameters:
 Theta.EAP(GGUM.res)
-
 }
-\references{
-\insertRef{Rpack:bibtex}{Rdpack}
 
-\insertRef{Andrich1996}{GGUM}
 }
 \author{
 Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}

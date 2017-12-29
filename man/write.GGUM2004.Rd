@@ -4,30 +4,30 @@
 \alias{write.GGUM2004}
 \title{Writes a Generic Command File for GGUM2004}
 \usage{
-write.GGUM2004(cmd.file, data.file, I, C, ConstantC = c("Y", "N"),
-  cutoff = 2, cmd.dir = "C:/GGUM2004")
+write.GGUM2004(cmd.file, data.file, I, C, cutoff = 2, model = "GGUM",
+  cmd.dir = "C:/GGUM2004")
 }
 \arguments{
-\item{cmd.file}{a character string which give a name to the command file.}
+\item{cmd.file}{A character string which give a name to the command file.}
 
-\item{data.file}{a character string with the name of the data file. It is
-mandatory to write the extension.}
+\item{data.file}{A character string with the complete path of the data file.}
 
-\item{I}{the number of items.}
+\item{I}{The number of items.}
 
-\item{C}{either a number or a vector. C is the number of observable response
-categories minus 1.}
+\item{C}{Either a number or a vector of I elements. C is the number of
+observable response categories minus 1.}
 
-\item{ConstantC}{indicates whether C is constant or not. Use "Y" if C is
-constant, otherwise use "N".}
+\item{cutoff}{either a number or a vectorof I elements which defines the
+cutoff value.}
 
-\item{cutoff}{either a number or a vector which defines the cutoff value.}
+\item{model}{A string identifying the model. Possible values are "GUM" or 
+"GGUM" (default).}
 
-\item{cmd.dir}{the directory for GGUM2004 program. It is predefined as
-"C:/GGUM2004"}
+\item{cmd.dir}{the directory for GGUM2004 program. It is predefined as 
+"C:/GGUM2004".}
 }
 \description{
 \code{write.GGUM2004} allows to partially customise the GGUM2004
-  command file according to the test characteristics. The file is
+  command file according to the test characteristics. The file is 
   automatically saved in the GGUM2004 predefined installation folder.
 }

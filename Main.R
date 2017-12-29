@@ -36,42 +36,43 @@ data     <- data.gen$data
 pos.NA   <- matrix(rbinom(N * I, 1, .80), nrow = N)
 pos.NA[pos.NA == 0] <- NA
 data.NA  <- data * pos.NA
+data <- data.NA
 # END SECTION
 
 # 3. Run GUM ----
-Model3.IP    <- GUM            (data, C)
-Model3.Th    <- Theta.EAP         (Model3.IP, TRUE)
-Model3.Th.SE <- Theta.SE          (data, C, Model3.IP, Model3.Th)
-Model3.IP.SE <- ItemParamModel3.SE(data, C, Model3.IP)
-# Plots: 
-# Response category curves per item:
-plot.GGUM(C, Model3.IP, items = NULL, x.lim = 4, ThetaminDelta = FALSE)
-# Test characteristic curve:
-plot.TestCharacteristicCurve.GGUM(data, C, Model3.IP, Model3.Th)
-# Item characteristic curves:
-plot.ItemCharacteristicCurve.GGUM(data, C, Model3.IP, Model3.Th, items = NULL)
-# Test information:
-plot.TestInf(data, C, Model3.IP, Model3.Th)
-# Item information:
-plot.ItemInf(data, C, Model3.IP, Model3.Th, items = NULL)
+if (max(C) - min(C) == 0)
+{
+  Model3.res <- GUM       (data, C)
+  Th.GUM     <- Theta.EAP (Model3.res)
+  Th.GUM2     <- Theta.EAP (Model3.res, SE = FALSE)
+  # Plots: 
+  # Category response curves per item:
+  plotCRC(Model3.res, items = c(1, 3))
+  # Test characteristic curve:
+  plotTCC(Model3.res, Th.GUM)
+  # Item characteristic curves:
+  plotICC(Model3.res, Th.GUM, items = 3)
+  # Test information:
+  plotTIF(Model3.res, Th.GUM)
+  # Item information:
+  plotIIF(Model3.res, Th.GUM, items = 3)
+}
 # END SECTION
 
 # 4. Run GGUM ----
 Model8.res <- GGUM      (data, C)
-Th.GGUM    <- Theta.EAP   (data, C, Model8.res)
-Th.SE.GGUM <- Theta.SE    (data, C, Model8.res, Th.GGUM)
-It.SE.GGUM <- ItemParamModel8.SE(data, C, Model8.res)
+Th.GGUM    <- Theta.EAP (Model8.res)
 # Plots: 
-# Response category curves per item:
-plot.GGUM(C, Model8.res, items = NULL, x.lim = 4, ThetaminDelta = FALSE)
+# Category response curves per item:
+plotCRC(Model8.res, items = c(1, 3))
 # Test characteristic curve:
-plot.TestCharacteristicCurve.GGUM(data, C, Model8.res, Th.GGUM)
+plotTCC(Model8.res, Th.GGUM)
 # Item characteristic curves:
-plot.ItemCharacteristicCurve.GGUM(data, C, Model8.res, Th.GGUM, items = NULL)
+plotICC(Model8.res, Th.GGUM, items = c(1, 3))
 # Test information:
-plot.TestInf(data, C, Model8.res, Th.GGUM)
+plotTIF(Model8.res, Th.GGUM)
 # Item information:
-plot.ItemInf(data, C, Model8.res, Th.GGUM, items = NULL)
+plotIIF(Model8.res, Th.GGUM, items = c(1, 3))
 # END SECTION
 
 # 5. Compare generated and estimated parameters ----
@@ -97,11 +98,11 @@ BIAS.th    <- round(sum(    Th.est - sign(cor.th)*data.gen$theta.gen)  / N, 4)
 
 # 6. Test GGUM2004 related functions ----
 # Export data to GGUM2004:
-export.GGUM2004(data.NA, file.name = "C:/GGUM2004/DataTest")
+export.GGUM2004(data, file.name = "C:/GGUM2004/DataTest")
 write.GGUM2004("inputTest", "C:/GGUM2004/DataTest.txt", I, C,
-               cutoff = 2, model = "GUM"  )
+               cutoff = 2, model = "GGUM"  )
 
-run.GGUM2004("inputTest", I, C, N, model = "GUM" )
+run.GGUM2004("inputTest", I, C, N, model = "GGUM" )
 
 
 # END SECTION

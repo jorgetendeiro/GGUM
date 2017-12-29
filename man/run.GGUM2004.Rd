@@ -4,7 +4,8 @@
 \alias{run.GGUM2004}
 \title{Runs GGUM2004}
 \usage{
-run.GGUM2004(cmd.file, I, C, N, cmd.dir = "C:/GGUM2004")
+run.GGUM2004(cmd.file, I, C, N, SE = TRUE, model = "GGUM",
+  cmd.dir = "C:/GGUM2004")
 }
 \arguments{
 \item{cmd.file}{the name of the GGUM2004 command file.}
@@ -15,6 +16,11 @@ run.GGUM2004(cmd.file, I, C, N, cmd.dir = "C:/GGUM2004")
 categories minus 1.}
 
 \item{N}{the number of persons to be read.}
+
+\item{SE}{?????????????????????????}
+
+\item{model}{A string identifying the model. Possible values are "GUM" or 
+"GGUM" (default).}
 
 \item{cmd.dir}{the directory of GGUM2004 program. It is predefined as
 "C:/GGUM2004"}

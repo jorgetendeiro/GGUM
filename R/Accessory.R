@@ -6,6 +6,8 @@
 # initial values.
 # 
 
+#' @import stats utils graphics psych abind viridis xlsx Rdpack
+
 # GenData.GGUM ----
 #' @title Generate data from the GGUM
 #'
@@ -75,12 +77,6 @@
 #' discrimination parameters are equalt to 1 and the item thresholds are shared
 #' by all items.
 #' 
-#' @importFrom Rdpack reprompt
-#' @references 
-#' \insertRef{Rpack:bibtex}{Rdpack}
-#' 
-#' \insertRef{Andrich1996}{GGUM}
-#' 
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #' 
 #' @examples
@@ -88,8 +84,7 @@
 #' gen1$data      # Retrieve the data.
 #' gen1$alpha.gen # The discrimination parameters.
 #' 
-#' # Generate data based on items varying in the number of observable response 
-#' categories:
+#' # Generate data based on items varying in the number of observable response categories:
 #' gen2 <- GenData.GGUM(1000, 5, c(5, 5, 5, 4, 4), seed = 789)
 #' 
 #' @export
@@ -574,22 +569,18 @@ DlogL.dphi <- function(param = "alphadelta", dP, r.bar.izf, P.izf.arr)
 #' standard deviation of the posterior distribution. See Roberts et al. (2000) 
 #' for more details.
 #' 
-#' @importFrom Rdpack reprompt
-#' @references 
-#' \insertRef{Rpack:bibtex}{Rdpack}
-#' 
-#' \insertRef{Andrich1996}{GGUM}
-#' 
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #' 
 #' @examples
+#' \dontrun{
 #' # Generate data: 
-#' data.gen <- GenData.GGUM(N = 500, I = 10, C = 3)
+#' data.gen <- GenData.GGUM(2000, 10, 3, seed = 133)
 #' data     <- data.gen$data
 #' # Fit the GGUM:
 #' GGUM.res <- GGUM(data, C = 3)
 #' # Estimate the theta parameters:
 #' Theta.EAP(GGUM.res)
+#' }
 #' 
 #' @export
 Theta.EAP <- function(IP, SE = TRUE, precision = 4, N.nodes = 30)
@@ -672,19 +663,4 @@ d2logP.dtheta2.arr <- function(data, alpha, delta, taus, theta, C)
     res  <- aperm(res, c(3, 1, 2))
     return(list(d2logP.dtheta2 = res, N.nodes = N.nodes, nodes = nodes))
 }
-
-# Export data in MODFIT friendly format ----
-Export.MODFIT <- function(data, C, IP, file.name = "MyData") {
-    library(xlsx)
-    # Missing values: NA -> 9
-    data[is.na(data)] <- 9
-    write.xlsx2(data, paste0(file.name, "SCORES.xlsx"), col.names = FALSE, row.names = FALSE)
-    write.xlsx2(cbind(IP$alpha, IP$delta, IP$taus[, 1:C]), paste0(file.name, "IPs.xlsx"), col.names = FALSE, row.names = FALSE)
-}
-
-
-
-
-
-
 

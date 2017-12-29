@@ -14,11 +14,8 @@ Description: An implementation of the Generalized Graded Unfolding Model (GGUM) 
     curves plots are also available. Additionally, there are some functions that facilitate
     the communication between R and GGUM2004.
 Depends: R (>= 3.4.1)
-Imports: 
-    psych,
-    abind,
-    viridis
-License: GPL-2, GPL-3
+Imports: stats, utils, psych, abind, viridis, Rdpack, xlsx
+License: GPL (>=2)
 LazyData: true
 RoxygenNote: 6.0.1
 URL: http://github.com/jorgetendeiro/GGUM

@@ -68,12 +68,6 @@
 #' The marginal maximum likelihood algorithm of Roberts et al. (2000) was 
 #' implemented.
 #' 
-#' @importFrom Rdpack reprompt
-#' @references 
-#' \insertRef{Rpack:bibtex}{Rdpack}
-#' 
-#' \insertRef{Andrich1996}{GGUM}
-#' 
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #' 
 #' @examples
@@ -122,7 +116,7 @@ GGUM <- function(data, C, SE = TRUE, precision = 4,
   
   # Initial values, Step 1 of 2 - derived from GUM:
   cat("\nStep 1 of 3: Calibrating initial parameters by means of GUM... \n")
-  GUM.res        <- GUM(data, C, SE = FALSE, ctl = FALSE)
+  GUM.res        <- GUM.internal(data, C)
   delta.old      <- GUM.res$delta
   taus.old       <- GUM.res$taus
   rm(GUM.res)
