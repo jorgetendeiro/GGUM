@@ -1,20 +1,13 @@
 Package: GGUM
 Title: Generalized Graded Unfolding Model
 Version: 0.1.0
-Authors@R: c(person(c("Jorge", "N."), "Tendeiro", email = "j.n.tendeiro@rug.nl",
-          role = c("aut","cre")),
-          person("Sebastian",c("Castro", "Alvarez"), email = "s.castro.alvarez@student.rug.nl",
-          role = c("aut")))
-Author: Jorge N. Tendeiro [aut, cre],
-        Sebastian Castro Alvarez [aut]
-Maintainer: Jorge N. Tendeiro <j.n.tendeiro@rug.nl>
-Description: An implementation of the Generalized Graded Unfolding Model (GGUM) in R.
-    It allows to simulate data sets base on the GGUM. It also fits the GGUM, and it
-    retrieves item and person parameter estimates.Characteristic curves and information 
-    curves plots are also available. Additionally, there are some functions that facilitate
-    the communication between R and GGUM2004.
+Authors@R: c(
+  person("Jorge N.", "Tendeiro", email = "j.n.tendeiro@rug.nl", role = c("aut","cre")),
+  person("Sebastian Castro", "Alvarez", email = "s.castro.alvarez@student.rug.nl", role = "aut"))
+Description: An implementation of the generalized graded unfolding model (GGUM) in R. It allows to simulate data sets based on the GGUM. It fits the GGUM and the GUM, and it retrieves item and person parameter estimates. Several plotting functions are available (item and test information functions; item and test characteristic curves; item category response curves). Additionally, there are some functions that facilitate the communication between R and GGUM2004. Finally, a model fit checking utility (MODFIT) is also available.
 Depends: R (>= 3.4.1)
 Imports: stats, utils, psych, abind, viridis, Rdpack, xlsx
+RdMacros: Rdpack
 License: GPL (>=2)
 LazyData: true
 RoxygenNote: 6.0.1

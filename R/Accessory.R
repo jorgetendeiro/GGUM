@@ -6,7 +6,8 @@
 # initial values.
 # 
 
-#' @import stats utils graphics psych abind viridis xlsx Rdpack
+#' @import stats utils graphics psych abind viridis xlsx
+#' @importFrom Rdpack reprompt
 
 # GenData.GGUM ----
 #' @title Generate data from the GGUM

@@ -3,84 +3,73 @@
 #' @description \code{GUM} estimates all item parameters for the GUM.
 #'
 #' @param data The \eqn{N\times I}{NxI} data matrix. The item scores are coded 
-#' 0, 1, ..., C for an item with (C+1) observable response categories.
-#' @param C C is the number of observable response categories minus 1 (i.e., the
-#' item scores will be in the set \{0, 1, ..., C\}). It should either be a vector 
-#' of I elements or a scalar. In the latter case it is assumed that C applies to
-#' all items.
-#' @param SE Logical value: Estimate the standard errors of the parameter 
+#' \eqn{0, 1, \ldots, C}{0, 1, ..., C} for an item with \eqn{(C+1)} observable 
+#' response categories. 
+#' @param C \eqn{C} is the number of observable response 
+#' categories minus 1 (i.e., the item scores will be in the set 
+#' \eqn{\{0, 1, ..., C\}}). It should be a scalar since the GUM expects all 
+#' items to be based on the same number of observable response categories.
+#' @param SE Logical value: Estimate the standard errors of the item parameter 
 #' estimates? Default is \code{TRUE}. 
 #' @param precision Number of decimal places of the results (default = 4).
 #' @param N.nodes Number of nodes for numerical integration (default = 30).
 #' @param max.outer Maximum number of outer iterations (default = 60).
 #' @param max.inner Maximum number of inner iterations (default = 60).
 #' @param tol Convergence tolerance (default = .001).
-#' @param ctl Control parameter.
 #' 
 #' @return The function returns a list with 11 elements:
 #' \item{data}{Data matrix.}
-#' \item{C}{Vector C.}
-#' \item{alpha}{The estimated discrimination parameters for the GGUM. In case of
-#' the GUM this is simply a vector of 1s.}
+#' \item{C}{Vector \eqn{C}.}
+#' \item{alpha}{In case of the GUM this is simply a vector of 1s.}
 #' \item{delta}{The estimated difficulty parameters.}
 #' \item{taus}{The estimated threshold parameters.}
 #' \item{SE}{The standard errors of the item parameters estimates.}
 #' \item{N.nodes}{Number of nodes for numerical integration.}
-#' \item{tol.conv}{Tolerance value at convergence (it is smaller than \code{tol}
-#' upon convergence).}
+#' \item{tol.conv}{Loss function value at convergence (it is smaller than 
+#' \code{tol} upon convergence).}
 #' \item{iter.inner}{Number of inner iterations (it is equal to 1 upon 
-#' convergence.}
-#' \item{model}{Model fitted (\code{GUM} or \code{GGUM}).}
+#' convergence).}
+#' \item{model}{Model fitted.}
 #' \item{InformationCrit}{Loglikelihood, number of model parameters, AIC, BIC, 
 #' CAIC.}
 #' 
 #' @section Details:
 #' The graded unfolding model (GUM; Roberts & Laughlin, 1996) is a constrained 
-#' verson of the GGUM (see \code{\link[GGUM]{GGUM}}). GUM is constrained in two 
-#' ways: All discrimination parameters are fixed to unity and the threshold 
-#' parameters are shared across items. The last constraint in particular 
-#' implies that only data with the same response categories across items should  
-#' be used (i.e., C is constant for all items).
+#' verson of the GGUM (Roberts et al., 2000; see \code{\link[GGUM]{GGUM}}). 
+#' GUM is constrained in two ways: All discrimination parameters are fixed to 
+#' unity and the threshold parameters are shared across items. The last 
+#' constraint in particular implies that only data with the same response 
+#' categories across items should be used (i.e., \eqn{C} is constant for all 
+#' items).
 #' 
 #' Estimated GUM parameters are used as the second step of fitting the more 
 #' general GGUM. Since under the GGUM data may include items with different 
-#' number of response categories, the code to fitting the GUM was extended to 
-#' accomodate for this. Setting \code{ctl = FALSE} allows fitting the GUM 
-#' for data with varying values C across items. This thus generalizes the 
-#' original GUM model (Roberts & Laughlin, 1996).
+#' number of response categories, the code to fitting the GUM was internally 
+#' extended to accomodate for this. 
 #' 
 #' The marginal maximum likelihood algorithm of Roberts et al. (2000) was 
 #' implemented.
+#' 
+#' @references
+#' \insertRef{RobertsLaughlin1996}{GGUM}
+#' 
+#' \insertRef{Robertsetal2000}{GGUM}
 #' 
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #' 
 #' @examples
 #' \dontrun{
-#' # Example 1 - Same value C across items:
 #' # Generate data:
-#' gen1 <- GenData.GGUM(2000, 10, 2, seed = 125)
-#' # Fit the GGUM:
-#' fit1 <- GGUM(gen1$data, 2)
+#' gen <- GenData.GGUM(2000, 10, 5, "GUM", seed = 125)
+#' # Fit the GUM:
+#' fit <- GUM(gen$data, 5)
 #' # Compare true and estimated item parameters:
-#' cbind(gen1$alpha, fit1$alpha)
-#' cbind(gen1$delta, fit1$delta)
-#' cbind(c(gen1$taus[, 4:5]), c(fit1$taus[, 4:5]))
-#' 
-#' # Example 2 - Different C across items:
-#' # Generate data:
-#' set.seed(1); C <- sample(3:5, 10, replace = TRUE)
-#' gen2 <- GenData.GGUM(2000, 10, C, seed = 125)
-#' # Fit the GGUM:
-#' fit2 <- GGUM(gen2$data, C)
-#' # Compare true and estimated item parameters:
-#' cbind(gen2$alpha, fit2$alpha)
-#' cbind(gen2$delta, fit2$delta)
-#' cbind(c(gen2$taus[, 7:11]), c(fit2$taus[, 7:11]))
+#' cbind(gen$delta, fit$delta)
+#' cbind(c(gen$taus[, 7:11]), c(fit$taus[,  7:11]))
 #' }
-#' 
+#' @export
 GUM <- function(data, C, SE = TRUE, precision = 4, 
-                N.nodes = 30, max.outer = 60, max.inner = 60, tol = .001, 
-                ctl = TRUE)
+                N.nodes = 30, max.outer = 60, max.inner = 60, tol = .001)
 {
   I <- ncol(data)
   
@@ -94,15 +83,8 @@ GUM <- function(data, C, SE = TRUE, precision = 4,
   S              <- nrow(data.condensed)
   rm(tmp)
   
-  # Because models 4 and GGUM (based on possibly different C per item) need 
-  # function GUM() to estimate starting values, the code of GUM() needs to be 
-  # versatile and allow for a vector of varying C values.
-  # Observe that GUM assumes C fixed for all items.
-  # Below, we therefore accommodate the code for vector of C values for GGUM 
-  # purposes only.
-  
   # Sanity check - Cfixed:
-  if (ctl) Sanity.Cfixed(C)
+  Sanity.Cfixed(C)
   
   if (length(C) == 1) {C <- rep(C, I)}
   C.max          <- max(C)
@@ -141,7 +123,8 @@ GUM <- function(data, C, SE = TRUE, precision = 4,
   
   while ((iter.outer <= (max.outer - 1)) && (iter.inner > 1))
   {
-    cat("\r", "|", rep("-", iter.outer+1), rep(" ", max.outer - iter.outer-1), "|", sep = "")
+    cat("\r", "|", rep("-", iter.outer+1), 
+        rep(" ", max.outer - iter.outer-1), "|", sep = "")
     flush.console()
     
     
@@ -151,14 +134,20 @@ GUM <- function(data, C, SE = TRUE, precision = 4,
     # E stage: Compute r.bar.izf and N.bar.if, given the current delta, and taus.
     # Ls:
     Ls.mat <- Ls(data.condensed, alpha, delta.old, taus.old, nodes, C)
-    Ls.arr <- array(rep(Ls.mat, I * (C.max + 1)), dim = c(S, N.nodes, I, C.max + 1))
+    Ls.arr <- array(rep(Ls.mat, I * (C.max + 1)), 
+                    dim = c(S, N.nodes, I, C.max + 1))
     # 
-    P.tilde.s.arr     <- array(rep(P.tilde.s.vec(Ls.mat, weights), N.nodes * I * (C.max + 1)), dim = c(S, N.nodes, I, C.max + 1))
+    P.tilde.s.arr     <- array(rep(P.tilde.s.vec(Ls.mat, weights), 
+                                   N.nodes * I * (C.max + 1)), 
+                               dim = c(S, N.nodes, I, C.max + 1))
     r.bar.izf         <- apply(H.siz * rs.arr * Ls.arr * weights.arr / P.tilde.s.arr, 2:4, sum)
-    r.bar.izf.taus    <- array(rep(r.bar.izf, C.max), dim = c(N.nodes, I, C.max + 1, C.max))
+    r.bar.izf.taus    <- array(rep(r.bar.izf, C.max), 
+                               dim = c(N.nodes, I, C.max + 1, C.max))
     N.bar.if          <- apply(r.bar.izf, 1:2, sum)
-    N.bar.if.arr      <- array(rep(N.bar.if, (C.max + 1)), c(N.nodes, I, C.max + 1))
-    N.bar.if.arr.taus <- array(rep(N.bar.if, (C.max + 1) *  C.max * C.max), c(N.nodes, I, C.max + 1, C.max, C.max))
+    N.bar.if.arr      <- array(rep(N.bar.if, (C.max + 1)), 
+                               c(N.nodes, I, C.max + 1))
+    N.bar.if.arr.taus <- array(rep(N.bar.if, (C.max + 1) *  C.max * C.max), 
+                               c(N.nodes, I, C.max + 1, C.max, C.max))
     #
     
     while ((iter.inner <= (max.inner - 1)) && (max(curr.tol) > tol))
@@ -168,13 +157,17 @@ GUM <- function(data, C, SE = TRUE, precision = 4,
       #     Update taus, for fixed deltas.
       # P.izf.arr:
       P.izf.arr      <- P.izf(alpha, delta.old, taus.old, nodes, C)
-      P.izf.arr.taus <- array(rep(P.izf.arr, C.max), dim = c(N.nodes, I, C.max + 1, C.max))
+      P.izf.arr.taus <- array(rep(P.izf.arr, C.max), 
+                              dim = c(N.nodes, I, C.max + 1, C.max))
       # dP:
-      dP             <- dP.phi(alpha, delta.old, taus.old, nodes, C, param = "taus")
-      D1             <- DlogL.dphi(param = "taus", dP, r.bar.izf.taus, P.izf.arr.taus)
+      dP             <- dP.phi(alpha, delta.old, taus.old, nodes, C, 
+                               param = "taus")
+      D1             <- DlogL.dphi(param = "taus", dP, r.bar.izf.taus, 
+                                   P.izf.arr.taus)
       DlogL.taus     <- colSums(D1$taus)
       # 
-      P.izf.arr.taus.taus <- array(rep(P.izf.arr.taus, C.max), dim = c(N.nodes, I, C.max + 1, C.max, C.max))
+      P.izf.arr.taus.taus <- array(rep(P.izf.arr.taus, C.max), 
+                                   dim = c(N.nodes, I, C.max + 1, C.max, C.max))
       dP.taus.taus        <- array(NA, c(N.nodes, I, C.max + 1, C.max, C.max))
       for (f in 1:N.nodes) {
         for (i in 1:I) {
@@ -184,14 +177,16 @@ GUM <- function(data, C, SE = TRUE, precision = 4,
         }
       }
       rm(f, i, z)
-      Inf.arr <- apply(N.bar.if.arr.taus * dP.taus.taus / P.izf.arr.taus.taus, c(4, 5), sum, na.rm = TRUE)
+      Inf.arr <- apply(N.bar.if.arr.taus * dP.taus.taus / P.izf.arr.taus.taus, 
+                       c(4, 5), sum, na.rm = TRUE)
       # 
       taus.new <- matrix(0, nrow = I, ncol = C.max)
       for (i in 1:I)
       {
         c.use  <- C[i]
         taus.new[i, (C.max - c.use + 1):C.max] <- 
-          c(taus.old[i, (C.max - c.use + 1):C.max]) + c(solve(Inf.arr[1:c.use, 1:c.use]) %*% DlogL.taus[1:c.use])
+          c(taus.old[i, (C.max - c.use + 1):C.max]) + 
+          c(solve(Inf.arr[1:c.use, 1:c.use]) %*% DlogL.taus[1:c.use])
       }
       # Extra control (needed in weird cases):
       taus.new <- -abs(taus.new)
@@ -206,12 +201,14 @@ GUM <- function(data, C, SE = TRUE, precision = 4,
       # P.izf.arr:
       P.izf.arr <- P.izf(alpha, delta.old, taus.old, nodes, C)
       # dP:
-      dP             <- dP.phi(alpha, delta.old, taus.old, nodes, C, param = "delta")
+      dP             <- dP.phi(alpha, delta.old, taus.old, nodes, C, 
+                               param = "delta")
       D1             <- DlogL.dphi(param = "delta", dP, r.bar.izf, P.izf.arr)
       DlogL.delta    <- D1$delta
       # 
       dP.delta.delta <- (dP$delta)^2
-      Inf.arr        <- apply(N.bar.if.arr * dP.delta.delta / P.izf.arr, 2, sum, na.rm = TRUE)
+      Inf.arr        <- apply(N.bar.if.arr * dP.delta.delta / P.izf.arr, 2, 
+                              sum, na.rm = TRUE)
       # 
       delta.new <- delta.old + (1/Inf.arr) * DlogL.delta
       # Extra control (needed in weird cases):
@@ -327,4 +324,3 @@ GUM <- function(data, C, SE = TRUE, precision = 4,
   class(res) <- "GGUM"
   return(res)
 }
-

@@ -5,18 +5,19 @@
 \title{Fit the graded unfolding model (GUM)}
 \usage{
 GUM(data, C, SE = TRUE, precision = 4, N.nodes = 30, max.outer = 60,
-  max.inner = 60, tol = 0.001, ctl = TRUE)
+  max.inner = 60, tol = 0.001)
 }
 \arguments{
 \item{data}{The \eqn{N\times I}{NxI} data matrix. The item scores are coded 
-0, 1, ..., C for an item with (C+1) observable response categories.}
+\eqn{0, 1, \ldots, C}{0, 1, ..., C} for an item with \eqn{(C+1)} observable 
+response categories.}
 
-\item{C}{C is the number of observable response categories minus 1 (i.e., the
-item scores will be in the set \{0, 1, ..., C\}). It should either be a vector 
-of I elements or a scalar. In the latter case it is assumed that C applies to
-all items.}
+\item{C}{\eqn{C} is the number of observable response 
+categories minus 1 (i.e., the item scores will be in the set 
+\eqn{\{0, 1, ..., C\}}). It should be a scalar since the GUM expects all 
+items to be based on the same number of observable response categories.}
 
-\item{SE}{Logical value: Estimate the standard errors of the parameter 
+\item{SE}{Logical value: Estimate the standard errors of the item parameter 
 estimates? Default is \code{TRUE}.}
 
 \item{precision}{Number of decimal places of the results (default = 4).}
@@ -28,24 +29,21 @@ estimates? Default is \code{TRUE}.}
 \item{max.inner}{Maximum number of inner iterations (default = 60).}
 
 \item{tol}{Convergence tolerance (default = .001).}
-
-\item{ctl}{Control parameter.}
 }
 \value{
 The function returns a list with 11 elements:
 \item{data}{Data matrix.}
-\item{C}{Vector C.}
-\item{alpha}{The estimated discrimination parameters for the GGUM. In case of
-the GUM this is simply a vector of 1s.}
+\item{C}{Vector \eqn{C}.}
+\item{alpha}{In case of the GUM this is simply a vector of 1s.}
 \item{delta}{The estimated difficulty parameters.}
 \item{taus}{The estimated threshold parameters.}
 \item{SE}{The standard errors of the item parameters estimates.}
 \item{N.nodes}{Number of nodes for numerical integration.}
-\item{tol.conv}{Tolerance value at convergence (it is smaller than \code{tol}
-upon convergence).}
+\item{tol.conv}{Loss function value at convergence (it is smaller than 
+\code{tol} upon convergence).}
 \item{iter.inner}{Number of inner iterations (it is equal to 1 upon 
-convergence.}
-\item{model}{Model fitted (\code{GUM} or \code{GGUM}).}
+convergence).}
+\item{model}{Model fitted.}
 \item{InformationCrit}{Loglikelihood, number of model parameters, AIC, BIC, 
 CAIC.}
 }
@@ -55,18 +53,17 @@ CAIC.}
 \section{Details}{
 
 The graded unfolding model (GUM; Roberts & Laughlin, 1996) is a constrained 
-verson of the GGUM (see \code{\link[GGUM]{GGUM}}). GUM is constrained in two 
-ways: All discrimination parameters are fixed to unity and the threshold 
-parameters are shared across items. The last constraint in particular 
-implies that only data with the same response categories across items should  
-be used (i.e., C is constant for all items).
+verson of the GGUM (Roberts et al., 2000; see \code{\link[GGUM]{GGUM}}). 
+GUM is constrained in two ways: All discrimination parameters are fixed to 
+unity and the threshold parameters are shared across items. The last 
+constraint in particular implies that only data with the same response 
+categories across items should be used (i.e., \eqn{C} is constant for all 
+items).
 
 Estimated GUM parameters are used as the second step of fitting the more 
 general GGUM. Since under the GGUM data may include items with different 
-number of response categories, the code to fitting the GUM was extended to 
-accomodate for this. Setting \code{ctl = FALSE} allows fitting the GUM 
-for data with varying values C across items. This thus generalizes the 
-original GUM model (Roberts & Laughlin, 1996).
+number of response categories, the code to fitting the GUM was internally 
+extended to accomodate for this. 
 
 The marginal maximum likelihood algorithm of Roberts et al. (2000) was 
 implemented.
@@ -74,28 +71,19 @@ implemented.
 
 \examples{
 \dontrun{
-# Example 1 - Same value C across items:
 # Generate data:
-gen1 <- GenData.GGUM(2000, 10, 2, seed = 125)
-# Fit the GGUM:
-fit1 <- GGUM(gen1$data, 2)
+gen <- GenData.GGUM(2000, 10, 5, "GUM", seed = 125)
+# Fit the GUM:
+fit <- GUM(gen$data, 5)
 # Compare true and estimated item parameters:
-cbind(gen1$alpha, fit1$alpha)
-cbind(gen1$delta, fit1$delta)
-cbind(c(gen1$taus[, 4:5]), c(fit1$taus[, 4:5]))
-
-# Example 2 - Different C across items:
-# Generate data:
-set.seed(1); C <- sample(3:5, 10, replace = TRUE)
-gen2 <- GenData.GGUM(2000, 10, C, seed = 125)
-# Fit the GGUM:
-fit2 <- GGUM(gen2$data, C)
-# Compare true and estimated item parameters:
-cbind(gen2$alpha, fit2$alpha)
-cbind(gen2$delta, fit2$delta)
-cbind(c(gen2$taus[, 7:11]), c(fit2$taus[, 7:11]))
+cbind(gen$delta, fit$delta)
+cbind(c(gen$taus[, 7:11]), c(fit$taus[,  7:11]))
 }
+}
+\references{
+\insertRef{RobertsLaughlin1996}{GGUM}
 
+\insertRef{Robertsetal2000}{GGUM}
 }
 \author{
 Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
