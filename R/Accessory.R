@@ -3,7 +3,7 @@
 # - GUM  (Model 3)
 # - GGUM (Model 8)
 # Model 4 is implemented internally to assist with the estimation of suitable 
-# initial values.
+# initial values for the GGUM.
 # 
 
 #' @import stats utils graphics psych abind viridis xlsx
