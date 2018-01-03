@@ -4,26 +4,20 @@
 \alias{run.GGUM2004}
 \title{Runs GGUM2004}
 \usage{
-run.GGUM2004(cmd.file, I, C, N, SE = TRUE, model = "GGUM",
-  cmd.dir = "C:/GGUM2004")
+run.GGUM2004(cmd.file = "cmd", data.file = "data", dir = "C:/GGUM2004",
+  model = "GGUM")
 }
 \arguments{
 \item{cmd.file}{the name of the GGUM2004 command file.}
 
-\item{I}{the number of items.}
+\item{data.file}{A character string defining the name of the data file. No 
+file extension is required.}
 
-\item{C}{either a number or a vector. C is the number of observable response
-categories minus 1.}
-
-\item{N}{the number of persons to be read.}
-
-\item{SE}{?????????????????????????}
+\item{dir}{the directory of GGUM2004 program. It is predefined as
+"C:/GGUM2004".}
 
 \item{model}{A string identifying the model. Possible values are "GUM" or 
 "GGUM" (default).}
-
-\item{cmd.dir}{the directory of GGUM2004 program. It is predefined as
-"C:/GGUM2004"}
 }
 \value{
 \code{run.GGUM2004} returns a list cointaning the following

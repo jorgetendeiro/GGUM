@@ -9,28 +9,20 @@
 #
 
 # 0. Prepare environment ----
-rm(list=ls())
-if (!is.null(dev.list())) dev.off(dev.list()["RStudioGD"])
-library(psych) 
-library(abind)
-library(viridis) # new color palettes
-
-library(devtools)
-library(roxygen2)
-library(knitr)
-load_all()
+# devtools::install_github("jorgetendeiro/GGUM")
+library(GGUM)
 # END SECTION
 
 # 1. Set up parameters ----
 # 
-set.seed(738)
-N <- 500
-I <- 5
-C <- sample(2:6, I, replace = TRUE)
+set.seed(739)
+N <- 98
+I <- 4
+C <- 3 # sample(2:3, I, replace = TRUE)
 # END SECTION
 
 # 2. Generate data ----
-data.gen <- GenData.GGUM(N, I, C, model = "GGUM", seed = 4367)
+data.gen <- GenData.GGUM(N, I, C, model = "GUM", seed = 4367)
 data     <- data.gen$data
 # Data with missing values, to test the code:
 pos.NA   <- matrix(rbinom(N * I, 1, .80), nrow = N)
@@ -44,7 +36,6 @@ if (max(C) - min(C) == 0)
 {
   Model3.res <- GUM       (data, C)
   Th.GUM     <- Theta.EAP (Model3.res)
-  Th.GUM2     <- Theta.EAP (Model3.res, SE = FALSE)
   # Plots: 
   # Category response curves per item:
   plotCRC(Model3.res, items = c(1, 3))
@@ -98,11 +89,9 @@ BIAS.th    <- round(sum(    Th.est - sign(cor.th)*data.gen$theta.gen)  / N, 4)
 
 # 6. Test GGUM2004 related functions ----
 # Export data to GGUM2004:
-export.GGUM2004(data, file.name = "C:/GGUM2004/DataTest")
-write.GGUM2004("inputTest", "C:/GGUM2004/DataTest.txt", I, C,
-               cutoff = 2, model = "GGUM"  )
-
-run.GGUM2004("inputTest", I, C, N, model = "GGUM" )
+export.GGUM2004(data)
+write.GGUM2004(I, C, model = "GUM")
+run.GGUM2004("cmd.txt", I, C, N, model = "GGUM" )
 
 
 # END SECTION

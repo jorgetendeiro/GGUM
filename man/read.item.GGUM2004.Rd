@@ -4,8 +4,7 @@
 \alias{read.item.GGUM2004}
 \title{Read GGUM2004 Item Estimates}
 \usage{
-read.item.GGUM2004(I, C, model = "GGUM",
-  tempfolder = "C:/GGUM2004/TEMPFILE")
+read.item.GGUM2004(I, C, model = "GGUM", temp.dir = "C:/GGUM2004/TEMPFILE")
 }
 \arguments{
 \item{I}{the number of items.}
@@ -16,7 +15,7 @@ categories minus 1.}
 \item{model}{A string identifying the model. Possible values are "GUM" or 
 "GGUM" (default).}
 
-\item{tempfolder}{the path where GGUM2004 save its output.By default it is
+\item{temp.dir}{the path where GGUM2004 save its output.By default it is
 "C:/GGUM2004/TEMPFILE".}
 }
 \value{

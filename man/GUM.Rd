@@ -14,8 +14,9 @@ response categories.}
 
 \item{C}{\eqn{C} is the number of observable response 
 categories minus 1 (i.e., the item scores will be in the set 
-\eqn{\{0, 1, ..., C\}}). It should be a scalar since the GUM expects all 
-items to be based on the same number of observable response categories.}
+\eqn{\{0, 1, ..., C\}}{{0, 1, ..., C}}). It should be a scalar since the GUM 
+expects all items to be based on the same number of observable response 
+categories.}
 
 \item{SE}{Logical value: Estimate the standard errors of the item parameter 
 estimates? Default is \code{TRUE}.}
@@ -31,13 +32,15 @@ estimates? Default is \code{TRUE}.}
 \item{tol}{Convergence tolerance (default = .001).}
 }
 \value{
-The function returns a list with 11 elements:
+The function returns a list with 12 elements:
 \item{data}{Data matrix.}
 \item{C}{Vector \eqn{C}.}
 \item{alpha}{In case of the GUM this is simply a vector of 1s.}
 \item{delta}{The estimated difficulty parameters.}
 \item{taus}{The estimated threshold parameters.}
 \item{SE}{The standard errors of the item parameters estimates.}
+\item{rows.rm}{Indices of rows removed from the data before fitting the 
+model, due to complete disagreement.}
 \item{N.nodes}{Number of nodes for numerical integration.}
 \item{tol.conv}{Loss function value at convergence (it is smaller than 
 \code{tol} upon convergence).}

@@ -7,9 +7,9 @@
 #' response categories. 
 #' @param C \eqn{C} is the number of observable response 
 #' categories minus 1 (i.e., the item scores will be in the set 
-#' \eqn{\{0, 1, ..., C\}}). It should either be a vector of \eqn{I} elements or 
-#' a scalar. In the latter case it is assumed that \eqn{C} applies to
-#' all items.
+#' \eqn{\{0, 1, ..., C\}}{{0, 1, ..., C}}). It should either be a vector of 
+#' \eqn{I} elements or a scalar. In the latter case it is assumed that \eqn{C} 
+#' applies to all items.
 #' @param SE Logical value: Estimate the standard errors of the item parameter 
 #' estimates? Default is \code{TRUE}. 
 #' @param precision Number of decimal places of the results (default = 4).
@@ -25,6 +25,8 @@
 #' \item{delta}{The estimated difficulty parameters.}
 #' \item{taus}{The estimated threshold parameters.}
 #' \item{SE}{The standard errors of the item parameters estimates.}
+#' \item{rows.rm}{Indices of rows removed from the data before fitting the 
+#' model, due to complete disagreement.}
 #' \item{N.nodes}{Number of nodes for numerical integration.}
 #' \item{tol.conv}{Loss function value at convergence (it is smaller than 
 #' \code{tol} upon convergence).}
@@ -109,6 +111,11 @@ GGUM <- function(data, C, SE = TRUE, precision = 4,
   Sanity.data(data)
   # Sanity check - C:
   Sanity.C(C, I)
+  
+  # Discard response patterns due to complete disagreement:
+  rows.rm <- which(rowSums(data<2, na.rm = TRUE) + rowSums(is.na(data)) == I)
+  data.sv <- data
+  data    <- data[-rows.rm, ]
   
   tmp            <- GGUM.data.condense(data)
   data.condensed <- tmp$data.condensed
@@ -356,12 +363,13 @@ GGUM <- function(data, C, SE = TRUE, precision = 4,
   } else {SE.out <- NULL}
   
   res <- list(
-    data            = data, 
+    data            = data.sv, 
     C               = C, 
     alpha           = round(alpha.old, precision), 
     delta           = round(delta.old, precision), 
     taus            = round(taus.old, precision), 
     SE              = SE.out, 
+    rows.rm         = rows.rm,
     N.nodes         = N.nodes, 
     tol.conv        = max(curr.tol), 
     iter.inner      = iter.inner, 

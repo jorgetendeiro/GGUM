@@ -2,32 +2,67 @@
 % Please edit documentation in R/GGUM2004.R
 \name{write.GGUM2004}
 \alias{write.GGUM2004}
-\title{Writes a Generic Command File for GGUM2004}
+\title{Writes a command file for GGUM2004}
 \usage{
-write.GGUM2004(cmd.file, data.file, I, C, cutoff = 2, model = "GGUM",
-  cmd.dir = "C:/GGUM2004")
+write.GGUM2004(I, C, cutoff = 2, model = "GGUM", cmd.file = "cmd",
+  data.file = "data", dir = "C:/GGUM2004")
 }
 \arguments{
-\item{cmd.file}{A character string which give a name to the command file.}
-
-\item{data.file}{A character string with the complete path of the data file.}
-
 \item{I}{The number of items.}
 
-\item{C}{Either a number or a vector of I elements. C is the number of
-observable response categories minus 1.}
+\item{C}{\eqn{C} is the number of observable response 
+categories minus 1 (i.e., the item scores will be in the set 
+\eqn{\{0, 1, ..., C\}}{{0, 1, ..., C}}). It should either be a vector of 
+\eqn{I} elements or a scalar. In the latter case it is assumed that \eqn{C} 
+applies to all items.}
 
-\item{cutoff}{either a number or a vectorof I elements which defines the
-cutoff value.}
+\item{cutoff}{Either a number or a vector of \eqn{I} elements which defines 
+the cutoff value. Default is 2.}
 
 \item{model}{A string identifying the model. Possible values are "GUM" or 
 "GGUM" (default).}
 
-\item{cmd.dir}{the directory for GGUM2004 program. It is predefined as 
-"C:/GGUM2004".}
+\item{cmd.file}{A character string defining the name to give to the command 
+file. No file extension is required.}
+
+\item{data.file}{A character string defining the name of the data file. No 
+file extension is required.}
+
+\item{dir}{A character string defining the directory where GGUM2004 is 
+installed (default: "C:/GGUM2004"). The data file identified by the 
+\code{data.file} parameter (exported by function 
+\code{\link[GGUM]{export.GGUM2004}}) should exist in this 
+directory.}
+}
+\value{
+A script file is saved in the directory where GGUM2004 is installed.
 }
 \description{
-\code{write.GGUM2004} allows to partially customise the GGUM2004
-  command file according to the test characteristics. The file is 
-  automatically saved in the GGUM2004 predefined installation folder.
+\code{write.GGUM2004} creates a GGUM2004 command file according 
+to the test characteristics. The file is saved in the GGUM2004 predefined 
+installation folder.
+}
+\section{Details}{
+
+This function prepares a GGUM2004 friendly command script, which 
+may be used to run the GGUM2004 program (Roberts, Donoghue, & Laughlin, 
+2000; Roberts et al., 2006). GGUM2004 may be executed directly or may be 
+called from R, see \code{\link[GGUM]{run.GGUM2004}}.
+
+By default, both the data file (exported via 
+\code{\link[GGUM]{export.GGUM2004}}) and the GGUM2004 command 
+script exported by this function are saved in the directory 
+\code{C:/GGUM2004}, where GGUM2004 is expected to be installed (unzipped).
+}
+
+\examples{
+1+1
+}
+\references{
+\insertRef{Robertsetal2000}{GGUM}
+
+\insertRef{Robertsetal2006}{GGUM}
+}
+\author{
+Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
 }

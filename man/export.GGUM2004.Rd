@@ -2,16 +2,45 @@
 % Please edit documentation in R/GGUM2004.R
 \name{export.GGUM2004}
 \alias{export.GGUM2004}
-\title{Exports Data to GGUM2004 Format}
+\title{Exports data in GGUM2004 friendly format}
 \usage{
-export.GGUM2004(data, file.name = "MyData")
+export.GGUM2004(data, data.file = "data", dir = "C:/GGUM2004")
 }
 \arguments{
-\item{data}{a matrix with the data.}
+\item{data}{The R data matrix to be exported.}
 
-\item{file.name}{a character string which give the name to the data file.}
+\item{data.file}{A character string defining the name of the data file. No 
+file extension is required.}
+
+\item{dir}{A character string defining the directory where GGUM2004 is 
+installed (default: "C:/GGUM2004").}
 }
 \description{
-\code{export.GGUM2004} writes the data to a text file according
-  to the format required by GGUM2004.
+\code{export.GGUM2004} exports the data from R to a text file 
+according to the format required by GGUM2004.
+}
+\section{Details}{
+
+This function exports the R matrix \code{data} in GGUM2004 (Roberts, 
+Donoghue, & Laughlin, 2000; Roberts et al., 2006) friendly format. This data 
+file is to be used together with a GGUM2004 command script (or using the GUI 
+itself, of course). GGUM2004 may be executed directly or may be called from 
+R, see \code{\link[GGUM]{run.GGUM2004}}.
+
+By default, both the data file exported by this function and the GGUM2004 
+command script (exported via \code{\link[GGUM]{write.GGUM2004}}) 
+are saved in the directory \code{C:/GGUM2004}, where GGUM2004 is expected to 
+be installed (unzipped).
+}
+
+\examples{
+1+1
+}
+\references{
+\insertRef{Robertsetal2000}{GGUM}
+
+\insertRef{Robertsetal2006}{GGUM}
+}
+\author{
+Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
 }

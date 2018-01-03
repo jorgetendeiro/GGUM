@@ -17,10 +17,11 @@
 #'
 #' @param N Number of persons (rows).
 #' @param I Number of items (columns).
-#' @param C C is the number of observable response categories minus 1 (i.e., the
-#' item scores will be in the set \{0, 1, ..., C\}). It should either be a vector 
-#' of I elements or a scalar. In the latter case it is assumed that C applies to
-#' all items.
+#' @param C \eqn{C} is the number of observable response 
+#' categories minus 1 (i.e., the item scores will be in the set 
+#' \eqn{\{0, 1, ..., C\}}{{0, 1, ..., C}}). It should either be a vector of 
+#' \eqn{I} elements or a scalar. In the latter case it is assumed that \eqn{C} 
+#' applies to all items.
 #' @param model A string identifying the model. Possible values are "GUM" or 
 #' "GGUM" (default).
 #' @param seed An integer, allowing the user to control the generation process 
@@ -589,7 +590,13 @@ Theta.EAP <- function(IP, SE = TRUE, precision = 4, N.nodes = 30)
     # Sanity check - class of IP:
     Sanity.class(IP)
     
-    data           <- IP$data
+    data <- IP$data
+    I    <- ncol(data)
+    # Discard response patterns due to complete disagreement:
+    rows.rm <- which(rowSums(data<2, na.rm = TRUE) + rowSums(is.na(data)) == I)
+    data.sv <- data
+    data    <- data[-rows.rm, ]
+    
     C              <- IP$C
     tmp            <- GGUM.data.condense(data)
     data.condensed <- tmp$data.condensed
@@ -609,6 +616,8 @@ Theta.EAP <- function(IP, SE = TRUE, precision = 4, N.nodes = 30)
     #
     Th.condensed <- res
     Th.full      <- res[ind]
+    Th.full.all  <- rep(NA, nrow(data.sv))
+    Th.full.all[-rows.rm] <- Th.full
     
     if (SE)
     {
@@ -617,12 +626,16 @@ Theta.EAP <- function(IP, SE = TRUE, precision = 4, N.nodes = 30)
         num.SE      <- rowSums(((nodes.mat - thetas.mat)^2) * Ls.mat * weights.mat)
         Th.SE.condensed <- sqrt(num.SE / den)
         Th.SE.full  <- sqrt(num.SE / den)[ind]
+        # 
+        Th.SE.full.all           <- rep(NA, nrow(data.sv))
+        Th.SE.full.all[-rows.rm] <- Th.SE.full
+        
         return(cbind(
-            Theta    = round(Th.full   , precision), 
-            Theta.SE = round(Th.SE.full, precision)))
+            Theta    = round(Th.full.all   , precision), 
+            Theta.SE = round(Th.SE.full.all, precision)))
     }
     
-    return(round(Th.full, precision))
+    return(round(Th.full.all, precision))
 }
 
 # d2logP.dtheta2.arr ----

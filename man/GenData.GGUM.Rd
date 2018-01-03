@@ -11,10 +11,11 @@ GenData.GGUM(N, I, C, model = "GGUM", seed = 123)
 
 \item{I}{Number of items (columns).}
 
-\item{C}{C is the number of observable response categories minus 1 (i.e., the
-item scores will be in the set \{0, 1, ..., C\}). It should either be a vector 
-of I elements or a scalar. In the latter case it is assumed that C applies to
-all items.}
+\item{C}{\eqn{C} is the number of observable response 
+categories minus 1 (i.e., the item scores will be in the set 
+\eqn{\{0, 1, ..., C\}}{{0, 1, ..., C}}). It should either be a vector of 
+\eqn{I} elements or a scalar. In the latter case it is assumed that \eqn{C} 
+applies to all items.}
 
 \item{model}{A string identifying the model. Possible values are "GUM" or 
 "GGUM" (default).}

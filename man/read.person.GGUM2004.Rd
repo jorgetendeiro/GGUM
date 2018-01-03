@@ -2,21 +2,40 @@
 % Please edit documentation in R/GGUM2004.R
 \name{read.person.GGUM2004}
 \alias{read.person.GGUM2004}
-\title{Read GGUM2004 Person Estimates}
+\title{Read GGUM2004 person estimates into R}
 \usage{
-read.person.GGUM2004(N, tempfolder = "C:/GGUM2004/TEMPFILE")
+read.person.GGUM2004(N, temp.dir = "C:/GGUM2004/TEMPFILE", precision = 4)
 }
 \arguments{
-\item{N}{the number of persons to be read.}
+\item{N}{Number of persons (rows).}
 
-\item{tempfolder}{the path where GGUM2004 save its output.By default it is
-"C:/GGUM2004/TEMPFILE".}
+\item{temp.dir}{The directory where GGUM2004 saved the output. By default it 
+is "C:/GGUM2004/TEMPFILE".}
+
+\item{precision}{Number of decimal places of the results (default = 4).}
 }
 \value{
-A matrix (dim N*2) is returned with the estimates in the first column
-  and their standard errors in the second column.
+An \eqn{N\times 3}{Nx3} matrix is returned. The first column is the 
+person ID, the second column has the person parameter estimates, and the 
+last column has the standard errors.
 }
 \description{
-\code{read.person.GGUM2004} reads the person parameter file from
-  GGUM2004. It reads the estimates and the standard errors.
+\code{read.person.GGUM2004} reads the output file from GGUM2004 
+with the person parameters. Both the person parameter estimates and their 
+standard errors are imported into R.
+}
+\section{Details}{
+
+The computations are based on the formulas from Roberts, Donoghue, & 
+Laughlin (2000).
+}
+
+\examples{
+1+1
+}
+\references{
+\insertRef{Robertsetal2000}{GGUM}
+}
+\author{
+Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
 }
