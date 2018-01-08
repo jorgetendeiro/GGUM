@@ -592,6 +592,7 @@ Theta.EAP <- function(IP, SE = TRUE, precision = 4, N.nodes = 30)
     
     data <- IP$data
     I    <- ncol(data)
+    N    <- nrow(data)
     # Discard response patterns due to complete disagreement:
     rows.rm <- which(rowSums(data<2, na.rm = TRUE) + rowSums(is.na(data)) == I)
     data.sv <- data
@@ -616,26 +617,29 @@ Theta.EAP <- function(IP, SE = TRUE, precision = 4, N.nodes = 30)
     #
     Th.condensed <- res
     Th.full      <- res[ind]
-    Th.full.all  <- rep(NA, nrow(data.sv))
+    Th.full.all  <- rep(NA, N)
     Th.full.all[-rows.rm] <- Th.full
     
     if (SE)
     {
-        thetas.mat  <- matrix(rep(Th.condensed, N.nodes), ncol = N.nodes,
-                              byrow = FALSE)
-        num.SE      <- rowSums(((nodes.mat - thetas.mat)^2) * Ls.mat * weights.mat)
-        Th.SE.condensed <- sqrt(num.SE / den)
-        Th.SE.full  <- sqrt(num.SE / den)[ind]
-        # 
-        Th.SE.full.all           <- rep(NA, nrow(data.sv))
-        Th.SE.full.all[-rows.rm] <- Th.SE.full
-        
-        return(cbind(
-            Theta    = round(Th.full.all   , precision), 
-            Theta.SE = round(Th.SE.full.all, precision)))
+      thetas.mat  <- matrix(rep(Th.condensed, N.nodes), ncol = N.nodes,
+                            byrow = FALSE)
+      num.SE      <- rowSums(((nodes.mat - thetas.mat)^2) * Ls.mat * weights.mat)
+      Th.SE.condensed <- sqrt(num.SE / den)
+      Th.SE.full  <- sqrt(num.SE / den)[ind]
+      # 
+      Th.SE.full.all           <- rep(NA, N)
+      Th.SE.full.all[-rows.rm] <- Th.SE.full
+      
+      return(cbind(
+        Person   = (1:N), 
+        Theta    = round(Th.full.all   , precision), 
+        Theta.SE = round(Th.SE.full.all, precision)))
     }
     
-    return(round(Th.full.all, precision))
+    return(cbind(
+      Person   = (1:N), 
+      Theta    = round(Th.full.all , precision)))
 }
 
 # d2logP.dtheta2.arr ----
