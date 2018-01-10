@@ -651,7 +651,8 @@ d2logP.dtheta2.arr <- function(data, alpha, delta, taus, theta, C)
     M       <- 2 * C + 1
     # Nodes (weights seem not needed):
     N.nodes <- 100
-    nodes   <- seq(min(-4, min(theta)), max(4, max(theta)), length.out = N.nodes)
+    nodes   <- seq(min(-4, min(theta, na.rm = TRUE)), 
+                   max(4, max(theta, na.rm = TRUE)), length.out = N.nodes)
     #
     arr.ind <- matrix(0, nrow = I, ncol = C.max + 1)
     for (i in 1:I)

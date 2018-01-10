@@ -2,31 +2,49 @@
 % Please edit documentation in R/GGUM2004.R
 \name{run.GGUM2004}
 \alias{run.GGUM2004}
-\title{Runs GGUM2004}
+\title{Call GGUM2004 and import the estimated parameters into R}
 \usage{
 run.GGUM2004(cmd.file = "cmd", data.file = "data", dir = "C:/GGUM2004",
-  model = "GGUM")
+  precision = 4)
 }
 \arguments{
-\item{cmd.file}{the name of the GGUM2004 command file.}
+\item{cmd.file}{A character string defining the name of the command file. No 
+file extension is required.}
 
 \item{data.file}{A character string defining the name of the data file. No 
 file extension is required.}
 
-\item{dir}{the directory of GGUM2004 program. It is predefined as
-"C:/GGUM2004".}
+\item{dir}{A character string defining the directory where GGUM2004 is 
+installed (default: "C:/GGUM2004"). The data file identified by the 
+\code{data.file} parameter (exported by function 
+\code{\link[GGUM]{export.GGUM2004}}) should exist in this directory.}
 
-\item{model}{A string identifying the model. Possible values are "GUM" or 
-"GGUM" (default).}
+\item{precision}{Number of decimal places of the results (default = 4).}
 }
 \value{
 \code{run.GGUM2004} returns a list cointaning the following
-  components: \itemize{ \item \code{time} the spent time in the analysis
-  \item \code{delta} a vector with delta estimates \item \code{alpha} a
-  vector with alpha estimates \item \code{taus} a matrix with taus estimates
-  \item \code{theta} a vector with theta estimates}
+components: 
+\itemize{ 
+\item{time}{The GGUM2004 execution time.}
+\item{alpha}{The estimated discrimination parameters (for GGUM).}
+\item{delta}{The estimated difficulty parameters.}
+\item{taus}{The estimated threshold parameters.}
+\item{SE}{The standard errors for the estimated item parameters.}
+\item{theta}{The estimated person parameters and their standard errors.}
+}
 }
 \description{
-\code{run.GGUM2004} sends the command file to GGUM2004 and runs
-  it. It returns the time and the parameter estimates.
+\code{run.GGUM2004} executes a previously exported GGUM2004 
+command file (via function \code{\link[GGUM]{write.GGUM2004}}). It returns 
+the execution time, the item parameter estimates, and the person parameter 
+estimates.
+}
+\examples{
+1+1
+}
+\references{
+\insertRef{Robertsetal2006}{GGUM}
+}
+\author{
+Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
 }

@@ -105,213 +105,6 @@ write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM",
   writeLines(unlist(out), con = paste0(dir, "/", cmd.file, ".txt"))
 }
 
-#' @title Read GGUM2004 person estimates into R
-#'
-#' @description \code{read.person.GGUM2004} reads the output file from GGUM2004 
-#' with the person parameters. Both the person parameter estimates and their 
-#' standard errors are imported into R.
-#'
-#' @param N Number of persons (rows).
-#' @param temp.dir The directory where GGUM2004 saved the output. By default it 
-#' is "C:/GGUM2004/TEMPFILE".
-#' @param precision Number of decimal places of the results (default = 4).
-#' 
-#' @return An \eqn{N\times 3}{Nx3} matrix is returned. The first column is the 
-#' person ID, the second column has the person parameter estimates, and the 
-#' last column has the standard errors.
-#' 
-#' @section Details:
-#' The computations are based on the formulas from Roberts, Donoghue, & 
-#' Laughlin (2000).
-#' 
-#' @references
-#' \insertRef{Robertsetal2000}{GGUM}
-#' 
-#' @author Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
-#' 
-#' @examples
-#' 1+1
-#' @export
-read.person.GGUM2004 <- function(N, temp.dir = "C:/GGUM2004/TEMPFILE", 
-                                 precision = 4)
-{
-  GGUM.file <- readLines(paste0(temp.dir, "/", "FT17F001"))
-  GGUM.file <- gsub("=", "= ", GGUM.file)
-  GGUM.file <- gsub("#", "", GGUM.file)
-  GGUM.file <- gsub("************", "NaN", GGUM.file, fixed = TRUE)
-  th        <- grep(pattern = "THETA", GGUM.file)
-  theta     <- read.table(textConnection(GGUM.file[th]))
-  
-  out           <- matrix(NA, N, 3)
-  out[, 1]      <- 1:N
-  colnames(out) <- c("Person", "Theta","Theta.SE")
-  for(i in 1:N){
-    if (i %in% theta$V2)
-    {
-      pos         <- which(theta$V2 == i)
-      out[i, 2:3] <- unlist(theta[pos, c(4, 6)])
-    }
-  }
-  
-  return(round(out, precision))
-}
-
-#' @title Read GGUM2004 Item Estimates
-#'
-#' @description \code{read.item.GGUM2004} reads the item parameter file from
-#'   GGUM2004. It reads the delta estimates, the alpha estimates, the taus
-#'   estimates, and their standard errors.
-#'
-#' @param I the number of items.
-#' @param C either a number or a vector. C is the number of observable response
-#'   categories minus 1.
-#' @param model A string identifying the model. Possible values are "GUM" or 
-#' "GGUM" (default).
-#' @param temp.dir the path where GGUM2004 save its output.By default it is
-#'   "C:/GGUM2004/TEMPFILE".
-#' @return \code{read.item.GGUM2004} returns a list cointaning the following
-#'   components: \itemize{ \item \code{delta} a vector with delta estimates
-#'   \item \code{alpha} a vector with alpha estimates \item \code{taus} a matrix
-#'   with taus estimates \item \code{deltaSE} a vector with delta standard
-#'   errors \item \code{alphaSE} a vector with alpha standard errors \item
-#'   \code{tausSE} a matrix with taus standard errors }
-#' @export
-read.item.GGUM2004 <- function(I, C, model = "GGUM", 
-                             temp.dir="C:/GGUM2004/TEMPFILE")
-{
-  Sanity.model(model)
-  Sanity.C(C, I)
-  if(model == "GUM"){ Sanity.Cfixed(C)}
-  
-  
-  
-  olddir <- getwd()
-  setwd(temp.dir)
-  # Clean up of GGUM2004 output item's parameters file
-  GGUM.file<-readLines("FT16F001")
-  GGUM.file<-gsub("=", "= ", GGUM.file)
-  GGUM.file<-gsub("************", "NaN", GGUM.file,fixed=TRUE) # Replace NA when GGUM2004 don't converge
-  writeLines(GGUM.file,"FT16F001_Copy")
-  it.est<-read.table("FT16F001_Copy",skip=4,header=FALSE,comment.char ="",fill=TRUE)
-  setwd(olddir)
-  it.est<-split(it.est,it.est$V1)
-  delta<-it.est$`ITEM#`[,6]
-  deltaSE<-it.est$`ITEM#`[,8]
-  if(model == "GGUM"){
-    alpha<-it.est$`ITEM#`[,10]
-    alphaSE<-it.est$`ITEM#`[,12]
-  }
-  if(length(C) == 1){C <- rep(C,I)}
-  Cplus1 <- C+1
-  threshold <- it.est$`THRESHOLD#`[,6]
-  thresholdSE <- it.est$`THRESHOLD#`[,8]
-  if(model == "GUM"){
-    taushalf <- matrix(rep(threshold[2:max(Cplus1)], I), nrow = I, ncol = max(C),
-                       byrow = TRUE)
-    taushalfSE <- matrix(rep(thresholdSE[2:max(Cplus1)], I), nrow = I, ncol = max(C),
-                         byrow = TRUE)
-    taus <- cbind(taushalf, rep(0, I), taushalf[, max(C):1]*(-1))
-    tausSE <- taushalfSE[, max(C):1]
-    
-    return(list("delta"=delta,"taus"=taus,
-                "deltaSE"=deltaSE,"tausSE"=tausSE))
-  }
-  else
-  {
-    taushalf<- matrix(NA, nrow = I, ncol = max(C))
-    taushalfSE<-taushalf
-    taushalf[1,] <- c(rep(0, max(C)- C[1]), threshold[2:Cplus1[1]])
-    taushalfSE[1,] <- c(rep(0, max(C)- C[1]), thresholdSE[2:Cplus1[1]])
-    for(i in 2:I){
-      taushalf[i,] <- c(rep(0, max(C)- C[i]), threshold[(sum(Cplus1[1:(i-1)]) + 2):sum(Cplus1[1:i])])
-      taushalfSE[i,] <- c(rep(0, max(C)- C[i]), thresholdSE[(sum(Cplus1[1:(i-1)]) + 2):sum(Cplus1[1:i])])
-    }
-    taus <- cbind(taushalf, rep(0, I), taushalf[, max(C):1]*(-1))
-    tausSE <- taushalfSE[, max(C):1]
-    
-    return(list("delta"=delta,"alpha"=alpha,"taus"=taus,
-                "deltaSE"=deltaSE,"alphaSE"=alphaSE,"tausSE"=tausSE))
-  }
-}
-
-
-#' @title Runs GGUM2004
-#'
-#' @description \code{run.GGUM2004} sends the command file to GGUM2004 and runs
-#'   it. It returns the time and the parameter estimates.
-#'
-#' @param cmd.file the name of the GGUM2004 command file.
-#' @param data.file A character string defining the name of the data file. No 
-#' file extension is required.
-#' @param dir the directory of GGUM2004 program. It is predefined as
-#'   "C:/GGUM2004".
-#' @param model A string identifying the model. Possible values are "GUM" or 
-#' "GGUM" (default).
-#' @return \code{run.GGUM2004} returns a list cointaning the following
-#'   components: \itemize{ \item \code{time} the spent time in the analysis
-#'   \item \code{delta} a vector with delta estimates \item \code{alpha} a
-#'   vector with alpha estimates \item \code{taus} a matrix with taus estimates
-#'   \item \code{theta} a vector with theta estimates}
-#' @export
-run.GGUM2004<-function(cmd.file = "cmd", 
-                       data.file = "data", 
-                       dir="C:/GGUM2004", 
-                       model = "GGUM")
-{
-  # Prepare dir/TEMPFILE to store the outputs from GGUM2004:
-  tempfolder <- paste(dir ,"TEMPFILE", sep="/")
-  if (!dir.exists(tempfolder)) dir.create(tempfolder)
-  file.remove(dir(tempfolder, full.names = TRUE))
-  
-  cmd <- paste(paste(dir ,"ggumnsf", sep="/"), 
-               paste0(dir, "/", cmd.file, ".txt"), 
-               tempfolder)
-  
-  # Run GGUM2004:
-  cat("\n")
-  t0 <- proc.time()
-  system(cmd)
-  t1 <- proc.time()
-  
-  # Retrieve I, N, C from files:
-  tmp <- readLines(paste0(dir, "/", data.file, ".txt"))
-  I <- (nchar(tmp[1]) - 5) / 2
-  N <- length(tmp)
-  rm(tmp); 
-  tmp <- readLines(paste0(dir, "/", cmd.file, ".txt"))
-  pos <- which(grepl("Y IS NUMBER OF CATEGORIES CONSTANT?", tmp))
-  if (length(pos) > 0) 
-  {
-    C <- as.numeric(substr(tmp[pos+1], 1, 1)) - 1
-  } else {
-    pos1 <- which(grepl("N IS NUMBER OF CATEGORIES CONSTANT?", tmp))
-    pos2 <- which(grepl("N DO YOU WANT TO RECODE THE DATA?", tmp))
-    C    <- as.numeric(tmp[(pos1+1):(pos2-1)]) - 1
-  }
-  C.max <- max(C)
-  
-  # Retrieve item parameters and SEs:
-  items <- read.item.GGUM2004(I, C, model, tempfolder)
-  theta <- read.person.GGUM2004(N, tempfolder)
-  
-  if (model == "GUM")
-  {
-    SE.out <- cbind(items$deltaSE, items$tausSE)
-    colnames(SE.out) <- c("SE.delta", paste0("SE.tau", 1:C.max))
-    return(list("time" = t1 - t0, "delta" = items$delta,
-                "taus" = items$taus, "theta" = theta, "SE" = SE.out))
-  }
-  
-  if (model == "GGUM")
-  {
-    SE.out <- cbind(items$alphaSE, items$deltaSE, items$tausSE)
-    colnames(SE.out) <- c("SE.alpha", "SE.delta", paste0("SE.tau", 1:C.max))
-    return(list("time" = t1 - t0, "alpha" = items$alpha, "delta" = items$delta,
-                "taus" = items$taus, "theta" = theta, "SE" = SE.out))
-    
-  }
-}
-
 #' @title Exports data in GGUM2004 friendly format
 #'
 #' @description \code{export.GGUM2004} exports the data from R to a text file 
@@ -380,3 +173,338 @@ export.GGUM2004 <- function(data, data.file = "data", dir = "C:/GGUM2004")
                                               col.names = FALSE, row.names = FALSE, sep = "", append = TRUE, quote = FALSE)}
   }
 }
+
+#' @title Read GGUM2004 person estimates into R
+#'
+#' @description \code{read.person.GGUM2004} reads the output files from GGUM2004 
+#' with the person parameters. Both the person parameter estimates and their 
+#' standard errors are imported into R.
+#'
+#' @param temp.dir The directory where GGUM2004 saved the output. By default it 
+#' is "C:/GGUM2004/TEMPFILE".
+#' @param precision Number of decimal places of the results (default = 4).
+#' 
+#' @return An \eqn{N\times 3}{Nx3} matrix is returned, where \eqn{N} is the 
+#' number of persons. The first column is the person ID, the second column has 
+#' the person parameter estimates, and the last column has the standard errors.
+#' 
+#' @references
+#' \insertRef{Robertsetal2006}{GGUM}
+#' 
+#' @author Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
+#' 
+#' @examples
+#' 1+1
+#' @export
+read.person.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE", 
+                                 precision = 4)
+{
+  # Retrieve N:
+  # N used in computations:
+  tmp <- readLines(paste0(temp.dir, "/FT14F001"))
+  tmp <- trimws(tmp)
+  tmp <- gsub("^ *|(?<= ) | *$", "", tmp, perl = TRUE) # merge spaces
+  tmp <- as.numeric(unlist(strsplit(tmp, " ")))
+  N.used   <- tmp[1]
+  rm(tmp)
+  # N discarded:
+  tmp <- readLines(paste0(temp.dir, "/FT06F001"))
+  pos <- which(grepl("SUBJECTS WERE DISCARDED ON DATA CLEAN-UP", tmp))
+  tmp <- tmp[pos]
+  tmp <- trimws(tmp)
+  tmp <- unlist(strsplit(tmp, " "))
+  N.disc   <- as.numeric(tmp[1])
+  rm(tmp)
+  # 
+  N <- N.used + N.disc
+  
+  GGUM.file <- readLines(paste0(temp.dir, "/FT17F001"))
+  GGUM.file <- gsub("=", "= ", GGUM.file)
+  GGUM.file <- gsub("#", "", GGUM.file)
+  GGUM.file <- gsub("************", "NaN", GGUM.file, fixed = TRUE)
+  th        <- grep(pattern = "THETA", GGUM.file)
+  theta     <- read.table(textConnection(GGUM.file[th]))
+  
+  out           <- matrix(NA, N, 3)
+  out[, 1]      <- 1:N
+  colnames(out) <- c("Person", "Theta","Theta.SE")
+  for(i in 1:N){
+    if (i %in% theta$V2)
+    {
+      pos         <- which(theta$V2 == i)
+      out[i, 2:3] <- unlist(theta[pos, c(4, 6)])
+    }
+  }
+  
+  return(round(out, precision))
+}
+
+#' @title Read GGUM2004 item estimates into R
+#' 
+#' @description \code{read.item.GGUM2004} reads the output files from GGUM2004 
+#' with the item parameters. Both the item parameter estimates and their 
+#' standard errors are imported into R.
+#' 
+#' @param temp.dir The directory where GGUM2004 saved the output. By default it 
+#' is "C:/GGUM2004/TEMPFILE".
+#' @param precision Number of decimal places of the results (default = 4).
+#'   
+#' @return \code{read.item.GGUM2004} returns a list cointaning the following 
+#' components: 
+#' \itemize{ 
+#' \item{alpha}{The estimated discrimination parameters (for GGUM).}
+#' \item{delta}{The estimated difficulty parameters.}
+#' \item{taus}{The estimated threshold parameters.}
+#' \item{alphaSE}{The standard errors for the estimated discrimination 
+#' parameters (for GGUM).}
+#' \item{deltaSE}{The standard errors for the estimated difficulty 
+#' parameters.}
+#' \item{tausSE}{The standard errors for the estimated threshold 
+#' parameters (above zero; recall that the threshold parameters are constrained 
+#' to symmetry around zero, that is, 
+#' \eqn{\tau_{i(C+1)}=0}{tau_{i(C+1)} = 0} and 
+#' \eqn{\tau_{iz}=-\tau_{i(M-z+1)}}{tau_{iz} = -tau_{i(M-z+1)}} for 
+#' \eqn{z\not= 0}{z != 0}.}
+#' }
+#' 
+#' @references
+#' \insertRef{Robertsetal2000}{GGUM}
+#' 
+#' \insertRef{Robertsetal2006}{GGUM}
+#' 
+#' @author Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
+#' 
+#' @examples
+#' 1+1
+#' @export
+read.item.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE", 
+                               precision = 4)
+{
+  # Retrieve I:
+  tmp <- readLines(paste0(temp.dir, "/FT14F001"))
+  tmp <- trimws(tmp)
+  tmp <- gsub("^ *|(?<= ) | *$", "", tmp, perl = TRUE) # merge spaces
+  tmp <- as.numeric(unlist(strsplit(tmp, " ")))
+  I   <- tmp[2]
+  rm(tmp)
+  
+  # Retrieve C:
+  tmp <- readLines(paste0(temp.dir, "/FT06F001"))
+  pos <- which(grepl("EACH ITEM HAS", tmp))
+  if (length(pos) > 0) # If C is fixed
+  {
+    tmp <- tmp[pos]
+    tmp <- trimws(tmp)
+    tmp <- gsub("^ *|(?<= ) | *$", "", tmp, perl = TRUE) # merge spaces
+    tmp <- unlist(strsplit(tmp, " "))
+    C   <- as.numeric(tmp[4]) - 1
+    C   <- rep(C, I)
+    rm(tmp)
+  } else # If C varies
+  {
+    rm(tmp)
+    tmp <- readLines(paste0(temp.dir, "/FT16F001"))
+    tmp <- gsub("=", "= ", tmp)
+    tmp <- gsub("************", "NaN", tmp, fixed = TRUE) # For when GGUM2004 
+                                                          # doesn't converge.
+    tmp <- read.table(text = tmp, skip = 4, header = FALSE, comment.char = "", 
+                      fill = TRUE)
+    pos <- which(grepl("ITEM#", tmp$V1))
+    pos <- c(pos, nrow(tmp) + 1)
+    C   <- diff(pos) - 2
+    rm(tmp)
+  }
+  
+  # Retrieve model:
+  tmp <- readLines(paste0(temp.dir, "/FT06F001"))
+  pos <- which(grepl("MARGINAL LOG-LIKELIHOOD FOR MODEL", tmp))
+  tmp <- tmp[pos]
+  tmp <- gsub(".*=", "", tmp)
+  tmp <- trimws(tmp)
+  tmp <- unlist(strsplit(tmp, " "))
+  if (as.numeric(tmp[1]) == 3) model <- "GUM" else model <- "GGUM"
+  rm(tmp)
+ 
+  # Clean up GGUM2004 output item's parameters file:
+  GGUM.file <- readLines(paste0(temp.dir, "/FT16F001"))
+  GGUM.file <- gsub("=", "= ", GGUM.file)
+  GGUM.file <- gsub("************", "NaN", GGUM.file, fixed = TRUE) # For when 
+                                                   # GGUM2004 doesn't converge.
+  it.est  <- read.table(text = GGUM.file, skip = 4, header = FALSE, 
+                        comment.char = "", fill = TRUE)
+  it.est  <- split(it.est, it.est$V1)
+  delta   <- it.est$`ITEM#`[, 6]
+  deltaSE <- it.est$`ITEM#`[, 8]
+  if (model == "GGUM")
+  {
+    alpha   <- it.est$`ITEM#`[, 10]
+    alphaSE <- it.est$`ITEM#`[, 12]
+  }
+  
+  Cplus1    <- C+1
+  threshold   <- it.est$`THRESHOLD#`[, 6]
+  thresholdSE <- it.est$`THRESHOLD#`[, 8]
+  if (model == "GUM")
+  {
+    taushalf   <- matrix(rep(threshold[2:max(Cplus1)], I), nrow = I, 
+                         ncol = max(C), byrow = TRUE)
+    taushalfSE <- matrix(rep(thresholdSE[2:max(Cplus1)], I), nrow = I, 
+                         ncol = max(C), byrow = TRUE)
+    taus       <- cbind(taushalf, rep(0, I), taushalf[, max(C):1]*(-1))
+    tausSE     <- taushalfSE[, max(C):1]
+    
+    return(list("delta"   = round(delta, precision), 
+                "taus"    = round(taus, precision),
+                "deltaSE" = round(deltaSE, precision), 
+                "tausSE"  = round(tausSE, precision)))
+  }
+  else
+  {
+    taushalf        <- matrix(NA, nrow = I, ncol = max(C))
+    taushalfSE      <- taushalf
+    taushalf[1, ]   <- c(rep(0, max(C)- C[1]), threshold[2:Cplus1[1]])
+    taushalfSE[1, ] <- c(rep(0, max(C)- C[1]), thresholdSE[2:Cplus1[1]])
+    for (i in 2:I)
+    {
+      taushalf[i, ]   <- c(rep(0, max(C)- C[i]), 
+                           threshold[(sum(Cplus1[1:(i-1)]) + 2):sum(Cplus1[1:i])])
+      taushalfSE[i, ] <- c(rep(0, max(C)- C[i]), 
+                           thresholdSE[(sum(Cplus1[1:(i-1)]) + 2):sum(Cplus1[1:i])])
+    }
+    taus   <- cbind(taushalf, rep(0, I), taushalf[, max(C):1]*(-1))
+    tausSE <- taushalfSE[, max(C):1]
+    
+    return(list("alpha"   = round(alpha, precision), 
+                "delta"   = round(delta, precision), 
+                "taus"    = round(taus, precision),
+                "alphaSE" = round(alphaSE, precision), 
+                "deltaSE" = round(deltaSE, precision), 
+                "tausSE"  = round(tausSE, precision)))
+  }
+}
+
+
+#' @title Call GGUM2004 and import the estimated parameters into R
+#'
+#' @description \code{run.GGUM2004} executes a previously exported GGUM2004 
+#' command file (via function \code{\link[GGUM]{write.GGUM2004}}). It returns 
+#' the execution time, the item parameter estimates, and the person parameter 
+#' estimates.
+#'
+#' @param cmd.file A character string defining the name of the command file. No 
+#' file extension is required.
+#' @param data.file A character string defining the name of the data file. No 
+#' file extension is required.
+#' @param dir A character string defining the directory where GGUM2004 is 
+#' installed (default: "C:/GGUM2004"). The data file identified by the 
+#' \code{data.file} parameter (exported by function 
+#' \code{\link[GGUM]{export.GGUM2004}}) should exist in this directory.
+#' @param precision Number of decimal places of the results (default = 4).
+#'   
+#' @return \code{run.GGUM2004} returns a list cointaning the following
+#' components: 
+#' \itemize{ 
+#' \item{time}{The GGUM2004 execution time.}
+#' \item{alpha}{The estimated discrimination parameters (for GGUM).}
+#' \item{delta}{The estimated difficulty parameters.}
+#' \item{taus}{The estimated threshold parameters.}
+#' \item{SE}{The standard errors for the estimated item parameters.}
+#' \item{theta}{The estimated person parameters and their standard errors.}
+#' }
+#' 
+#' @references
+#' \insertRef{Robertsetal2006}{GGUM}
+#' 
+#' @author Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
+#' 
+#' @examples
+#' 1+1
+#' @export
+run.GGUM2004 <- function(cmd.file = "cmd", 
+                         data.file = "data", 
+                         dir = "C:/GGUM2004", 
+                         precision = 4)
+{
+  # Check if cmd.file exists:
+  if (!file.exists(paste0(dir, "/" , cmd.file, ".txt")))
+  {
+    stop(paste0('The GGUM2004 command file is not available. Please export it to 
+         directory ', dir, ' using function write.GGUM2004(). Aborted.'))
+  }
+  
+  # Check if data.file exists:
+  if (!file.exists(paste0(dir, "/" , data.file, ".txt")))
+  {
+    stop(paste0('The data file for GGUM2004 is not available. Please export it to 
+         directory ', dir, ' using function export.GGUM2004(). Aborted.'))
+  }
+  
+  # Check if GGUM2004 is installed in dir:
+  if (!file.exists(paste0(dir, "/ggumnsf.exe")))
+  {
+    stop(paste0('GGUM2004 does not seem to be installed in the directory ', dir, '. 
+                Aborted.'))
+  }
+  
+  # Prepare dir/TEMPFILE to store the outputs from GGUM2004:
+  tempfolder <- paste(dir ,"TEMPFILE", sep = "/")
+  if (!dir.exists(tempfolder)) dir.create(tempfolder)
+  file.remove(dir(tempfolder, full.names = TRUE))
+  
+  cmd <- paste(paste(dir ,"ggumnsf", sep="/"), 
+               paste0(dir, "/", cmd.file, ".txt"), 
+               tempfolder)
+  
+  # Run GGUM2004:
+  cat("\n")
+  t0 <- proc.time()
+  system(cmd)
+  t1 <- proc.time()
+  
+  # Retrieve I, N, C, model from files:
+  tmp <- readLines(paste0(dir, "/", data.file, ".txt"))
+  I <- (nchar(tmp[1]) - 5) / 2
+  N <- length(tmp)
+  rm(tmp); 
+  tmp <- readLines(paste0(dir, "/", cmd.file, ".txt"))
+  pos <- which(grepl("Y IS NUMBER OF CATEGORIES CONSTANT?", tmp))
+  if (length(pos) > 0) 
+  {
+    C <- as.numeric(substr(tmp[pos+1], 1, 1)) - 1
+  } else {
+    pos1 <- which(grepl("N IS NUMBER OF CATEGORIES CONSTANT?", tmp))
+    pos2 <- which(grepl("N DO YOU WANT TO RECODE THE DATA?", tmp))
+    C    <- as.numeric(tmp[(pos1+1):(pos2-1)]) - 1
+  }
+  C.max <- max(C)
+  # 
+  tmp <- tmp[1]
+  tmp <- trimws(tmp)
+  tmp <- unlist(strsplit(tmp, " "))
+  if (as.numeric(tmp[1]) == 3) model <- "GUM" else model <- "GGUM"
+  rm(tmp)
+  
+  # Retrieve item parameters and SEs:
+  items <- read.item.GGUM2004(tempfolder, precision)
+  theta <- read.person.GGUM2004(tempfolder, precision)
+  
+  if (model == "GUM")
+  {
+    SE.out <- cbind(items$deltaSE, items$tausSE)
+    colnames(SE.out) <- c("SE.delta", paste0("SE.tau", 1:C.max))
+    return(list("time" = t1 - t0, "delta" = items$delta,
+                "taus" = items$taus, "SE" = SE.out, 
+                "theta" = theta))
+  }
+  
+  if (model == "GGUM")
+  {
+    SE.out <- cbind(items$alphaSE, items$deltaSE, items$tausSE)
+    colnames(SE.out) <- c("SE.alpha", "SE.delta", paste0("SE.tau", 1:C.max))
+    return(list("time" = t1 - t0, 
+                "alpha" = items$alpha, "delta" = items$delta,
+                "taus" = items$taus, "SE" = SE.out, 
+                "theta" = theta))
+  }
+}
+

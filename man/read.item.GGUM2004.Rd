@@ -2,32 +2,48 @@
 % Please edit documentation in R/GGUM2004.R
 \name{read.item.GGUM2004}
 \alias{read.item.GGUM2004}
-\title{Read GGUM2004 Item Estimates}
+\title{Read GGUM2004 item estimates into R}
 \usage{
-read.item.GGUM2004(I, C, model = "GGUM", temp.dir = "C:/GGUM2004/TEMPFILE")
+read.item.GGUM2004(temp.dir = "C:/GGUM2004/TEMPFILE", precision = 4)
 }
 \arguments{
-\item{I}{the number of items.}
+\item{temp.dir}{The directory where GGUM2004 saved the output. By default it 
+is "C:/GGUM2004/TEMPFILE".}
 
-\item{C}{either a number or a vector. C is the number of observable response
-categories minus 1.}
-
-\item{model}{A string identifying the model. Possible values are "GUM" or 
-"GGUM" (default).}
-
-\item{temp.dir}{the path where GGUM2004 save its output.By default it is
-"C:/GGUM2004/TEMPFILE".}
+\item{precision}{Number of decimal places of the results (default = 4).}
 }
 \value{
-\code{read.item.GGUM2004} returns a list cointaning the following
-  components: \itemize{ \item \code{delta} a vector with delta estimates
-  \item \code{alpha} a vector with alpha estimates \item \code{taus} a matrix
-  with taus estimates \item \code{deltaSE} a vector with delta standard
-  errors \item \code{alphaSE} a vector with alpha standard errors \item
-  \code{tausSE} a matrix with taus standard errors }
+\code{read.item.GGUM2004} returns a list cointaning the following 
+components: 
+\itemize{ 
+\item{alpha}{The estimated discrimination parameters (for GGUM).}
+\item{delta}{The estimated difficulty parameters.}
+\item{taus}{The estimated threshold parameters.}
+\item{alphaSE}{The standard errors for the estimated discrimination 
+parameters (for GGUM).}
+\item{deltaSE}{The standard errors for the estimated difficulty 
+parameters.}
+\item{tausSE}{The standard errors for the estimated threshold 
+parameters (above zero; recall that the threshold parameters are constrained 
+to symmetry around zero, that is, 
+\eqn{\tau_{i(C+1)}=0}{tau_{i(C+1)} = 0} and 
+\eqn{\tau_{iz}=-\tau_{i(M-z+1)}}{tau_{iz} = -tau_{i(M-z+1)}} for 
+\eqn{z\not= 0}{z != 0}.}
+}
 }
 \description{
-\code{read.item.GGUM2004} reads the item parameter file from
-  GGUM2004. It reads the delta estimates, the alpha estimates, the taus
-  estimates, and their standard errors.
+\code{read.item.GGUM2004} reads the output files from GGUM2004 
+with the item parameters. Both the item parameter estimates and their 
+standard errors are imported into R.
+}
+\examples{
+1+1
+}
+\references{
+\insertRef{Robertsetal2000}{GGUM}
+
+\insertRef{Robertsetal2006}{GGUM}
+}
+\author{
+Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
 }

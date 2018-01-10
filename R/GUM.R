@@ -310,11 +310,11 @@ GUM <- function(data, C, SE = TRUE, precision = 4,
     }
     Inf.mat <- Inf.mat + t(Inf.mat) - diag(diag(Inf.mat))
     SE.mat  <- matrix(sqrt(diag(solve(Inf.mat))), ncol = 1)
-    rownames(SE.mat) <- c(paste0("SE.delta", 1:I), paste0("SE.tau", 1:C.max))
+    rownames(SE.mat) <- c(paste0("SE.delta", 1:I), paste0("SE.tau", C.max:1))
     
     SE.out <- list(
       Delta = round(SE.mat[1:I, ], precision), 
-      Taus = round(SE.mat[(I+1):(I + C.max), ], precision))
+      Taus = round(SE.mat[(I + C.max):(I+1), ], precision))
   } else {SE.out <- NULL}
   
   res <- list(

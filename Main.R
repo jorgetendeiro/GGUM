@@ -15,20 +15,20 @@ library(GGUM)
 
 # 1. Set up parameters ----
 # 
-set.seed(739)
-N <- 98
-I <- 4
-C <- 3 # sample(2:3, I, replace = TRUE)
+set.seed(749)
+N <- 750
+I <- 15
+C <- sample(2:4, I, replace = TRUE)
 # END SECTION
 
 # 2. Generate data ----
-data.gen <- GenData.GGUM(N, I, C, model = "GUM", seed = 4367)
-data     <- data.gen$data
+data.gen <- GenData.GGUM(N, I, C, model = "GGUM", seed = 4367)
+dt     <- data.gen$data
 # Data with missing values, to test the code:
 pos.NA   <- matrix(rbinom(N * I, 1, .80), nrow = N)
 pos.NA[pos.NA == 0] <- NA
-data.NA  <- data * pos.NA
-data <- data.NA
+data.NA  <- dt * pos.NA
+dt <- data.NA
 # END SECTION
 
 # 3. Run GUM ----
@@ -51,7 +51,7 @@ if (max(C) - min(C) == 0)
 # END SECTION
 
 # 4. Run GGUM ----
-Model8.res <- GGUM      (data, C)
+Model8.res <- GGUM      (dt, C)
 Th.GGUM    <- Theta.EAP (Model8.res)
 # Plots: 
 # Category response curves per item:
@@ -91,8 +91,9 @@ BIAS.th    <- round(sum(    Th.est - sign(cor.th)*data.gen$theta.gen)  / N, 4)
 # Export data to GGUM2004:
 export.GGUM2004(data)
 write.GGUM2004(I, C, model = "GUM")
-run.GGUM2004("cmd.txt", I, C, N, model = "GGUM" )
+res.2004 <- run.GGUM2004()
 
+res.modfit <- MODFIT(Model8.res)
 
 # END SECTION
 

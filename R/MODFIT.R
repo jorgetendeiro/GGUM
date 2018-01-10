@@ -1,13 +1,89 @@
-# Computing chisq/df ratios for single, pairs, and triples of items (Drasgow et al., 1995, LaHuis et al, 2011).
-# Run Stark's MODFIT Excel program and look into file chisqr.dbg, it is VERY informative.
-# For the adjusted chisq to N=3000, see LaHuis, Clark, and O'Brien (2011, p. 14).
+# Computing chisq/df ratios for single, pairs, and triples of items 
+# (Drasgow et al., 1995; LaHuis, Clark, & O'Brien, 2011).
+# Run Stark's MODFIT Excel program and look into file chisqr.dbg, it is very 
+# informative.
+# For the adjusted chisq to N = 3000, see LaHuis et al. (2011, p. 14).
 # 
 
-
-MODFIT <- function(data, C, IP, model = "GGUM")
+#' @title MODFIT for the GGUM
+#'   
+#' @description \code{MODFIT} computes the adjusted \eqn{\chi^2}{chi-square} 
+#' degrees of freedom ratios (\eqn{\chi^2/df}{chisq/df}) introduced by Drasgow 
+#' et al. (1995) for the GGUM.
+#'  
+#' @param IP Object of class \code{GGUM}.
+#' @param precision Number of decimal places of the results (default = 4).
+#' 
+#' @return A list with four elements: The results for singlets, doublets, 
+#' triples, and a summary result.
+#' 
+#' @section Details:
+#' This function computes the adjusted \eqn{\chi^2}{chi-square} degrees of 
+#' freedom ratios (\eqn{\chi^2/df}{chisq/df}) introduced by Drasgow 
+#' et al. (1995). These \eqn{\chi^2}{chi-square} statistics are based on 
+#' expected frequencies that depend on the estimated item parameters and the 
+#' distribution of \eqn{\theta}{theta}. The \emph{unadjusted} statistic for 
+#' item \eqn{i} is given by
+#' 
+#' \deqn{\chi^2_i = \sum_{z=0}^C \frac{(O_{iz} - E_{iz})^2}{E_{iz}}, }
+#' {chisq_i = sum( (O_iz - E_iz)^2 / E_iz; z = 0, ..., C ), }
+#' 
+#' with
+#' 
+#' \deqn{E_{iz} = N\int P_{iz}(\theta)\varphi(\theta)d\theta.}{E_iz = N 
+#' int(P_iz(th)phi(th)dth).}
+#' 
+#' \eqn{O_{iz}}{O_iz} is the observed frequency of choosing answer \eqn{z} for 
+#' item \eqn{i} and \eqn{\varphi(\theta)}{phi(th)} is the standard normal 
+#' density. The equation above applies to single items ('singlets'). The 
+#' formula is easily extendible to pairs and triples of items. For large number 
+#' of items the function selects suitable subsets of doublets and triples to 
+#' perform the computations, since its total number increases quickly with test 
+#' length (Drasgow et al., 1995). 
+#' 
+#' The formula is adjusted to a sample size of 3,000, as follows (see also 
+#' LaHuis et al., 2011):
+#' 
+#' \deqn{\chi^2_i/df = \frac{3,000(\chi^2_i - df)}{N}+df,}{chisq/df = 
+#' 3,000(chsqr-df)/N + df,}
+#' 
+#' where \eqn{df} is a number of degrees of freedom that depends on the number 
+#' of singlets, doublets, and triplets.
+#' 
+#' As an heuristic, values of \eqn{\chi^2/df}{chisq/df} larger than 3 are 
+#' indicative of model misfit.
+#' 
+#' This function was produces the same numerical results as the MODFIT program 
+#' (Stark, 2001) for the GGUM.
+#' 
+#' @references
+#' \insertRef{Drasgow_etal1995}{GGUM}
+#' 
+#' \insertRef{LaHuis_etal2011}{GGUM}
+#' 
+#' \insertRef{MODFITsoftware}{GGUM}
+#' 
+#' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+#' 
+#' @examples
+#' \dontrun{
+#' # Generate data:
+#' set.seed(1); C <- sample(3:5, 10, replace = TRUE)
+#' gen <- GenData.GGUM(2000, 10, C, seed = 156)
+#' # Fit the GGUM:
+#' fit <- GGUM(gen$data, C)
+#' # Compute the adjusted chi square degrees of freedom ratios:
+#' MODFIT(fit)
+#' }
+#' @export
+MODFIT <- function(IP, precision = 4)
 {
-  N <- nrow(data)
-  I <- ncol(data)
+  data  <- IP$data
+  C     <- IP$C
+  model <- IP$model
+  
+  N     <- nrow(data)
+  I     <- ncol(data)
   N.NAs <- N - colSums(is.na(data))
   
   if (I <= 10)
@@ -20,7 +96,9 @@ MODFIT <- function(data, C, IP, model = "GGUM")
     group.low   <- sort(order(obs.props)[1:ceiling(I / 3)])
     group.med   <- sort(order(obs.props)[(ceiling(I / 3) + 1) : ceiling(2*I/3)])
     group.high  <- sort(order(obs.props)[(ceiling(2*I / 3) + 1) : I])
-    groups      <- cbind(group.low = group.low[1:floor(I / 3)], group.med[1:floor(I / 3)], group.high[1:floor(I / 3)])
+    groups      <- cbind(group.low = group.low[1:floor(I / 3)], 
+                         group.med[1:floor(I / 3)], 
+                         group.high[1:floor(I / 3)])
     packets     <- lapply(seq_len(nrow(groups)), function(row) sort(groups[row, ]))
     if ((I %% 3) == 1) {packets[[1]][4] <- group.low[ceiling(I / 3)]}
     if ((I %% 3) == 2) {
@@ -30,13 +108,17 @@ MODFIT <- function(data, C, IP, model = "GGUM")
     
     # 
     # singlets    <- 1:I
-    doublets    <- matrix(unlist(lapply(packets, function(x) combn(x,2))), ncol = 2, byrow = TRUE)
-    triplets    <- matrix(unlist(lapply(packets, function(x) combn(x,3))), ncol = 3, byrow = TRUE)
+    doublets    <- matrix(unlist(lapply(packets, function(x) combn(x,2))), 
+                          ncol = 2, byrow = TRUE)
+    triplets    <- matrix(unlist(lapply(packets, function(x) combn(x,3))), 
+                          ncol = 3, byrow = TRUE)
   }
   
   # NAs for doublets and triplets:
-  N.NAs.doublets <- apply(doublets, 1, function(vec) N - sum(rowSums(is.na(data[, vec])) > 0))
-  N.NAs.triplets <- apply(triplets, 1, function(vec) N - sum(rowSums(is.na(data[, vec])) > 0))
+  N.NAs.doublets <- apply(doublets, 1, 
+                          function(vec) N - sum(rowSums(is.na(data[, vec])) > 0))
+  N.NAs.triplets <- apply(triplets, 1, 
+                          function(vec) N - sum(rowSums(is.na(data[, vec])) > 0))
   
   # Nodes and weights:
   nodes.chi   <- seq(-3, 3, length.out = 61)
@@ -49,13 +131,22 @@ MODFIT <- function(data, C, IP, model = "GGUM")
   {
     if (length(C) == 1)
     {
-      for (z in 0:C) {probs.array.aber.drasgow[, , z + 1] <- P.GGUM(z, IP$alpha, IP$delta, IP$taus, nodes.chi, C)}
+      for (z in 0:C) 
+      {
+        probs.array.aber.drasgow[, , z + 1] <- 
+          P.GGUM(z, IP$alpha, IP$delta, IP$taus, nodes.chi, C)
+      }
     } else
     {
       for (i in 1:I)
       {
-        for (z in 0:C[i]) {probs.array.aber.drasgow[, i, z + 1] <- 
-          P.GGUM(z, IP$alpha[i], IP$delta[i], IP$taus[i, (max(C)-C[[i]]+1):(2*max(C)+1-(max(C)-C[i]))], nodes.chi, C[i])}
+        for (z in 0:C[i]) 
+        {
+          probs.array.aber.drasgow[, i, z + 1] <- 
+          P.GGUM(z, IP$alpha[i], IP$delta[i], 
+                 IP$taus[i, (max(C)-C[[i]]+1):(2*max(C)+1-(max(C)-C[i]))], 
+                 nodes.chi, C[i])
+        }
       }
     }
   }
@@ -63,13 +154,16 @@ MODFIT <- function(data, C, IP, model = "GGUM")
   {
     probs.array.aber.drasgow <- P.GRM(C, IP, nodes.chi)
   }
-  weights.arr              <- array(rep(weights, I * (max(C) + 1)), c(N.nodes.chi, I, max(C) + 1))
-  N.NAs.mat                <- matrix(rep(N.NAs, max(C) + 1), nrow = I, byrow = FALSE)
+  weights.arr              <- array(rep(weights, I * (max(C) + 1)), 
+                                    c(N.nodes.chi, I, max(C) + 1))
+  N.NAs.mat                <- matrix(rep(N.NAs, max(C) + 1), nrow = I, 
+                                     byrow = FALSE)
   if (length(C) > 1) for (i in 1:I) N.NAs.mat[i, (C[i] + 1):(max(C) + 1)] <- NA
   expected.mat.drasgow     <- N.NAs.mat * apply((probs.array.aber.drasgow * weights.arr), 2:3, sum)
   if (length(C) == 1) 
   {
-    observed.mat.drasgow     <- t(apply(data, 2, function(vec) table(factor(vec, levels = 0:C))))
+    observed.mat.drasgow     <- t(apply(data, 2, 
+                                        function(vec) table(factor(vec, levels = 0:C))))
   } else 
   {
     observed.mat.drasgow <- matrix(NA, nrow = I, ncol = max(C) + 1)
@@ -229,8 +323,10 @@ MODFIT <- function(data, C, IP, model = "GGUM")
   rownames(all.table) <- c("Singlets", "Doublets", "Triplets")
   colnames(all.table) <- c("Less_1", "1_to_2", "2_to_3", "3_to_4", "4_to_5","5_to_7","Larger_7", "Mean", "SD")
   
-  return(list(Singlets = round(singlets.res, 3), Doublets = round(doublets.res, 3), Triplets = round(triplets.res, 3), 
-              Summary.table = all.table))
+  return(list(Singlets      = round(singlets.res, precision), 
+              Doublets      = round(doublets.res, precision), 
+              Triplets      = round(triplets.res, precision), 
+              Summary.table = round(all.table, precision)))
 }
 
 # Export data in MODFIT friendly format ----

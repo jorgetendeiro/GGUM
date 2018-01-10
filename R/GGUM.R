@@ -354,8 +354,8 @@ GGUM <- function(data, C, SE = TRUE, precision = 4,
                               byrow = FALSE)
       sum.arg       <- sqrt(P.OBS.s.mat) * dP.tilde / P.tilde.s.mat
       Inf.i         <- N * (t(sum.arg) %*% sum.arg)
-      SE.mat[i, 1:(C[i] + 2)]   <- sqrt(diag(solve(Inf.i[1:(C[i] + 2), 
-                                                         1:(C[i] + 2)])))
+      tmp           <- sqrt(diag(solve(Inf.i[1:(C[i] + 2), 1:(C[i] + 2)])))
+      SE.mat[i, 1:(C[i] + 2)]   <- c(tmp[1:2], rev(tmp[-(1:2)]))
     }
     
     colnames(SE.mat) <- c("SE.alpha", "SE.delta", paste0("SE.tau", 1:C.max))

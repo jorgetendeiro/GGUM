@@ -171,7 +171,8 @@ plotTCC <- function(IP, Th)
   
   # Test characteristic curve:
   OBS.scores      <- IP$data
-  theta.exp       <- seq(min(-4, min(theta)), max(4, max(theta)), 
+  theta.exp       <- seq(min(-4, min(theta, na.rm = TRUE)), 
+                         max(4, max(theta, na.rm = TRUE)), 
                          length.out = 1000)
   N.groups        <- 100
   int.lims        <- quantile(theta.exp, probs = seq(0, 1, 1 / (N.groups - 1)))
@@ -276,8 +277,9 @@ plotICC <- function(IP, Th, items = NULL)
   theta     <- if (class(Th) == "matrix") Th[, "Theta"] else Th
   
   # Item characteristic curves:
-  OBS.scores      <- data
-  theta.exp       <- seq(min(-4, min(theta)), max(4, max(theta)), 
+  OBS.scores      <- IP$data
+  theta.exp       <- seq(min(-4, min(theta, na.rm = TRUE)), 
+                         max(4, max(theta, na.rm = TRUE)), 
                          length.out = 1000)
   N.groups        <- 50
   int.lims        <- quantile(theta.exp, probs = seq(0, 1, 1 / (N.groups - 1)))
@@ -325,12 +327,10 @@ plotICC <- function(IP, Th, items = NULL)
            inset = .01, cex = .8, pt.cex = 1, horiz = TRUE, bg = "gray95")
   }
   #
-  scores.arr.N <- aperm(array(rep(scores.mat, N), dim = c(I, C.max + 1, N)), 
-                        c(3, 1, 2))
+  scores.arr.N <- aperm(array(rep(scores.mat, N), dim = c(I, C.max + 1, N)), c(3, 1, 2))
   EXP.scores.N <- apply(P.izf(alpha, delta, taus, theta, C) * scores.arr.N, 1:2,
                         sum)
-  cor.OBS.EXP  <- round(diag(cor(OBS.scores, EXP.scores.N, 
-                                 use = "pairwise.complete.obs")), 4)
+  cor.OBS.EXP  <- round(diag(cor(OBS.scores, EXP.scores.N, use = "pairwise.complete.obs")), 4)
   names(cor.OBS.EXP) <- paste0("Item", 1:I)
   cat("\n")
   invisible(cbind(Theta = res[[1]], 
