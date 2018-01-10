@@ -1,6 +1,6 @@
 Package: GGUM
 Title: Generalized Graded Unfolding Model
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
   person("Jorge N.", "Tendeiro", email = "j.n.tendeiro@rug.nl", role = c("aut","cre")),
   person("Sebastian Castro", "Alvarez", email = "s.castro.alvarez@student.rug.nl", role = "aut"))

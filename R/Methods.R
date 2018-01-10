@@ -13,9 +13,8 @@ summary.GGUM <- function(object, ...)
 
 # Define print() method for class "GGUM":
 #' @export
-print.GGUM <- function(object, ...)
+print.GGUM <- function(x, ...)
 {
-  x <- object
   I <- ncol(x$data)
   M <- 2*max(x$C) + 1
   
