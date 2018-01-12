@@ -42,7 +42,7 @@
 #' 
 #' \insertRef{Robertsetal2006}{GGUM}
 #' 
-#' @author Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
+#' @author Sebastian Castro Alvarez, \email{secastroal@gmail.com}
 #' 
 #' @examples
 #' 1+1
@@ -133,7 +133,7 @@ write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM",
 #' 
 #' \insertRef{Robertsetal2006}{GGUM}
 #' 
-#' @author Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
+#' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #' 
 #' @examples
 #' 1+1
@@ -191,7 +191,7 @@ export.GGUM2004 <- function(data, data.file = "data", dir = "C:/GGUM2004")
 #' @references
 #' \insertRef{Robertsetal2006}{GGUM}
 #' 
-#' @author Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
+#' @author Sebastian Castro Alvarez, \email{secastroal@gmail.com}
 #' 
 #' @examples
 #' 1+1
@@ -272,7 +272,7 @@ read.person.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
 #' 
 #' \insertRef{Robertsetal2006}{GGUM}
 #' 
-#' @author Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
+#' @author Sebastian Castro Alvarez, \email{secastroal@gmail.com}
 #' 
 #' @examples
 #' 1+1
@@ -415,7 +415,7 @@ read.item.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
 #' @references
 #' \insertRef{Robertsetal2006}{GGUM}
 #' 
-#' @author Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
+#' @author Sebastian Castro Alvarez, \email{secastroal@gmail.com}
 #' 
 #' @examples
 #' 1+1
