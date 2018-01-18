@@ -1,0 +1,144 @@
+#' @title GGUM
+#'
+#' @name GGUM-package
+#' @docType package
+#' @aliases GGUM-package
+#' 
+#' @description 
+#' The \code{GGUM} package fits the generalized graded response model (GGUM; 
+#' Roberts et al., 1996, 2000). It is based on marginal maximum likelihood 
+#' (Roberts et al., 2000) to estimate the item parameters and an estimated a 
+#' posteriori (EAP) method to estimate the person parameters.
+#' 
+#' The GGUM is defined by 
+#' \deqn{P(Z_i=z|\theta_n) = 
+#' \frac{f(z) + 
+#' f(M-z)}{\sum_{w=0}^C\left[f(w)+f(M-w)\right]}, }{P(Z_i = z|t_n) = 
+#' ( f(z) + f(M-z) ) / (sum( f(w) + f(M - w); w = 0, ..., C )),}
+#' 
+#' \deqn{f(w) = exp\left\{\alpha_i\left[w(\theta_n-\delta_i)-
+#' \sum_{k=0}^w\tau_{ik}\right]\right\}, }{f(w) = exp( alpha_i ( w(t_n - delta_i) 
+#' - sum( tau_ik; k = 0, ..., w) ) ),}
+#' 
+#' where:
+#' \itemize{
+#' \item The subscripts \eqn{i} and \eqn{n} identify the item and person, 
+#' respectively.
+#' \item \eqn{z=0,\ldots,C}{z = 0, ..., C} denotes the observed answer 
+#' response.
+#' \item \eqn{M = 2C + 1} is the number of subjective response options minus 1.
+#' \item \eqn{\theta_n}{t_n} is the latent trait score for person \eqn{n}.
+#' \item \eqn{\alpha_i}{alpha_i} is the item slope (discrimination).
+#' \item \eqn{\delta_i}{delta_i} is the item location.
+#' \item \eqn{\tau_{ik}}{tau_ik} (\eqn{k=1,\ldots,M}{k = 1, ..., M} ) are the 
+#' threshold parameters.
+#' }
+#' 
+#' Parameter \eqn{\tau_{i0}}{tau_i0} is arbitrarily constrained to zero and the 
+#' threshold parameters are constrained to symmetry around zero, that is, 
+#' \eqn{\tau_{i(C+1)}=0}{tau_{i(C+1)} = 0} and 
+#' \eqn{\tau_{iz}=-\tau_{i(M-z+1)}}{tau_{iz} = -tau_{i(M-z+1)}} for 
+#' \eqn{z\not= 0}{z != 0}.
+#' 
+#' This package produces comparable results to the ones based on the GGUM2004 
+#' program (Roberts et al., 2000; Roberts et al., 2006), for the GUM (Model 3 
+#' in GGUM2004) and the GGUM (Model 8 in GGUM2004). For those accustomed to 
+#' using GGUM2004, this packages provides a useful set of functions that 
+#' allow exporting data and code to GGUM2004, running GGUM2004, and retrieving 
+#' the parameter estimates. Thus, if desired, one can run GGUM2004 and retrieve 
+#' the results completely from within the R environment.
+#' 
+#' @details
+#' \tabular{ll}{
+#'  Package: \tab GGUM\cr
+#'  Type: \tab Package\cr
+#'  Version: \tab 0.3.0\cr
+#'  Date: \tab 2018-01-18\cr
+#'  License: \tab GPL Version 2 or later\cr
+#' }
+#' 
+#' The \pkg{GGUM} package contains useful functions, summarized below: 
+#' \itemize{
+#' \item Fitting the GUM/GGUM:
+#' 
+#' \tabular{ll}{
+#'  \bold{Function}                    \tab \bold{Description}\cr
+#'  \code{\link{GenData.GGUM}}         \tab Generate data from the GUM/GGUM\cr
+#'  \code{\link{probs.GGUM}}           \tab Compute model probabilities for the GGUM\cr
+#'  \code{\link{GUM}}                  \tab Fit the GUM\cr
+#'  \code{\link{GGUM}}                 \tab Fit the GGUM\cr
+#'  \code{\link{MODFIT}}               \tab MODFIT for the GGUM\cr
+#'  \code{\link{Theta.EAP}}            \tab Estimate thetas and their SEs (GUM, GGUM)\cr
+#' }
+#' 
+#' \item Plots:
+#' \tabular{ll}{
+#'  \bold{Function}                    \tab \bold{Description}\cr
+#'  \code{\link{plotCRC}}              \tab Plot item category response curves (CRCs)\cr
+#'  \code{\link{plotICC}}              \tab Plot item characteristic curves (ICCs)\cr
+#'  \code{\link{plotIIF}}              \tab Plot item information functions (IIFs)\cr
+#'  \code{\link{plotTCC}}              \tab Plot test characteristic curve (TCC)\cr
+#'  \code{\link{plotTIF}}              \tab Plot test information function (TIF)\cr
+#' }
+#' 
+#' \item GGUM2004 interface:
+#' \tabular{ll}{
+#'  \bold{Function}                    \tab \bold{Description}\cr
+#'  \code{\link{export.GGUM2004}}      \tab Exports data in GGUM2004 friendly format\cr
+#'  \code{\link{write.GGUM2004}}       \tab Writes a command file for GGUM2004\cr
+#'  \code{\link{run.GGUM2004}}         \tab Call GGUM2004 and import the estimated parameters into R\cr
+#'  \code{\link{read.item.GGUM2004}}   \tab Read GGUM2004 item estimates into R\cr
+#'  \code{\link{read.person.GGUM2004}} \tab Read GGUM2004 person estimates into R\cr
+#' }
+#' 
+#' \item Available methods for objects of class "GGUM":
+#' \tabular{l}{
+#'  plot()     \cr
+#'  print()    \cr
+#'  summary()  \cr
+#' }
+#' }
+#' 
+#' @references
+#' \insertRef{RobertsLaughlin1996}{GGUM}
+#' 
+#' \insertRef{Robertsetal2000}{GGUM}
+#' 
+#' \insertRef{Robertsetal2006}{GGUM}
+#' 
+#' @examples
+#' \dontrun{
+#' # Example 1 - Same value C across items:
+#' # Generate data:
+#' gen1 <- GenData.GGUM(2000, 10, 2, seed = 125)
+#' # Fit the GGUM:
+#' fit1 <- GGUM(gen1$data, 2)
+#' th1  <- Theta.EAP(fit1)
+#' # Plot the test information function:
+#' plotTIF(fit1, th1)
+#' # Check model fit:
+#' MOD.res <- MODFIT(fit1)
+#' 
+#' # Example 2 - Different C across items:
+#' # Generate data:
+#' set.seed(1); C <- sample(3:5, 10, replace = TRUE)
+#' I <- 10
+#' gen2 <- GenData.GGUM(2000, I, C, seed = 125)
+#' # Fit the GGUM:
+#' fit2 <- GGUM(gen2$data, C)
+#' th2  <- Theta.EAP(fit2)
+#' # Plot item information functions for items 1 and 3:
+#' plotIIF(fit2, th2, items = c(1, 3))
+#' 
+#' # Example 3 - Fit GGUM using GGUM2004:
+#' # Assuming the installation directory is C:/GGUM2004, then do this:
+#' # Export data to GGUM2004:
+#' export.GGUM2004(gen2$data)
+#' # Write command file:
+#' write.GGUM2004(I, C)
+#' # Run GGUM2004:
+#' res.GGUM2004 <- run.GGUM2004()
+#' }
+"_PACKAGE"
+#> [1] "_PACKAGE"
+#' 

@@ -10,7 +10,7 @@
 #' @importFrom Rdpack reprompt
 
 # GenData.GGUM ----
-#' @title Generate data from the GGUM
+#' @title Generate data from the GUM/GGUM
 #'
 #' @description \code{GenData.GGUM} generates all model parameters (items and 
 #' persons) and item scores.

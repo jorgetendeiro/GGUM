@@ -18,7 +18,7 @@ library(GGUM)
 set.seed(749)
 N <- 750
 I <- 15
-C <- sample(2:4, I, replace = TRUE)
+C <- 5 # sample(2:4, I, replace = TRUE)
 # END SECTION
 
 # 2. Generate data ----
@@ -34,7 +34,7 @@ dt <- data.NA
 # 3. Run GUM ----
 if (max(C) - min(C) == 0)
 {
-  Model3.res <- GUM       (data, C)
+  Model3.res <- GUM       (dt, C)
   Th.GUM     <- Theta.EAP (Model3.res)
   # Plots: 
   # Category response curves per item:
@@ -89,8 +89,8 @@ BIAS.th    <- round(sum(    Th.est - sign(cor.th)*data.gen$theta.gen)  / N, 4)
 
 # 6. Test GGUM2004 related functions ----
 # Export data to GGUM2004:
-export.GGUM2004(data)
-write.GGUM2004(I, C, model = "GUM")
+export.GGUM2004(dt)
+write.GGUM2004(I, C, model = "GGUM")
 res.2004 <- run.GGUM2004()
 
 res.modfit <- MODFIT(Model8.res)

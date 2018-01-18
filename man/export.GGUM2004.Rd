@@ -34,7 +34,14 @@ be installed (unzipped).
 }
 
 \examples{
-1+1
+\dontrun{
+# Generate data:
+C   <- c(3, 3, 3, 5, 5, 5)
+I   <- 6
+gen <- GenData.GGUM(750, 6, C, seed = 125)
+# Export data to GGUM2004:
+export.GGUM2004(gen$data)
+}
 }
 \references{
 \insertRef{Robertsetal2000}{GGUM}
@@ -42,5 +49,5 @@ be installed (unzipped).
 \insertRef{Robertsetal2006}{GGUM}
 }
 \author{
-Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
+Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 }

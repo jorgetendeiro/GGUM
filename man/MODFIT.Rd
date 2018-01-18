@@ -12,8 +12,8 @@ MODFIT(IP, precision = 4)
 \item{precision}{Number of decimal places of the results (default = 4).}
 }
 \value{
-A list with four elements: The results for singlets, doublets, 
-triples, and a summary result.
+A list (an object of class \code{MODFIT}) with four elements: The 
+results for singlets, doublets, triples, and a summary result.
 }
 \description{
 \code{MODFIT} computes the adjusted \eqn{\chi^2}{chi-square} 

@@ -45,7 +45,9 @@
 #' @author Sebastian Castro Alvarez, \email{secastroal@gmail.com}
 #' 
 #' @examples
-#' 1+1
+#' I <- 6
+#' C <- c(3, 3, 3, 5, 5, 5)
+#' write.GGUM2004(I, C, model = "GGUM")
 #' @export
 write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM", 
                            cmd.file = "cmd", 
@@ -136,7 +138,14 @@ write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM",
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #' 
 #' @examples
-#' 1+1
+#' \dontrun{
+#' # Generate data:
+#' C   <- c(3, 3, 3, 5, 5, 5)
+#' I   <- 6
+#' gen <- GenData.GGUM(750, 6, C, seed = 125)
+#' # Export data to GGUM2004:
+#' export.GGUM2004(gen$data)
+#' }
 #' @export
 export.GGUM2004 <- function(data, data.file = "data", dir = "C:/GGUM2004") 
 {
@@ -194,7 +203,11 @@ export.GGUM2004 <- function(data, data.file = "data", dir = "C:/GGUM2004")
 #' @author Sebastian Castro Alvarez, \email{secastroal@gmail.com}
 #' 
 #' @examples
-#' 1+1
+#' \dontrun{
+#' # If the GGUM2004 output files are in the default directory 
+#' # (C:/GGUM2004/TEMPFILE), then simply execute
+#' read.person.GGUM2004()
+#' }
 #' @export
 read.person.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE", 
                                  precision = 4)
@@ -275,7 +288,11 @@ read.person.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
 #' @author Sebastian Castro Alvarez, \email{secastroal@gmail.com}
 #' 
 #' @examples
-#' 1+1
+#' \dontrun{
+#' # If the GGUM2004 output files are in the default directory 
+#' # (C:/GGUM2004/TEMPFILE), then simply execute
+#' read.item.GGUM2004()
+#' }
 #' @export
 read.item.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE", 
                                precision = 4)
@@ -412,13 +429,30 @@ read.item.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
 #' \item{theta}{The estimated person parameters and their standard errors.}
 #' }
 #' 
+#' @section Details:
+#' Function \code{run.GGUM2004} runs internally both functions 
+#' \code{\link[GGUM]{read.item.GGUM2004}} (to import the GGUM2004 item 
+#' estimates into R) and \code{\link[GGUM]{read.person.GGUM2004}} (to import 
+#' the GGUM2004 person estimates into R).
+#' 
 #' @references
 #' \insertRef{Robertsetal2006}{GGUM}
 #' 
 #' @author Sebastian Castro Alvarez, \email{secastroal@gmail.com}
 #' 
 #' @examples
-#' 1+1
+#' \dontrun{
+#' # Generate data:
+#' C   <- c(3, 3, 3, 5, 5, 5)
+#' I   <- 6
+#' gen <- GenData.GGUM(750, I, C, seed = 125)
+#' # Export data to GGUM2004:
+#' export.GGUM2004(gen$data)
+#' # Write command file:
+#' write.GGUM2004(I, C, model = "GGUM")
+#' # Run GGUM2004:
+#' res.GGUM2004 <- run.GGUM2004()
+#' }
 #' @export
 run.GGUM2004 <- function(cmd.file = "cmd", 
                          data.file = "data", 

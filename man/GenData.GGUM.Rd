@@ -2,7 +2,7 @@
 % Please edit documentation in R/Accessory.R
 \name{GenData.GGUM}
 \alias{GenData.GGUM}
-\title{Generate data from the GGUM}
+\title{Generate data from the GUM/GGUM}
 \usage{
 GenData.GGUM(N, I, C, model = "GGUM", seed = 123)
 }

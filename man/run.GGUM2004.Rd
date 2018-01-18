@@ -39,12 +39,31 @@ command file (via function \code{\link[GGUM]{write.GGUM2004}}). It returns
 the execution time, the item parameter estimates, and the person parameter 
 estimates.
 }
+\section{Details}{
+
+Function \code{run.GGUM2004} runs internally both functions 
+\code{\link[GGUM]{read.item.GGUM2004}} (to import the GGUM2004 item 
+estimates into R) and \code{\link[GGUM]{read.person.GGUM2004}} (to import 
+the GGUM2004 person estimates into R).
+}
+
 \examples{
-1+1
+\dontrun{
+# Generate data:
+C   <- c(3, 3, 3, 5, 5, 5)
+I   <- 6
+gen <- GenData.GGUM(750, I, C, seed = 125)
+# Export data to GGUM2004:
+export.GGUM2004(gen$data)
+# Write command file:
+write.GGUM2004(I, C, model = "GGUM")
+# Run GGUM2004:
+res.GGUM2004 <- run.GGUM2004()
+}
 }
 \references{
 \insertRef{Robertsetal2006}{GGUM}
 }
 \author{
-Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
+Sebastian Castro Alvarez, \email{secastroal@gmail.com}
 }

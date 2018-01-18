@@ -56,7 +56,9 @@ script exported by this function are saved in the directory
 }
 
 \examples{
-1+1
+I <- 6
+C <- c(3, 3, 3, 5, 5, 5)
+write.GGUM2004(I, C, model = "GGUM")
 }
 \references{
 \insertRef{Robertsetal2000}{GGUM}
@@ -64,5 +66,5 @@ script exported by this function are saved in the directory
 \insertRef{Robertsetal2006}{GGUM}
 }
 \author{
-Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
+Sebastian Castro Alvarez, \email{secastroal@gmail.com}
 }

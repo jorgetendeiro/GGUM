@@ -23,11 +23,15 @@ with the person parameters. Both the person parameter estimates and their
 standard errors are imported into R.
 }
 \examples{
-1+1
+\dontrun{
+# If the GGUM2004 output files are in the default directory 
+# (C:/GGUM2004/TEMPFILE), then simply execute
+read.person.GGUM2004()
+}
 }
 \references{
 \insertRef{Robertsetal2006}{GGUM}
 }
 \author{
-Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
+Sebastian Castro Alvarez, \email{secastroal@gmail.com}
 }

@@ -37,7 +37,11 @@ with the item parameters. Both the item parameter estimates and their
 standard errors are imported into R.
 }
 \examples{
-1+1
+\dontrun{
+# If the GGUM2004 output files are in the default directory 
+# (C:/GGUM2004/TEMPFILE), then simply execute
+read.item.GGUM2004()
+}
 }
 \references{
 \insertRef{Robertsetal2000}{GGUM}
@@ -45,5 +49,5 @@ standard errors are imported into R.
 \insertRef{Robertsetal2006}{GGUM}
 }
 \author{
-Sebastian Castro Alvarez, \email{s.castro.alvarez@student.rug.nl}
+Sebastian Castro Alvarez, \email{secastroal@gmail.com}
 }

@@ -14,8 +14,8 @@
 #' @param IP Object of class \code{GGUM}.
 #' @param precision Number of decimal places of the results (default = 4).
 #' 
-#' @return A list with four elements: The results for singlets, doublets, 
-#' triples, and a summary result.
+#' @return A list (an object of class \code{MODFIT}) with four elements: The 
+#' results for singlets, doublets, triples, and a summary result.
 #' 
 #' @section Details:
 #' This function computes the adjusted \eqn{\chi^2}{chi-square} degrees of 
@@ -323,10 +323,12 @@ MODFIT <- function(IP, precision = 4)
   rownames(all.table) <- c("Singlets", "Doublets", "Triplets")
   colnames(all.table) <- c("Less_1", "1_to_2", "2_to_3", "3_to_4", "4_to_5","5_to_7","Larger_7", "Mean", "SD")
   
-  return(list(Singlets      = round(singlets.res, precision), 
+  res <- list(Singlets      = round(singlets.res, precision), 
               Doublets      = round(doublets.res, precision), 
               Triplets      = round(triplets.res, precision), 
-              Summary.table = round(all.table, precision)))
+              Summary.table = round(all.table, precision))
+  class(res) <- "MODFIT"
+  return(res)
 }
 
 # Export data in MODFIT friendly format ----
