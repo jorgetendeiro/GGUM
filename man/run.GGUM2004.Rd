@@ -45,6 +45,9 @@ Function \code{run.GGUM2004} runs internally both functions
 \code{\link[GGUM]{read.item.GGUM2004}} (to import the GGUM2004 item 
 estimates into R) and \code{\link[GGUM]{read.person.GGUM2004}} (to import 
 the GGUM2004 person estimates into R).
+
+Observe that this function is optimized for the Windows operating system, 
+because GGUM2004 is a Windows program.
 }
 
 \examples{

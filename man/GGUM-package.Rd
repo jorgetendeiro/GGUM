@@ -53,7 +53,7 @@ the results completely from within the R environment.
 \tabular{ll}{
  Package: \tab GGUM\cr
  Type: \tab Package\cr
- Version: \tab 0.3.0\cr
+ Version: \tab 0.3.1\cr
  Date: \tab 2018-01-18\cr
  License: \tab GPL Version 2 or later\cr
 }

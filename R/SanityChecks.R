@@ -91,3 +91,16 @@ Sanity.params <- function(alpha, delta, taus, theta, C)
   }
   if (!theta.vec) stop('theta should be a vector. Aborted.')
 }
+
+# Sanity.OS(): Sanity check - OS ----
+Sanity.OS <- function()
+{
+  if (Sys.info()["sysname"] != "Windows")
+  {
+    warning('
+This function was written for Windows users because GGUM2004 is a Windows 
+executable. It may be of no use in other platforms (e.g., Linux, Mac) unless 
+some sort of emulator is used.')
+    
+  }
+}

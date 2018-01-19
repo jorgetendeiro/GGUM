@@ -30,7 +30,10 @@
 #' This function prepares a GGUM2004 friendly command script, which 
 #' may be used to run the GGUM2004 program (Roberts, Donoghue, & Laughlin, 
 #' 2000; Roberts et al., 2006). GGUM2004 may be executed directly or may be 
-#' called from R, see \code{\link[GGUM]{run.GGUM2004}}.
+#' called from R, see \code{\link[GGUM]{run.GGUM2004}}. 
+#' 
+#' Observe that this function is optimized for the Windows operating system, 
+#' because GGUM2004 is a Windows program.
 #' 
 #' By default, both the data file (exported via 
 #' \code{\link[GGUM]{export.GGUM2004}}) and the GGUM2004 command 
@@ -54,6 +57,9 @@ write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM",
                            data.file = "data", 
                            dir = "C:/GGUM2004")
 {
+  # Sanity.OS() - OS:
+  Sanity.OS()
+  
   # Sanity check - C:
   Sanity.C(C, I)
   
@@ -125,6 +131,9 @@ write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM",
 #' itself, of course). GGUM2004 may be executed directly or may be called from 
 #' R, see \code{\link[GGUM]{run.GGUM2004}}.
 #' 
+#' Observe that this function is optimized for the Windows operating system, 
+#' because GGUM2004 is a Windows program.
+#' 
 #' By default, both the data file exported by this function and the GGUM2004 
 #' command script (exported via \code{\link[GGUM]{write.GGUM2004}}) 
 #' are saved in the directory \code{C:/GGUM2004}, where GGUM2004 is expected to 
@@ -149,6 +158,9 @@ write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM",
 #' @export
 export.GGUM2004 <- function(data, data.file = "data", dir = "C:/GGUM2004") 
 {
+  # Sanity.OS() - OS:
+  Sanity.OS()
+  
   # Sanity check - data:
   Sanity.data(data)
   
@@ -197,6 +209,10 @@ export.GGUM2004 <- function(data, data.file = "data", dir = "C:/GGUM2004")
 #' number of persons. The first column is the person ID, the second column has 
 #' the person parameter estimates, and the last column has the standard errors.
 #' 
+#' @section Details: 
+#' Observe that this function is optimized for the Windows operating system, 
+#' because GGUM2004 is a Windows program.
+#' 
 #' @references
 #' \insertRef{Robertsetal2006}{GGUM}
 #' 
@@ -212,6 +228,9 @@ export.GGUM2004 <- function(data, data.file = "data", dir = "C:/GGUM2004")
 read.person.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE", 
                                  precision = 4)
 {
+  # Sanity.OS() - OS:
+  Sanity.OS()
+  
   # Retrieve N:
   # N used in computations:
   tmp <- readLines(paste0(temp.dir, "/FT14F001"))
@@ -280,6 +299,10 @@ read.person.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
 #' \eqn{z\not= 0}{z != 0}.}
 #' }
 #' 
+#' @section Details: 
+#' Observe that this function is optimized for the Windows operating system, 
+#' because GGUM2004 is a Windows program.
+#' 
 #' @references
 #' \insertRef{Robertsetal2000}{GGUM}
 #' 
@@ -297,6 +320,9 @@ read.person.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
 read.item.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE", 
                                precision = 4)
 {
+  # Sanity.OS() - OS:
+  Sanity.OS()
+  
   # Retrieve I:
   tmp <- readLines(paste0(temp.dir, "/FT14F001"))
   tmp <- trimws(tmp)
@@ -435,6 +461,9 @@ read.item.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
 #' estimates into R) and \code{\link[GGUM]{read.person.GGUM2004}} (to import 
 #' the GGUM2004 person estimates into R).
 #' 
+#' Observe that this function is optimized for the Windows operating system, 
+#' because GGUM2004 is a Windows program.
+#' 
 #' @references
 #' \insertRef{Robertsetal2006}{GGUM}
 #' 
@@ -459,6 +488,9 @@ run.GGUM2004 <- function(cmd.file = "cmd",
                          dir = "C:/GGUM2004", 
                          precision = 4)
 {
+  # Sanity.OS() - OS:
+  Sanity.OS()
+  
   # Check if cmd.file exists:
   if (!file.exists(paste0(dir, "/" , cmd.file, ".txt")))
   {

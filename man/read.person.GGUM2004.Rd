@@ -22,6 +22,12 @@ the person parameter estimates, and the last column has the standard errors.
 with the person parameters. Both the person parameter estimates and their 
 standard errors are imported into R.
 }
+\section{Details}{
+ 
+Observe that this function is optimized for the Windows operating system, 
+because GGUM2004 is a Windows program.
+}
+
 \examples{
 \dontrun{
 # If the GGUM2004 output files are in the default directory 

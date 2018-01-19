@@ -47,7 +47,10 @@ installation folder.
 This function prepares a GGUM2004 friendly command script, which 
 may be used to run the GGUM2004 program (Roberts, Donoghue, & Laughlin, 
 2000; Roberts et al., 2006). GGUM2004 may be executed directly or may be 
-called from R, see \code{\link[GGUM]{run.GGUM2004}}.
+called from R, see \code{\link[GGUM]{run.GGUM2004}}. 
+
+Observe that this function is optimized for the Windows operating system, 
+because GGUM2004 is a Windows program.
 
 By default, both the data file (exported via 
 \code{\link[GGUM]{export.GGUM2004}}) and the GGUM2004 command 
