@@ -7,25 +7,25 @@
 read.person.GGUM2004(temp.dir = "C:/GGUM2004/TEMPFILE", precision = 4)
 }
 \arguments{
-\item{temp.dir}{The directory where GGUM2004 saved the output. By default it 
+\item{temp.dir}{The directory where GGUM2004 saved the output. By default, it
 is "C:/GGUM2004/TEMPFILE".}
 
 \item{precision}{Number of decimal places of the results (default = 4).}
 }
 \value{
 An \eqn{N\times 3}{Nx3} matrix is returned, where \eqn{N} is the 
-number of persons. The first column is the person ID, the second column has 
-the person parameter estimates, and the last column has the standard errors.
+  number of persons. The first column is the person ID, the second column has
+  the person parameter estimates, and the last column has the standard
+  errors.
 }
 \description{
-\code{read.person.GGUM2004} reads the output files from GGUM2004 
-with the person parameters. Both the person parameter estimates and their 
-standard errors are imported into R.
+\code{read.person.GGUM2004} reads the output files from GGUM2004
+  with the person parameters. Both the person parameter estimates and their 
+  standard errors are imported into R.
 }
 \section{Details}{
- 
-Observe that this function is optimized for the Windows operating system, 
-because GGUM2004 is a Windows program.
+ Observe that this function is optimized for the Windows
+  operating system, because GGUM2004 is a Windows program.
 }
 
 \examples{

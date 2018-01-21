@@ -12,21 +12,20 @@ plotTCC(IP, Th)
 \item{Th}{Theta estimates from function \code{Theta.EAP()}.}
 }
 \value{
-The function returns a list with three elements:
-\item{coords}{(x, y) coordinates of the TCC.}
-\item{cor.OBS.EXP}{Correlation between observed and expected test scores 
-(missing values pairwise removed).}
-\item{cor.OBS.EXP.means}{Correlation between observed and expected mean test 
-scores (missing values pairwise removed). The \eqn{\theta}{theta} interval 
-between \eqn{-4}{-4} is divided in 100 subintervals of equal length. The 
-observed and expected mean scores are computed for each subinterval.}
+The function returns a list with three elements: \item{coords}{(x, y)
+  coordinates of the TCC.} \item{cor.OBS.EXP}{Correlation between observed
+  and expected test scores (missing values pairwise removed).} 
+  \item{cor.OBS.EXP.means}{Correlation between observed and expected mean
+  test scores (missing values pairwise removed). The \eqn{\theta}{theta}
+  interval between \eqn{-4}{-4} through \eqn{+4}{+4} is divided in 100
+  subintervals of equal length. The observed and expected mean scores are
+  computed for each subinterval.}
 }
 \description{
 \code{plot.TCC} plots the TCC for the GUM and the GGUM.
 }
 \section{Details}{
-
-This function plots the test characteristic curve (TCC).
+ This function plots the test characteristic curve (TCC).
 }
 
 \examples{

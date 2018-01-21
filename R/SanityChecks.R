@@ -23,7 +23,7 @@ Sanity.Cfixed <- function(C)
 {
   if (max(C) - min(C) > 0)
   {
-    stop('C needs to be constant across items under the the GUM. Aborted.')
+    stop('C needs to be constant across items under the GUM. Aborted.')
   }
 }
 

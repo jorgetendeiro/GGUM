@@ -17,23 +17,22 @@ installed (default: "C:/GGUM2004").}
 }
 \description{
 \code{export.GGUM2004} exports the data from R to a text file 
-according to the format required by GGUM2004.
+  according to the format required by GGUM2004.
 }
 \section{Details}{
-
-This function exports the R matrix \code{data} in GGUM2004 (Roberts, 
-Donoghue, & Laughlin, 2000; Roberts et al., 2006) friendly format. This data 
-file is to be used together with a GGUM2004 command script (or using the GUI 
-itself, of course). GGUM2004 may be executed directly or may be called from 
-R, see \code{\link[GGUM]{run.GGUM2004}}.
-
-Observe that this function is optimized for the Windows operating system, 
-because GGUM2004 is a Windows program.
-
-By default, both the data file exported by this function and the GGUM2004 
-command script (exported via \code{\link[GGUM]{write.GGUM2004}}) 
-are saved in the directory \code{C:/GGUM2004}, where GGUM2004 is expected to 
-be installed (unzipped).
+ This function exports the R matrix \code{data} in GGUM2004
+  (Roberts, Donoghue, & Laughlin, 2000; Roberts et al., 2006) friendly
+  format. This data file is to be used together with a GGUM2004 command
+  script (or using the GUI itself, of course). GGUM2004 may be executed
+  directly or may be called from R, see \code{\link[GGUM]{run.GGUM2004}}.
+  
+  Observe that this function is optimized for the Windows operating system, 
+  because GGUM2004 is a Windows program.
+  
+  By default, both the data file exported by this function and the GGUM2004 
+  command script (exported via \code{\link[GGUM]{write.GGUM2004}}) are saved
+  in the directory \code{C:/GGUM2004}, where GGUM2004 is expected to be
+  installed (unzipped).
 }
 
 \examples{
@@ -41,7 +40,7 @@ be installed (unzipped).
 # Generate data:
 C   <- c(3, 3, 3, 5, 5, 5)
 I   <- 6
-gen <- GenData.GGUM(750, 6, C, seed = 125)
+gen <- GenData.GGUM(750, I, C, seed = 125)
 # Export data to GGUM2004:
 export.GGUM2004(gen$data)
 }

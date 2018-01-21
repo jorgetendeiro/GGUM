@@ -1,52 +1,48 @@
 #' @title Writes a command file for GGUM2004
 #'   
 #' @description \code{write.GGUM2004} creates a GGUM2004 command file according 
-#' to the test characteristics. The file is saved in the GGUM2004 predefined 
-#' installation folder.
-#'  
+#'   to the test characteristics. The file is saved in the GGUM2004 predefined 
+#'   installation folder.
+#'   
 #' @param I The number of items.
-#' @param C \eqn{C} is the number of observable response 
-#' categories minus 1 (i.e., the item scores will be in the set 
-#' \eqn{\{0, 1, ..., C\}}{{0, 1, ..., C}}). It should either be a vector of 
-#' \eqn{I} elements or a scalar. In the latter case it is assumed that \eqn{C} 
-#' applies to all items.
+#' @param C \eqn{C} is the number of observable response categories minus 1
+#'   (i.e., the item scores will be in the set \eqn{\{0, 1, ..., C\}}{{0, 1,
+#'   ..., C}}). It should either be a vector of \eqn{I} elements or a scalar. In
+#'   the latter case it is assumed that \eqn{C} applies to all items.
 #' @param cutoff Either a number or a vector of \eqn{I} elements which defines 
-#' the cutoff value. Default is 2.
+#'   the cutoff value. Default is 2.
 #' @param model A string identifying the model. Possible values are "GUM" or 
-#'   "GGUM" (default). 
+#'   "GGUM" (default).
 #' @param cmd.file A character string defining the name to give to the command 
-#' file. No file extension is required.
+#'   file. No file extension is required.
 #' @param data.file A character string defining the name of the data file. No 
-#' file extension is required.
+#'   file extension is required.
 #' @param dir A character string defining the directory where GGUM2004 is 
-#' installed (default: "C:/GGUM2004"). The data file identified by the 
-#' \code{data.file} parameter (exported by function 
-#' \code{\link[GGUM]{export.GGUM2004}}) should exist in this 
-#' directory.
+#'   installed (default: "C:/GGUM2004"). The data file identified by the 
+#'   \code{data.file} parameter (exported by function 
+#'   \code{\link[GGUM]{export.GGUM2004}}) should exist in this directory.
 #'   
 #' @return A script file is saved in the directory where GGUM2004 is installed.
-#' 
-#' @section Details:
-#' This function prepares a GGUM2004 friendly command script, which 
-#' may be used to run the GGUM2004 program (Roberts, Donoghue, & Laughlin, 
-#' 2000; Roberts et al., 2006). GGUM2004 may be executed directly or may be 
-#' called from R, see \code{\link[GGUM]{run.GGUM2004}}. 
-#' 
-#' Observe that this function is optimized for the Windows operating system, 
-#' because GGUM2004 is a Windows program.
-#' 
-#' By default, both the data file (exported via 
-#' \code{\link[GGUM]{export.GGUM2004}}) and the GGUM2004 command 
-#' script exported by this function are saved in the directory 
-#' \code{C:/GGUM2004}, where GGUM2004 is expected to be installed (unzipped).
-#' 
-#' @references
-#' \insertRef{Robertsetal2000}{GGUM}
+#'   
+#' @section Details: This function prepares a GGUM2004 friendly command script,
+#'   which may be used to run the GGUM2004 program (Roberts, Donoghue, &
+#'   Laughlin, 2000; Roberts et al., 2006). GGUM2004 may be executed directly or
+#'   may be called from R, see \code{\link[GGUM]{run.GGUM2004}}.
+#'   
+#'   Observe that this function is optimized for the Windows operating system, 
+#'   because GGUM2004 is a Windows program.
+#'   
+#'   By default, both the data file (exported via 
+#'   \code{\link[GGUM]{export.GGUM2004}}) and the GGUM2004 command script
+#'   exported by this function are saved in the directory \code{C:/GGUM2004},
+#'   where GGUM2004 is expected to be installed (unzipped).
+#'   
+#' @references \insertRef{Robertsetal2000}{GGUM}
 #' 
 #' \insertRef{Robertsetal2006}{GGUM}
 #' 
 #' @author Sebastian Castro Alvarez, \email{secastroal@gmail.com}
-#' 
+#'   
 #' @examples
 #' I <- 6
 #' C <- c(3, 3, 3, 5, 5, 5)
@@ -114,44 +110,42 @@ write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM",
 }
 
 #' @title Exports data in GGUM2004 friendly format
-#'
+#'   
 #' @description \code{export.GGUM2004} exports the data from R to a text file 
-#' according to the format required by GGUM2004.
-#'
-#' @param data The R data matrix to be exported. 
+#'   according to the format required by GGUM2004.
+#'   
+#' @param data The R data matrix to be exported.
 #' @param data.file A character string defining the name of the data file. No 
-#' file extension is required.
+#'   file extension is required.
 #' @param dir A character string defining the directory where GGUM2004 is 
-#' installed (default: "C:/GGUM2004"). 
-#' 
-#' @section Details:
-#' This function exports the R matrix \code{data} in GGUM2004 (Roberts, 
-#' Donoghue, & Laughlin, 2000; Roberts et al., 2006) friendly format. This data 
-#' file is to be used together with a GGUM2004 command script (or using the GUI 
-#' itself, of course). GGUM2004 may be executed directly or may be called from 
-#' R, see \code{\link[GGUM]{run.GGUM2004}}.
-#' 
-#' Observe that this function is optimized for the Windows operating system, 
-#' because GGUM2004 is a Windows program.
-#' 
-#' By default, both the data file exported by this function and the GGUM2004 
-#' command script (exported via \code{\link[GGUM]{write.GGUM2004}}) 
-#' are saved in the directory \code{C:/GGUM2004}, where GGUM2004 is expected to 
-#' be installed (unzipped).
-#' 
-#' @references
-#' \insertRef{Robertsetal2000}{GGUM}
+#'   installed (default: "C:/GGUM2004").
+#'   
+#' @section Details: This function exports the R matrix \code{data} in GGUM2004
+#'   (Roberts, Donoghue, & Laughlin, 2000; Roberts et al., 2006) friendly
+#'   format. This data file is to be used together with a GGUM2004 command
+#'   script (or using the GUI itself, of course). GGUM2004 may be executed
+#'   directly or may be called from R, see \code{\link[GGUM]{run.GGUM2004}}.
+#'   
+#'   Observe that this function is optimized for the Windows operating system, 
+#'   because GGUM2004 is a Windows program.
+#'   
+#'   By default, both the data file exported by this function and the GGUM2004 
+#'   command script (exported via \code{\link[GGUM]{write.GGUM2004}}) are saved
+#'   in the directory \code{C:/GGUM2004}, where GGUM2004 is expected to be
+#'   installed (unzipped).
+#'   
+#' @references \insertRef{Robertsetal2000}{GGUM}
 #' 
 #' \insertRef{Robertsetal2006}{GGUM}
 #' 
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
-#' 
+#'   
 #' @examples
 #' \dontrun{
 #' # Generate data:
 #' C   <- c(3, 3, 3, 5, 5, 5)
 #' I   <- 6
-#' gen <- GenData.GGUM(750, 6, C, seed = 125)
+#' gen <- GenData.GGUM(750, I, C, seed = 125)
 #' # Export data to GGUM2004:
 #' export.GGUM2004(gen$data)
 #' }
@@ -196,28 +190,27 @@ export.GGUM2004 <- function(data, data.file = "data", dir = "C:/GGUM2004")
 }
 
 #' @title Read GGUM2004 person estimates into R
-#'
-#' @description \code{read.person.GGUM2004} reads the output files from GGUM2004 
-#' with the person parameters. Both the person parameter estimates and their 
-#' standard errors are imported into R.
-#'
-#' @param temp.dir The directory where GGUM2004 saved the output. By default it 
-#' is "C:/GGUM2004/TEMPFILE".
+#'   
+#' @description \code{read.person.GGUM2004} reads the output files from GGUM2004
+#'   with the person parameters. Both the person parameter estimates and their 
+#'   standard errors are imported into R.
+#'   
+#' @param temp.dir The directory where GGUM2004 saved the output. By default, it
+#'   is "C:/GGUM2004/TEMPFILE".
 #' @param precision Number of decimal places of the results (default = 4).
-#' 
+#'   
 #' @return An \eqn{N\times 3}{Nx3} matrix is returned, where \eqn{N} is the 
-#' number of persons. The first column is the person ID, the second column has 
-#' the person parameter estimates, and the last column has the standard errors.
-#' 
-#' @section Details: 
-#' Observe that this function is optimized for the Windows operating system, 
-#' because GGUM2004 is a Windows program.
-#' 
-#' @references
-#' \insertRef{Robertsetal2006}{GGUM}
+#'   number of persons. The first column is the person ID, the second column has
+#'   the person parameter estimates, and the last column has the standard
+#'   errors.
+#'   
+#' @section Details: Observe that this function is optimized for the Windows
+#'   operating system, because GGUM2004 is a Windows program.
+#'   
+#' @references \insertRef{Robertsetal2006}{GGUM}
 #' 
 #' @author Sebastian Castro Alvarez, \email{secastroal@gmail.com}
-#' 
+#'   
 #' @examples
 #' \dontrun{
 #' # If the GGUM2004 output files are in the default directory 
@@ -272,44 +265,37 @@ read.person.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
 }
 
 #' @title Read GGUM2004 item estimates into R
-#' 
+#'   
 #' @description \code{read.item.GGUM2004} reads the output files from GGUM2004 
-#' with the item parameters. Both the item parameter estimates and their 
-#' standard errors are imported into R.
-#' 
-#' @param temp.dir The directory where GGUM2004 saved the output. By default it 
-#' is "C:/GGUM2004/TEMPFILE".
+#'   with the item parameters. Both the item parameter estimates and their 
+#'   standard errors are imported into R.
+#'   
+#' @param temp.dir The directory where GGUM2004 saved the output. By default, it
+#'   is "C:/GGUM2004/TEMPFILE".
 #' @param precision Number of decimal places of the results (default = 4).
 #'   
 #' @return \code{read.item.GGUM2004} returns a list cointaning the following 
-#' components: 
-#' \itemize{ 
-#' \item{alpha}{The estimated discrimination parameters (for GGUM).}
-#' \item{delta}{The estimated difficulty parameters.}
-#' \item{taus}{The estimated threshold parameters.}
-#' \item{alphaSE}{The standard errors for the estimated discrimination 
-#' parameters (for GGUM).}
-#' \item{deltaSE}{The standard errors for the estimated difficulty 
-#' parameters.}
-#' \item{tausSE}{The standard errors for the estimated threshold 
-#' parameters (above zero; recall that the threshold parameters are constrained 
-#' to symmetry around zero, that is, 
-#' \eqn{\tau_{i(C+1)}=0}{tau_{i(C+1)} = 0} and 
-#' \eqn{\tau_{iz}=-\tau_{i(M-z+1)}}{tau_{iz} = -tau_{i(M-z+1)}} for 
-#' \eqn{z\not= 0}{z != 0}.}
-#' }
-#' 
-#' @section Details: 
-#' Observe that this function is optimized for the Windows operating system, 
-#' because GGUM2004 is a Windows program.
-#' 
-#' @references
-#' \insertRef{Robertsetal2000}{GGUM}
+#'   components: \itemize{ \item{alpha}{The estimated discrimination parameters
+#'   (for GGUM).} \item{delta}{The estimated difficulty parameters.} 
+#'   \item{taus}{The estimated threshold parameters.} \item{alphaSE}{The
+#'   standard errors for the estimated discrimination parameters (for GGUM).} 
+#'   \item{deltaSE}{The standard errors for the estimated difficulty 
+#'   parameters.} \item{tausSE}{The standard errors for the estimated threshold 
+#'   parameters (above zero; recall that the threshold parameters are
+#'   constrained to symmetry around zero, that is, 
+#'   \eqn{\tau_{i(C+1)}=0}{tau_{i(C+1)} = 0} and 
+#'   \eqn{\tau_{iz}=-\tau_{i(M-z+1)}}{tau_{iz} = -tau_{i(M-z+1)}} for 
+#'   \eqn{z\not= 0}{z != 0}.} }
+#'   
+#' @section Details: Observe that this function is optimized for the Windows
+#'   operating system, because GGUM2004 is a Windows program.
+#'   
+#' @references \insertRef{Robertsetal2000}{GGUM}
 #' 
 #' \insertRef{Robertsetal2006}{GGUM}
 #' 
 #' @author Sebastian Castro Alvarez, \email{secastroal@gmail.com}
-#' 
+#'   
 #' @examples
 #' \dontrun{
 #' # If the GGUM2004 output files are in the default directory 
@@ -428,47 +414,42 @@ read.item.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
 
 
 #' @title Call GGUM2004 and import the estimated parameters into R
-#'
+#'   
 #' @description \code{run.GGUM2004} executes a previously exported GGUM2004 
-#' command file (via function \code{\link[GGUM]{write.GGUM2004}}). It returns 
-#' the execution time, the item parameter estimates, and the person parameter 
-#' estimates.
-#'
+#'   command file (via function \code{\link[GGUM]{write.GGUM2004}}). It returns 
+#'   the execution time, the item parameter estimates, and the person parameter 
+#'   estimates.
+#'   
 #' @param cmd.file A character string defining the name of the command file. No 
-#' file extension is required.
+#'   file extension is required.
 #' @param data.file A character string defining the name of the data file. No 
-#' file extension is required.
+#'   file extension is required.
 #' @param dir A character string defining the directory where GGUM2004 is 
-#' installed (default: "C:/GGUM2004"). The data file identified by the 
-#' \code{data.file} parameter (exported by function 
-#' \code{\link[GGUM]{export.GGUM2004}}) should exist in this directory.
+#'   installed (default: "C:/GGUM2004"). The data file identified by the 
+#'   \code{data.file} parameter (exported by function 
+#'   \code{\link[GGUM]{export.GGUM2004}}) should exist in this directory.
 #' @param precision Number of decimal places of the results (default = 4).
 #'   
-#' @return \code{run.GGUM2004} returns a list cointaning the following
-#' components: 
-#' \itemize{ 
-#' \item{time}{The GGUM2004 execution time.}
-#' \item{alpha}{The estimated discrimination parameters (for GGUM).}
-#' \item{delta}{The estimated difficulty parameters.}
-#' \item{taus}{The estimated threshold parameters.}
-#' \item{SE}{The standard errors for the estimated item parameters.}
-#' \item{theta}{The estimated person parameters and their standard errors.}
-#' }
-#' 
-#' @section Details:
-#' Function \code{run.GGUM2004} runs internally both functions 
-#' \code{\link[GGUM]{read.item.GGUM2004}} (to import the GGUM2004 item 
-#' estimates into R) and \code{\link[GGUM]{read.person.GGUM2004}} (to import 
-#' the GGUM2004 person estimates into R).
-#' 
-#' Observe that this function is optimized for the Windows operating system, 
-#' because GGUM2004 is a Windows program.
-#' 
-#' @references
-#' \insertRef{Robertsetal2006}{GGUM}
+#' @return \code{run.GGUM2004} returns a list cointaning the following 
+#'   components: \itemize{ \item{time}{The GGUM2004 execution time.} 
+#'   \item{alpha}{The estimated discrimination parameters (for GGUM).} 
+#'   \item{delta}{The estimated difficulty parameters.} \item{taus}{The
+#'   estimated threshold parameters.} \item{SE}{The standard errors for the
+#'   estimated item parameters.} \item{theta}{The estimated person parameters
+#'   and their standard errors.} }
+#'   
+#' @section Details: Function \code{run.GGUM2004} runs internally both functions
+#'   \code{\link[GGUM]{read.item.GGUM2004}} (to import the GGUM2004 item 
+#'   estimates into R) and \code{\link[GGUM]{read.person.GGUM2004}} (to import 
+#'   the GGUM2004 person estimates into R).
+#'   
+#'   Observe that this function is optimized for the Windows operating system, 
+#'   because GGUM2004 is a Windows program.
+#'   
+#' @references \insertRef{Robertsetal2006}{GGUM}
 #' 
 #' @author Sebastian Castro Alvarez, \email{secastroal@gmail.com}
-#' 
+#'   
 #' @examples
 #' \dontrun{
 #' # Generate data:

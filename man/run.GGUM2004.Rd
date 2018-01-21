@@ -22,32 +22,28 @@ installed (default: "C:/GGUM2004"). The data file identified by the
 \item{precision}{Number of decimal places of the results (default = 4).}
 }
 \value{
-\code{run.GGUM2004} returns a list cointaning the following
-components: 
-\itemize{ 
-\item{time}{The GGUM2004 execution time.}
-\item{alpha}{The estimated discrimination parameters (for GGUM).}
-\item{delta}{The estimated difficulty parameters.}
-\item{taus}{The estimated threshold parameters.}
-\item{SE}{The standard errors for the estimated item parameters.}
-\item{theta}{The estimated person parameters and their standard errors.}
-}
+\code{run.GGUM2004} returns a list cointaning the following 
+  components: \itemize{ \item{time}{The GGUM2004 execution time.} 
+  \item{alpha}{The estimated discrimination parameters (for GGUM).} 
+  \item{delta}{The estimated difficulty parameters.} \item{taus}{The
+  estimated threshold parameters.} \item{SE}{The standard errors for the
+  estimated item parameters.} \item{theta}{The estimated person parameters
+  and their standard errors.} }
 }
 \description{
 \code{run.GGUM2004} executes a previously exported GGUM2004 
-command file (via function \code{\link[GGUM]{write.GGUM2004}}). It returns 
-the execution time, the item parameter estimates, and the person parameter 
-estimates.
+  command file (via function \code{\link[GGUM]{write.GGUM2004}}). It returns 
+  the execution time, the item parameter estimates, and the person parameter 
+  estimates.
 }
 \section{Details}{
-
-Function \code{run.GGUM2004} runs internally both functions 
-\code{\link[GGUM]{read.item.GGUM2004}} (to import the GGUM2004 item 
-estimates into R) and \code{\link[GGUM]{read.person.GGUM2004}} (to import 
-the GGUM2004 person estimates into R).
-
-Observe that this function is optimized for the Windows operating system, 
-because GGUM2004 is a Windows program.
+ Function \code{run.GGUM2004} runs internally both functions
+  \code{\link[GGUM]{read.item.GGUM2004}} (to import the GGUM2004 item 
+  estimates into R) and \code{\link[GGUM]{read.person.GGUM2004}} (to import 
+  the GGUM2004 person estimates into R).
+  
+  Observe that this function is optimized for the Windows operating system, 
+  because GGUM2004 is a Windows program.
 }
 
 \examples{

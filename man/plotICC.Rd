@@ -16,14 +16,13 @@ plotted. Default is all items.}
 }
 \value{
 The function returns the correlation between observed and expected 
-item scores (missing values pairwise removed).
+  item scores (missing values pairwise removed).
 }
 \description{
 \code{plot.ICC} plots the ICCs for the GUM and the GGUM.
 }
 \section{Details}{
-
-This function plots the item characteristic curves (ICCs).
+ This function plots the item characteristic curves (ICCs).
 }
 
 \examples{

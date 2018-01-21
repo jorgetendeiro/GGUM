@@ -18,8 +18,7 @@ The function returns the (x, y) coordinates of the TIF.
 \code{plot.TIF} plots the TIF for the GUM and the GGUM.
 }
 \section{Details}{
-
-This function plots the test information function (TIF).
+ This function plots the test information function (TIF).
 }
 
 \examples{
