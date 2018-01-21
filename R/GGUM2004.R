@@ -29,7 +29,7 @@
 #'   Laughlin, 2000; Roberts et al., 2006). GGUM2004 may be executed directly or
 #'   may be called from R, see \code{\link[GGUM]{run.GGUM2004}}.
 #'   
-#'   Observe that this function is optimized for the Windows operating system, 
+#'   Observe that this function is optimized for the Windows operating system 
 #'   because GGUM2004 is a Windows program.
 #'   
 #'   By default, both the data file (exported via 
@@ -126,7 +126,7 @@ write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM",
 #'   script (or using the GUI itself, of course). GGUM2004 may be executed
 #'   directly or may be called from R, see \code{\link[GGUM]{run.GGUM2004}}.
 #'   
-#'   Observe that this function is optimized for the Windows operating system, 
+#'   Observe that this function is optimized for the Windows operating system 
 #'   because GGUM2004 is a Windows program.
 #'   
 #'   By default, both the data file exported by this function and the GGUM2004 
@@ -205,7 +205,7 @@ export.GGUM2004 <- function(data, data.file = "data", dir = "C:/GGUM2004")
 #'   errors.
 #'   
 #' @section Details: Observe that this function is optimized for the Windows
-#'   operating system, because GGUM2004 is a Windows program.
+#'   operating system because GGUM2004 is a Windows program.
 #'   
 #' @references \insertRef{Robertsetal2006}{GGUM}
 #' 
@@ -275,12 +275,12 @@ read.person.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
 #' @param precision Number of decimal places of the results (default = 4).
 #'   
 #' @return \code{read.item.GGUM2004} returns a list cointaning the following 
-#'   components: \itemize{ \item{alpha}{The estimated discrimination parameters
-#'   (for GGUM).} \item{delta}{The estimated difficulty parameters.} 
-#'   \item{taus}{The estimated threshold parameters.} \item{alphaSE}{The
+#'   components: \itemize{ \item{alpha} {The estimated discrimination parameters
+#'   (for GGUM).} \item{delta} {The estimated difficulty parameters.} 
+#'   \item{taus} {The estimated threshold parameters.} \item{alphaSE} {The
 #'   standard errors for the estimated discrimination parameters (for GGUM).} 
-#'   \item{deltaSE}{The standard errors for the estimated difficulty 
-#'   parameters.} \item{tausSE}{The standard errors for the estimated threshold 
+#'   \item{deltaSE} {The standard errors for the estimated difficulty 
+#'   parameters.} \item{tausSE} {The standard errors for the estimated threshold 
 #'   parameters (above zero; recall that the threshold parameters are
 #'   constrained to symmetry around zero, that is, 
 #'   \eqn{\tau_{i(C+1)}=0}{tau_{i(C+1)} = 0} and 
@@ -288,7 +288,7 @@ read.person.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
 #'   \eqn{z\not= 0}{z != 0}.} }
 #'   
 #' @section Details: Observe that this function is optimized for the Windows
-#'   operating system, because GGUM2004 is a Windows program.
+#'   operating system because GGUM2004 is a Windows program.
 #'   
 #' @references \insertRef{Robertsetal2000}{GGUM}
 #' 
@@ -431,11 +431,11 @@ read.item.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
 #' @param precision Number of decimal places of the results (default = 4).
 #'   
 #' @return \code{run.GGUM2004} returns a list cointaning the following 
-#'   components: \itemize{ \item{time}{The GGUM2004 execution time.} 
-#'   \item{alpha}{The estimated discrimination parameters (for GGUM).} 
-#'   \item{delta}{The estimated difficulty parameters.} \item{taus}{The
-#'   estimated threshold parameters.} \item{SE}{The standard errors for the
-#'   estimated item parameters.} \item{theta}{The estimated person parameters
+#'   components: \itemize{ \item{time} {The GGUM2004 execution time.} 
+#'   \item{alpha} {The estimated discrimination parameters (for GGUM).} 
+#'   \item{delta} {The estimated difficulty parameters.} \item{taus} {The
+#'   estimated threshold parameters.} \item{SE} {The standard errors for the
+#'   estimated item parameters.} \item{theta} {The estimated person parameters
 #'   and their standard errors.} }
 #'   
 #' @section Details: Function \code{run.GGUM2004} runs internally both functions
@@ -443,7 +443,7 @@ read.item.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
 #'   estimates into R) and \code{\link[GGUM]{read.person.GGUM2004}} (to import 
 #'   the GGUM2004 person estimates into R).
 #'   
-#'   Observe that this function is optimized for the Windows operating system, 
+#'   Observe that this function is optimized for the Windows operating system 
 #'   because GGUM2004 is a Windows program.
 #'   
 #' @references \insertRef{Robertsetal2006}{GGUM}

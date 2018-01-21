@@ -27,7 +27,7 @@
 #' # Fit the GGUM:
 #' fit <- GGUM(gen$data, C)
 #' # Plot CRCs:
-#' plot.CRC(fit)
+#' plotCRC(fit)
 #' }
 #' 
 #' @export
@@ -146,7 +146,7 @@ plotCRC <- function(IP, items = NULL, x.lim = 4, ThetaminDelta = TRUE)
 #' fit <- GGUM(gen$data, C)
 #' th  <- Theta.EAP(fit)
 #' # Plot the TCC:
-#' plot.TCC(fit, th)
+#' plotTCC(fit, th)
 #' }
 #' 
 #' @export
@@ -252,7 +252,7 @@ plotTCC <- function(IP, Th)
 #' fit <- GGUM(gen$data, C)
 #' th  <- Theta.EAP(fit)
 #' # Plot the ICCs:
-#' plot.ICC(fit, th)
+#' plotICC(fit, th)
 #' }
 #' 
 #' @export
@@ -357,7 +357,7 @@ plotICC <- function(IP, Th, items = NULL)
 #' fit <- GGUM(gen$data, C)
 #' th  <- Theta.EAP(fit)
 #' # Plot the TIF:
-#' plot.TIF(fit, th)
+#' plotTIF(fit, th)
 #' }
 #' 
 #' @export
@@ -423,7 +423,7 @@ plotTIF <- function(IP, Th)
 #' fit <- GGUM(gen$data, C)
 #' th  <- Theta.EAP(fit)
 #' # Plot the IIFs:
-#' plot.IIF(fit, th)
+#' plotIIF(fit, th)
 #' }
 #' 
 #' @export
