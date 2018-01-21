@@ -1,26 +1,24 @@
 # Plot CRCs ----
 #' @title Plot item category response curves (CRCs)
-#'
-#' @description \code{plot.CRC} plots item CRCs for the GUM and the GGUM. 
-#'
+#'   
+#' @description \code{plot.CRC} plots item CRCs for the GUM and the GGUM.
+#'   
 #' @param IP Object of class \code{GGUM}.
 #' @param items Vector indicating the items for which the CRCs are to be 
-#' plotted. Default is all items.
+#'   plotted. Default is all items.
 #' @param x.lim Controls the limits of the x-axis. Default is -4 through +4.
 #' @param ThetaminDelta Logical; if \code{TRUE}, plot the CRCs centered at 0, 
-#' otherwise plot the CRCs centered at \eqn{\delta}{delta} (item's difficulty). 
-#' Default is \code{TRUE}.
-#' 
-#' @return The function returns a three-dimensional array with the 
-#' probabilities associated to each item's CRC. These are the values shown in 
-#' the plot.
-#' 
-#' @section Details:
-#' This function plots the item category response curves (CRCs) for the 
-#' requested items.
-#' 
+#'   otherwise plot the CRCs centered at \eqn{\delta}{delta} (item's
+#'   difficulty). Default is \code{TRUE}.
+#'   
+#' @return The function returns a three-dimensional array with the probabilities
+#'   associated to each item's CRC. These are the values shown in the plot.
+#'   
+#' @section Details: This function plots the item category response curves
+#'   (CRCs) for the requested items.
+#'   
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
-#' 
+#'   
 #' @examples
 #' \dontrun{
 #' # Generate data:
@@ -120,26 +118,25 @@ plotCRC <- function(IP, items = NULL, x.lim = 4, ThetaminDelta = TRUE)
 
 # Plot TCC ----
 #' @title Plot test characteristic curve (TCC)
-#'
-#' @description \code{plot.TCC} plots the TCC for the GUM and the GGUM. 
-#'
+#'   
+#' @description \code{plot.TCC} plots the TCC for the GUM and the GGUM.
+#'   
 #' @param IP Object of class \code{GGUM}.
 #' @param Th Theta estimates from function \code{Theta.EAP()}.
-#' 
-#' @return The function returns a list with three elements:
-#' \item{coords}{(x, y) coordinates of the TCC.}
-#' \item{cor.OBS.EXP}{Correlation between observed and expected test scores 
-#' (missing values pairwise removed).}
-#' \item{cor.OBS.EXP.means}{Correlation between observed and expected mean test 
-#' scores (missing values pairwise removed). The \eqn{\theta}{theta} interval 
-#' between \eqn{-4}{-4} is divided in 100 subintervals of equal length. The 
-#' observed and expected mean scores are computed for each subinterval.}
-#' 
-#' @section Details:
-#' This function plots the test characteristic curve (TCC).
-#' 
+#'   
+#' @return The function returns a list with three elements: \item{coords}{(x, y)
+#'   coordinates of the TCC.} \item{cor.OBS.EXP}{Correlation between observed
+#'   and expected test scores (missing values pairwise removed).} 
+#'   \item{cor.OBS.EXP.means}{Correlation between observed and expected mean
+#'   test scores (missing values pairwise removed). The \eqn{\theta}{theta}
+#'   interval between \eqn{-4}{-4} through \eqn{+4}{+4} is divided in 100
+#'   subintervals of equal length. The observed and expected mean scores are
+#'   computed for each subinterval.}
+#'   
+#' @section Details: This function plots the test characteristic curve (TCC).
+#'   
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
-#' 
+#'   
 #' @examples
 #' \dontrun{
 #' # Generate data:
@@ -231,22 +228,21 @@ plotTCC <- function(IP, Th)
 
 # Plot ICCs ----
 #' @title Plot item characteristic curves (ICCs)
-#'
-#' @description \code{plot.ICC} plots the ICCs for the GUM and the GGUM. 
-#'
+#'   
+#' @description \code{plot.ICC} plots the ICCs for the GUM and the GGUM.
+#'   
 #' @param IP Object of class \code{GGUM}.
 #' @param Th Theta estimates from function \code{Theta.EAP()}.
 #' @param items Vector indicating the items for which the ICCs are to be 
-#' plotted. Default is all items.
-#' 
+#'   plotted. Default is all items.
+#'   
 #' @return The function returns the correlation between observed and expected 
-#' item scores (missing values pairwise removed).
-#' 
-#' @section Details:
-#' This function plots the item characteristic curves (ICCs).
-#' 
+#'   item scores (missing values pairwise removed).
+#'   
+#' @section Details: This function plots the item characteristic curves (ICCs).
+#'   
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
-#' 
+#'   
 #' @examples
 #' \dontrun{
 #' # Generate data:
@@ -340,19 +336,18 @@ plotICC <- function(IP, Th, items = NULL)
 
 # Plot TIF ----
 #' @title Plot test information function (TIF)
-#'
-#' @description \code{plot.TIF} plots the TIF for the GUM and the GGUM. 
-#'
+#'   
+#' @description \code{plot.TIF} plots the TIF for the GUM and the GGUM.
+#'   
 #' @param IP Object of class \code{GGUM}.
 #' @param Th Theta estimates from function \code{Theta.EAP()}.
-#' 
+#'   
 #' @return The function returns the (x, y) coordinates of the TIF.
-#' 
-#' @section Details:
-#' This function plots the test information function (TIF).
-#' 
+#'   
+#' @section Details: This function plots the test information function (TIF).
+#'   
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
-#' 
+#'   
 #' @examples
 #' \dontrun{
 #' # Generate data:
@@ -405,21 +400,20 @@ plotTIF <- function(IP, Th)
 
 # Plot IIFs ----
 #' @title Plot item information functions (IIFs)
-#'
-#' @description \code{plot.IIF} plots the IIFs for the GUM and the GGUM. 
-#'
+#'   
+#' @description \code{plot.IIF} plots the IIFs for the GUM and the GGUM.
+#'   
 #' @param IP Object of class \code{GGUM}.
 #' @param Th Theta estimates from function \code{Theta.EAP()}.
 #' @param items Vector indicating the items for which the ICCs are to be 
-#' plotted. Default is all items.
-#' 
+#'   plotted. Default is all items.
+#'   
 #' @return The function returns the (x, y) coordinates of the IIFs.
-#' 
-#' @section Details:
-#' This function plots the item information functions (IIFs).
-#' 
+#'   
+#' @section Details: This function plots the item information functions (IIFs).
+#'   
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
-#' 
+#'   
 #' @examples
 #' \dontrun{
 #' # Generate data:

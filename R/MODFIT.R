@@ -8,63 +8,62 @@
 #' @title MODFIT for the GGUM
 #'   
 #' @description \code{MODFIT} computes the adjusted \eqn{\chi^2}{chi-square} 
-#' degrees of freedom ratios (\eqn{\chi^2/df}{chisq/df}) introduced by Drasgow 
-#' et al. (1995) for the GGUM.
-#'  
+#'   degrees of freedom ratios (\eqn{\chi^2/df}{chisq/df}) introduced by Drasgow
+#'   et al. (1995) for the GGUM.
+#'   
 #' @param IP Object of class \code{GGUM}.
 #' @param precision Number of decimal places of the results (default = 4).
-#' 
+#'   
 #' @return A list (an object of class \code{MODFIT}) with four elements: The 
-#' results for singlets, doublets, triples, and a summary result.
-#' 
-#' @section Details:
-#' This function computes the adjusted \eqn{\chi^2}{chi-square} degrees of 
-#' freedom ratios (\eqn{\chi^2/df}{chisq/df}) introduced by Drasgow 
-#' et al. (1995). These \eqn{\chi^2}{chi-square} statistics are based on 
-#' expected frequencies that depend on the estimated item parameters and the 
-#' distribution of \eqn{\theta}{theta}. The \emph{unadjusted} statistic for 
-#' item \eqn{i} is given by
-#' 
-#' \deqn{\chi^2_i = \sum_{z=0}^C \frac{(O_{iz} - E_{iz})^2}{E_{iz}}, }
-#' {chisq_i = sum( (O_iz - E_iz)^2 / E_iz; z = 0, ..., C ), }
-#' 
-#' with
-#' 
-#' \deqn{E_{iz} = N\int P_{iz}(\theta)\varphi(\theta)d\theta.}{E_iz = N 
-#' int(P_iz(th)phi(th)dth).}
-#' 
-#' \eqn{O_{iz}}{O_iz} is the observed frequency of choosing answer \eqn{z} for 
-#' item \eqn{i} and \eqn{\varphi(\theta)}{phi(th)} is the standard normal 
-#' density. The equation above applies to single items ('singlets'). The 
-#' formula is easily extendible to pairs and triples of items. For large number 
-#' of items the function selects suitable subsets of doublets and triples to 
-#' perform the computations, since its total number increases quickly with test 
-#' length (Drasgow et al., 1995). 
-#' 
-#' The formula is adjusted to a sample size of 3,000, as follows (see also 
-#' LaHuis et al., 2011):
-#' 
-#' \deqn{\chi^2_i/df = \frac{3,000(\chi^2_i - df)}{N}+df,}{chisq/df = 
-#' 3,000(chsqr-df)/N + df,}
-#' 
-#' where \eqn{df} is a number of degrees of freedom that depends on the number 
-#' of singlets, doublets, and triplets.
-#' 
-#' As an heuristic, values of \eqn{\chi^2/df}{chisq/df} larger than 3 are 
-#' indicative of model misfit.
-#' 
-#' This function was produces the same numerical results as the MODFIT program 
-#' (Stark, 2001) for the GGUM.
-#' 
-#' @references
-#' \insertRef{Drasgow_etal1995}{GGUM}
+#'   results for singlets, doublets, triples, and a summary result.
+#'   
+#' @section Details: This function computes the adjusted
+#'   \eqn{\chi^2}{chi-square} degrees of freedom ratios
+#'   (\eqn{\chi^2/df}{chisq/df}) introduced by Drasgow et al. (1995). These
+#'   \eqn{\chi^2}{chi-square} statistics are based on expected frequencies that
+#'   depend on the estimated item parameters and the distribution of
+#'   \eqn{\theta}{theta}. The \emph{unadjusted} statistic for item \eqn{i} is
+#'   given by
+#'   
+#'   \deqn{\chi^2_i = \sum_{z=0}^C \frac{(O_{iz} - E_{iz})^2}{E_{iz}}, } 
+#'   {chisq_i = sum( (O_iz - E_iz)^2 / E_iz; z = 0, ..., C ), }
+#'   
+#'   with
+#'   
+#'   \deqn{E_{iz} = N\int P_{iz}(\theta)\varphi(\theta)d\theta.}{E_iz = N 
+#'   int(P_iz(th)phi(th)dth).}
+#'   
+#'   \eqn{O_{iz}}{O_iz} is the observed frequency of choosing answer \eqn{z} for
+#'   item \eqn{i} and \eqn{\varphi(\theta)}{phi(th)} is the standard normal 
+#'   density. The equation above applies to single items ('singlets'). The 
+#'   formula is easily extendible to pairs and triples of items. For large
+#'   number of items the function selects suitable subsets of doublets and
+#'   triples to perform the computations, since its total number increases
+#'   quickly with test length (Drasgow et al., 1995).
+#'   
+#'   The formula is adjusted to a sample size of 3,000, as follows (see also 
+#'   LaHuis et al., 2011):
+#'   
+#'   \deqn{\chi^2_i/df = \frac{3,000(\chi^2_i - df)}{N}+df,}{chisq/df = 
+#'   3,000(chsqr-df)/N + df,}
+#'   
+#'   where \eqn{df} is a number of degrees of freedom that depends on the number
+#'   of singlets, doublets, and triplets.
+#'   
+#'   As an heuristic, values of \eqn{\chi^2/df}{chisq/df} larger than 3 are 
+#'   indicative of model misfit.
+#'   
+#'   This function produces the same numerical results as the MODFIT program 
+#'   (Stark, 2001) for the GGUM.
+#'   
+#' @references \insertRef{Drasgow_etal1995}{GGUM}
 #' 
 #' \insertRef{LaHuis_etal2011}{GGUM}
 #' 
 #' \insertRef{MODFITsoftware}{GGUM}
 #' 
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
-#' 
+#'   
 #' @examples
 #' \dontrun{
 #' # Generate data:

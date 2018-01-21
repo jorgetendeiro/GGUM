@@ -9,14 +9,13 @@ GUM(data, C, SE = TRUE, precision = 4, N.nodes = 30, max.outer = 60,
 }
 \arguments{
 \item{data}{The \eqn{N\times I}{NxI} data matrix. The item scores are coded 
-\eqn{0, 1, \ldots, C}{0, 1, ..., C} for an item with \eqn{(C+1)} observable 
+\eqn{0, 1, \ldots, C}{0, 1, ..., C} for an item with \eqn{(C+1)} observable
 response categories.}
 
-\item{C}{\eqn{C} is the number of observable response 
-categories minus 1 (i.e., the item scores will be in the set 
-\eqn{\{0, 1, ..., C\}}{{0, 1, ..., C}}). It should be a scalar since the GUM 
-expects all items to be based on the same number of observable response 
-categories.}
+\item{C}{\eqn{C} is the number of observable response categories minus 1
+(i.e., the item scores will be in the set \eqn{\{0, 1, ..., C\}}{{0, 1,
+..., C}}). It should be a scalar since the GUM expects all items to be
+based on the same number of observable response categories.}
 
 \item{SE}{Logical value: Estimate the standard errors of the item parameter 
 estimates? Default is \code{TRUE}.}
@@ -32,44 +31,39 @@ estimates? Default is \code{TRUE}.}
 \item{tol}{Convergence tolerance (default = .001).}
 }
 \value{
-The function returns a list with 12 elements:
-\item{data}{Data matrix.}
-\item{C}{Vector \eqn{C}.}
-\item{alpha}{In case of the GUM this is simply a vector of 1s.}
-\item{delta}{The estimated difficulty parameters.}
-\item{taus}{The estimated threshold parameters.}
-\item{SE}{The standard errors of the item parameters estimates.}
-\item{rows.rm}{Indices of rows removed from the data before fitting the 
-model, due to complete disagreement.}
-\item{N.nodes}{Number of nodes for numerical integration.}
-\item{tol.conv}{Loss function value at convergence (it is smaller than 
-\code{tol} upon convergence).}
-\item{iter.inner}{Number of inner iterations (it is equal to 1 upon 
-convergence).}
-\item{model}{Model fitted.}
-\item{InformationCrit}{Loglikelihood, number of model parameters, AIC, BIC, 
-CAIC.}
+The function returns a list (an object of class \code{GGUM}) with 12
+  elements: \item{data}{Data matrix.} \item{C}{Vector \eqn{C}.} 
+  \item{alpha}{In case of the GUM this is simply a vector of 1s.} 
+  \item{delta}{The estimated difficulty parameters.} \item{taus}{The
+  estimated threshold parameters.} \item{SE}{The standard errors of the item
+  parameters estimates.} \item{rows.rm}{Indices of rows removed from the data
+  before fitting the model, due to complete disagreement.} 
+  \item{N.nodes}{Number of nodes for numerical integration.} 
+  \item{tol.conv}{Loss function value at convergence (it is smaller than 
+  \code{tol} upon convergence).} \item{iter.inner}{Number of inner iterations
+  (it is equal to 1 upon convergence).} \item{model}{Model fitted.} 
+  \item{InformationCrit}{Loglikelihood, number of model parameters, AIC, BIC,
+  CAIC.}
 }
 \description{
 \code{GUM} estimates all item parameters for the GUM.
 }
 \section{Details}{
-
-The graded unfolding model (GUM; Roberts & Laughlin, 1996) is a constrained 
-verson of the GGUM (Roberts et al., 2000; see \code{\link[GGUM]{GGUM}}). 
-GUM is constrained in two ways: All discrimination parameters are fixed to 
-unity and the threshold parameters are shared across items. The last 
-constraint in particular implies that only data with the same response 
-categories across items should be used (i.e., \eqn{C} is constant for all 
-items).
-
-Estimated GUM parameters are used as the second step of fitting the more 
-general GGUM. Since under the GGUM data may include items with different 
-number of response categories, the code to fitting the GUM was internally 
-extended to accomodate for this. 
-
-The marginal maximum likelihood algorithm of Roberts et al. (2000) was 
-implemented.
+ The graded unfolding model (GUM; Roberts & Laughlin, 1996)
+  is a constrained verson of the GGUM (Roberts et al., 2000; see
+  \code{\link[GGUM]{GGUM}}). GUM is constrained in two ways: All
+  discrimination parameters are fixed to unity and the threshold parameters
+  are shared across items. The last constraint in particular implies that
+  only data with the same response categories across items should be used
+  (i.e., \eqn{C} is constant for all items).
+  
+  Estimated GUM parameters are used as the second step of fitting the more 
+  general GGUM. Since under the GGUM data may include items with different 
+  number of response categories, the code to fitting the GUM was internally 
+  extended to accomodate for this.
+  
+  The marginal maximum likelihood algorithm of Roberts et al. (2000) was 
+  implemented.
 }
 
 \examples{

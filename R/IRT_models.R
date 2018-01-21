@@ -48,33 +48,32 @@ P.GGUM <- function(z, alpha, delta, taus, theta, C)
 
 # probs.GGUM ----
 #' @title Compute model probabilities for the GGUM
-#'
-#' @description \code{probs.GGUM} computes model probabilities for the GGUM (and 
-#' the GUM) for given item and person parameters.
-#'
+#'   
+#' @description \code{probs.GGUM} computes model probabilities for the GGUM (and
+#'   the GUM) for given item and person parameters.
+#'   
 #' @param alpha A vector of length \eqn{I} with the discrimination parameters.
 #' @param delta A vector of length \eqn{I} with the difficulty parameters.
 #' @param taus An \eqn{I\times M}{IxM} matrix with the threshold parameters 
-#' (\eqn{M = 2\times\max{C}+1}{M = 2*max(C)+1}).
+#'   (\eqn{M = 2\times\max{C}+1}{M = 2*max(C)+1}).
 #' @param theta A vector of length \eqn{N} with the person parameters.
-#' @param C \eqn{C} is the number of observable response 
-#' categories minus 1 (i.e., the item scores will be in the set 
-#' \eqn{\{0, 1, ..., C\}}). It should be a scalar since the GUM expects all 
-#' items to be based on the same number of observable response categories.
-#' 
-#' @return The function returns an \eqn{N\times I\times K}{NxIxK} 
-#' array with the GGUM probabilities, with \eqn{K=\max{C}+1}{K=max(C)+1}. 
-#' To retrieve the GUM-based probabilities just constrain alpha to a unit 
-#' vector of length {I} (i.e., \code{alpha = rep(1, I)}). In this case make 
-#' sure \code{C} is constant across items.
-#' 
-#' @section Details:
-#' This function computes the GGUM-based probabilities for all (person, item, 
-#' response category) combinations. For the GGUM formula see the help for 
-#' function \code{GGUM} (\code{\link[GGUM]{GGUM}}).
-#' 
+#' @param C \eqn{C} is the number of observable response categories minus 1
+#'   (i.e., the item scores will be in the set \eqn{\{0, 1, ..., C\}}). It
+#'   should either be a vector of \eqn{I} elements or a scalar. In the latter
+#'   case it is assumed that \eqn{C} applies to all items.
+#'   
+#' @return The function returns an \eqn{N\times I\times K}{NxIxK} array with the
+#'   GGUM probabilities, with \eqn{K=\max{C}+1}{K=max(C)+1}. To retrieve the
+#'   GUM-based probabilities just constrain alpha to a unit vector of length {I}
+#'   (i.e., \code{alpha = rep(1, I)}). In this case make sure \code{C} is
+#'   constant across items.
+#'   
+#' @section Details: This function computes the GGUM-based probabilities for all
+#'   (person, item, response category) combinations. For the GGUM formula see
+#'   the help for function \code{GGUM} (\code{\link[GGUM]{GGUM}}).
+#'   
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
-#' 
+#'   
 #' @examples
 #' C <- c(3, 3, 3, 5, 5)
 #' gen <- GenData.GGUM(10, 5, C, seed = 456)

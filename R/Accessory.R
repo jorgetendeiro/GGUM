@@ -11,76 +11,65 @@
 
 # GenData.GGUM ----
 #' @title Generate data from the GUM/GGUM
-#'
+#'   
 #' @description \code{GenData.GGUM} generates all model parameters (items and 
-#' persons) and item scores.
-#'
+#'   persons) and item scores.
+#'   
 #' @param N Number of persons (rows).
 #' @param I Number of items (columns).
-#' @param C \eqn{C} is the number of observable response 
-#' categories minus 1 (i.e., the item scores will be in the set 
-#' \eqn{\{0, 1, ..., C\}}{{0, 1, ..., C}}). It should either be a vector of 
-#' \eqn{I} elements or a scalar. In the latter case it is assumed that \eqn{C} 
-#' applies to all items.
+#' @param C \eqn{C} is the number of observable response categories minus 1 
+#'   (i.e., the item scores will be in the set \eqn{\{0, 1, ..., C\}}{{0, 1, 
+#'   ..., C}}). It should either be a vector of \eqn{I} elements or a scalar. In
+#'   the latter case it is assumed that \eqn{C} applies to all items.
 #' @param model A string identifying the model. Possible values are "GUM" or 
-#' "GGUM" (default).
+#'   "GGUM" (default).
 #' @param seed An integer, allowing the user to control the generation process 
-#' (for replication purposes).
-#' 
-#' @return The function returns a list with five elements:
-#' \item{alpha.gen}{The discrimination parameters.}
-#' \item{delta.gen}{The difficulty parameters.}
-#' \item{taus.gen}{The threshold parameters.}
-#' \item{theta.gen}{The person parameters.}
-#' \item{data}{The (NxI) data matrix. The item scores are coded 0, 1, ..., 
-#' C for an item with (C+1) observable response categories.}
-#' 
-#' @section Details:
-#' The generalized graded unfolding model (GGUM; Roberts & Laughlin, 1996; 
-#' Roberts et al., 2000) is given by 
-#' \deqn{P(Z_i=z|\theta_n) = 
-#' \frac{f(z) + 
-#' f(M-z)}{\sum_{w=0}^C\left[f(w)+f(M-w)\right]}, }{P(Z_i = z|t_n) = 
-#' ( f(z) + f(M-z) ) / (sum( f(w) + f(M - w); w = 0, ..., C )),}
-#' 
-#' \deqn{f(w) = exp\left\{\alpha_i\left[w(\theta_n-\delta_i)-
-#' \sum_{k=0}^w\tau_{ik}\right]\right\}, }{f(w) = exp( alpha_i ( w(t_n - delta_i) 
-#' - sum( tau_ik; k = 0, ..., w) ) ),}
-#' 
-#' where:
-#' \itemize{
-#' \item The subscripts \eqn{i} and \eqn{n} identify the item and person, 
-#' respectively.
-#' \item \eqn{z=0,\ldots,C}{z = 0, ..., C} denotes the observed answer 
-#' response.
-#' \item \eqn{M = 2C + 1} is the number of subjective response options minus 1.
-#' \item \eqn{\theta_n}{t_n} is the latent trait score for person \eqn{n}.
-#' \item \eqn{\alpha_i}{alpha_i} is the item slope (discrimination).
-#' \item \eqn{\delta_i}{delta_i} is the item location.
-#' \item \eqn{\tau_{ik}}{tau_ik} (\eqn{k=1,\ldots,M}{k = 1, ..., M} ) are the 
-#' threshold parameters.
-#' }
-#' 
-#' Parameter \eqn{\tau_{i0}}{tau_i0} is arbitrarily constrained to zero and the 
-#' threshold parameters are constrained to symmetry around zero, that is, 
-#' \eqn{\tau_{i(C+1)}=0}{tau_{i(C+1)} = 0} and 
-#' \eqn{\tau_{iz}=-\tau_{i(M-z+1)}}{tau_{iz} = -tau_{i(M-z+1)}} for 
-#' \eqn{z\not= 0}{z != 0}.
-#' 
-#' Parameters \eqn{\alpha_i}{alpha_i} are randomly uniformly drawn from the 
-#' (.5, 2) interval. Parameters \eqn{\delta_i}{delta_i} are randomly drawn 
-#' from the standard normal distribution bounded between \eqn{-2} and 2. The 
-#' threshold parameters are generated following the same procedure of Roberts, 
-#' Donoghue, and Laughlin (2002). Finally, the person parameters are randomly
-#' drawn from the standard normal distribution. 
-#' 
-#' If \code{model = "GUM"} the data based on the GUM (Roberts and Laughlin, 1996) 
-#' model are generated. The GUM is a constrained version of the GGUM, where all
-#' discrimination parameters are equalt to 1 and the item thresholds are shared
-#' by all items.
-#' 
+#'   (for replication purposes).
+#'   
+#' @return The function returns a list with five elements: \item{alpha.gen}{The 
+#'   discrimination parameters.} \item{delta.gen}{The difficulty parameters.} 
+#'   \item{taus.gen}{The threshold parameters.} \item{theta.gen}{The person 
+#'   parameters.} \item{data}{The (NxI) data matrix. The item scores are coded 
+#'   0, 1, ..., C for an item with (C+1) observable response categories.}
+#'   
+#' @section Details: The generalized graded unfolding model (GGUM; Roberts & 
+#'   Laughlin, 1996; Roberts et al., 2000) is given by \deqn{P(Z_i=z|\theta_n) =
+#'   \frac{f(z) + f(M-z)}{\sum_{w=0}^C\left[f(w)+f(M-w)\right]}, }{P(Z_i = 
+#'   z|t_n) = ( f(z) + f(M-z) ) / (sum( f(w) + f(M - w); w = 0, ..., C )),}
+#'   
+#'   \deqn{f(w) = exp\left\{\alpha_i\left[w(\theta_n-\delta_i)- 
+#'   \sum_{k=0}^w\tau_{ik}\right]\right\}, }{f(w) = exp( alpha_i ( w(t_n - 
+#'   delta_i) - sum( tau_ik; k = 0, ..., w) ) ),}
+#'   
+#'   where: \itemize{ \item The subscripts \eqn{i} and \eqn{n} identify the item
+#'   and person, respectively. \item \eqn{z=0,\ldots,C}{z = 0, ..., C} denotes 
+#'   the observed answer response. \item \eqn{M = 2C + 1} is the number of 
+#'   subjective response options minus 1. \item \eqn{\theta_n}{t_n} is the 
+#'   latent trait score for person \eqn{n}. \item \eqn{\alpha_i}{alpha_i} is the
+#'   item slope (discrimination). \item \eqn{\delta_i}{delta_i} is the item 
+#'   location. \item \eqn{\tau_{ik}}{tau_ik} (\eqn{k=1,\ldots,M}{k = 1, ..., M} 
+#'   ) are the threshold parameters. }
+#'   
+#'   Parameter \eqn{\tau_{i0}}{tau_i0} is arbitrarily constrained to zero and 
+#'   the threshold parameters are constrained to symmetry around zero, that is, 
+#'   \eqn{\tau_{i(C+1)}=0}{tau_{i(C+1)} = 0} and 
+#'   \eqn{\tau_{iz}=-\tau_{i(M-z+1)}}{tau_{iz} = -tau_{i(M-z+1)}} for 
+#'   \eqn{z\not= 0}{z != 0}.
+#'   
+#'   Parameters \eqn{\alpha_i}{alpha_i} are randomly uniformly drawn from the 
+#'   (.5, 2) interval. Parameters \eqn{\delta_i}{delta_i} are randomly drawn 
+#'   from the standard normal distribution bounded between \eqn{-2} and 2. The 
+#'   threshold parameters are generated following the same procedure of Roberts,
+#'   Donoghue, and Laughlin (2002). Finally, the person parameters are randomly 
+#'   drawn from the standard normal distribution.
+#'   
+#'   If \code{model = "GUM"} the data based on the GUM (Roberts and Laughlin, 
+#'   1996) model are generated. The GUM is a constrained version of the GGUM, 
+#'   where all discrimination parameters are equalt to 1 and the item thresholds
+#'   are shared by all items.
+#'   
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
-#' 
+#'   
 #' @examples
 #' gen1 <- GenData.GGUM(500, 10, 5, seed = 456)
 #' gen1$data      # Retrieve the data.
@@ -546,33 +535,31 @@ DlogL.dphi <- function(param = "alphadelta", dP, r.bar.izf, P.izf.arr)
 
 # Estimate thetas and their SEs ----
 #' @title Estimate thetas and their SEs (GUM, GGUM)
-#'
-#' @description \code{Theta.EAP} estimates the person theta parameters via 
-#' EAP.
-#'
-#' @param IP Object of class \code{GGUM}.The GUM/ GGUM estimated item parameters 
-#' via functions \code{GUM()}/ \code{GGUM()}, respectively. 
-#' @param SE Logical value: Estimate the standard errors of the theta estimates?  
-#' Default is \code{TRUE}. 
+#'   
+#' @description \code{Theta.EAP} estimates the person theta parameters via EAP.
+#'   
+#' @param IP Object of class \code{GGUM}.The GUM/ GGUM estimated item parameters
+#'   via functions \code{GUM()}/ \code{GGUM()}, respectively.
+#' @param SE Logical value: Estimate the standard errors of the theta estimates?
+#'   Default is \code{TRUE}.
 #' @param precision Number of decimal places of the results (default = 4).
 #' @param N.nodes Number of nodes for numerical integration (default = 30).
-#' 
+#'   
 #' @return If \code{SE = TRUE}, the function returns an \eqn{N\times 2}{Nx2} 
-#' matrix with two columns (thetas, SEs), where \eqn{N}{N} is the number of 
-#' rows in the data matrix (i.e., persons). If \code{SE = FALSE}, the function
-#' returns the theta estimates as a vector of length \eqn{N}{N}.
-#' 
-#' @section Details:
-#' The EAP procedure used here is based on Roberts, Donoghue, and Laughlin 
-#' (2000), namely Equation 25 for the \eqn{\theta}{theta} estimates and 
-#' Equation 26 for corresponding standard errors. The EAP estimate is the 
-#' posterior mean of the \eqn{\theta}{theta} distribution for the corresponding 
-#' response pattern. The standard error is computed as an approximation to the 
-#' standard deviation of the posterior distribution. See Roberts et al. (2000) 
-#' for more details.
-#' 
+#'   matrix with two columns (thetas, SEs), where \eqn{N}{N} is the number of 
+#'   rows in the data matrix (i.e., persons). If \code{SE = FALSE}, the function
+#'   returns the theta estimates as a vector of length \eqn{N}{N}.
+#'   
+#' @section Details: The EAP procedure used here is based on Roberts, Donoghue,
+#'   and Laughlin (2000), namely Equation 25 for the \eqn{\theta}{theta}
+#'   estimates and Equation 26 for corresponding standard errors. The EAP
+#'   estimate is the posterior mean of the \eqn{\theta}{theta} distribution for
+#'   the corresponding response pattern. The standard error is computed as an
+#'   approximation to the standard deviation of the posterior distribution. See
+#'   Roberts et al. (2000) for more details.
+#'   
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
-#' 
+#'   
 #' @examples
 #' \dontrun{
 #' # Generate data: 

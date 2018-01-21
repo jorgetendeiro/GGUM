@@ -21,8 +21,7 @@ The function returns the (x, y) coordinates of the IIFs.
 \code{plot.IIF} plots the IIFs for the GUM and the GGUM.
 }
 \section{Details}{
-
-This function plots the item information functions (IIFs).
+ This function plots the item information functions (IIFs).
 }
 
 \examples{

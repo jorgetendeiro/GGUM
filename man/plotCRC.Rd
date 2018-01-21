@@ -15,21 +15,19 @@ plotted. Default is all items.}
 \item{x.lim}{Controls the limits of the x-axis. Default is -4 through +4.}
 
 \item{ThetaminDelta}{Logical; if \code{TRUE}, plot the CRCs centered at 0, 
-otherwise plot the CRCs centered at \eqn{\delta}{delta} (item's difficulty). 
-Default is \code{TRUE}.}
+otherwise plot the CRCs centered at \eqn{\delta}{delta} (item's
+difficulty). Default is \code{TRUE}.}
 }
 \value{
-The function returns a three-dimensional array with the 
-probabilities associated to each item's CRC. These are the values shown in 
-the plot.
+The function returns a three-dimensional array with the probabilities
+  associated to each item's CRC. These are the values shown in the plot.
 }
 \description{
 \code{plot.CRC} plots item CRCs for the GUM and the GGUM.
 }
 \section{Details}{
-
-This function plots the item category response curves (CRCs) for the 
-requested items.
+ This function plots the item category response curves
+  (CRCs) for the requested items.
 }
 
 \examples{

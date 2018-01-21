@@ -1,83 +1,69 @@
 #' @title Fit the generalized graded unfolding model (GGUM)
-#'
+#'   
 #' @description \code{GGUM} estimates all item parameters for the GGUM.
-#'
+#'   
 #' @param data The \eqn{N\times I}{NxI} data matrix. The item scores are coded 
-#' \eqn{0, 1, \ldots, C}{0, 1, ..., C} for an item with \eqn{(C+1)} observable 
-#' response categories. 
-#' @param C \eqn{C} is the number of observable response 
-#' categories minus 1 (i.e., the item scores will be in the set 
-#' \eqn{\{0, 1, ..., C\}}{{0, 1, ..., C}}). It should either be a vector of 
-#' \eqn{I} elements or a scalar. In the latter case it is assumed that \eqn{C} 
-#' applies to all items.
+#'   \eqn{0, 1, \ldots, C}{0, 1, ..., C} for an item with \eqn{(C+1)} observable
+#'   response categories.
+#' @param C \eqn{C} is the number of observable response categories minus 1
+#'   (i.e., the item scores will be in the set \eqn{\{0, 1, ..., C\}}{{0, 1,
+#'   ..., C}}). It should either be a vector of \eqn{I} elements or a scalar. In
+#'   the latter case it is assumed that \eqn{C} applies to all items.
 #' @param SE Logical value: Estimate the standard errors of the item parameter 
-#' estimates? Default is \code{TRUE}. 
+#'   estimates? Default is \code{TRUE}.
 #' @param precision Number of decimal places of the results (default = 4).
 #' @param N.nodes Number of nodes for numerical integration (default = 30).
 #' @param max.outer Maximum number of outer iterations (default = 60).
 #' @param max.inner Maximum number of inner iterations (default = 60).
 #' @param tol Convergence tolerance (default = .001).
-#' 
-#' @return The function returns a list with 11 elements:
-#' \item{data}{Data matrix.}
-#' \item{C}{Vector \eqn{C}.}
-#' \item{alpha}{The estimated discrimination parameters for the GGUM.}
-#' \item{delta}{The estimated difficulty parameters.}
-#' \item{taus}{The estimated threshold parameters.}
-#' \item{SE}{The standard errors of the item parameters estimates.}
-#' \item{rows.rm}{Indices of rows removed from the data before fitting the 
-#' model, due to complete disagreement.}
-#' \item{N.nodes}{Number of nodes for numerical integration.}
-#' \item{tol.conv}{Loss function value at convergence (it is smaller than 
-#' \code{tol} upon convergence).}
-#' \item{iter.inner}{Number of inner iterations (it is equal to 1 upon 
-#' convergence).}
-#' \item{model}{Model fitted.}
-#' \item{InformationCrit}{Loglikelihood, number of model parameters, AIC, BIC, 
-#' CAIC.}
-#' 
-#' @section Details:
-#' The generalized graded unfolding model (GGUM; Roberts & Laughlin, 1996; 
-#' Roberts et al., 2000) is given by 
-#' \deqn{P(Z_i=z|\theta_n) = 
-#' \frac{f(z) + 
-#' f(M-z)}{\sum_{w=0}^C\left[f(w)+f(M-w)\right]}, }{P(Z_i = z|t_n) = 
-#' ( f(z) + f(M-z) ) / (sum( f(w) + f(M - w); w = 0, ..., C )),}
-#' 
-#' \deqn{f(w) = exp\left\{\alpha_i\left[w(\theta_n-\delta_i)-
-#' \sum_{k=0}^w\tau_{ik}\right]\right\}, }{f(w) = exp( alpha_i ( w(t_n - delta_i) 
-#' - sum( tau_ik; k = 0, ..., w) ) ),}
-#' 
-#' where:
-#' \itemize{
-#' \item The subscripts \eqn{i} and \eqn{n} identify the item and person, 
-#' respectively.
-#' \item \eqn{z=0,\ldots,C}{z = 0, ..., C} denotes the observed answer 
-#' response.
-#' \item \eqn{M = 2C + 1} is the number of subjective response options minus 1.
-#' \item \eqn{\theta_n}{t_n} is the latent trait score for person \eqn{n}.
-#' \item \eqn{\alpha_i}{alpha_i} is the item slope (discrimination).
-#' \item \eqn{\delta_i}{delta_i} is the item location.
-#' \item \eqn{\tau_{ik}}{tau_ik} (\eqn{k=1,\ldots,M}{k = 1, ..., M} ) are the 
-#' threshold parameters.
-#' }
-#' 
-#' Parameter \eqn{\tau_{i0}}{tau_i0} is arbitrarily constrained to zero and the 
-#' threshold parameters are constrained to symmetry around zero, that is, 
-#' \eqn{\tau_{i(C+1)}=0}{tau_{i(C+1)} = 0} and 
-#' \eqn{\tau_{iz}=-\tau_{i(M-z+1)}}{tau_{iz} = -tau_{i(M-z+1)}} for 
-#' \eqn{z\not= 0}{z != 0}.
-#' 
-#' The marginal maximum likelihood algorithm of Roberts et al. (2000) was 
-#' implemented.
-#' 
-#' @references
-#' \insertRef{RobertsLaughlin1996}{GGUM}
+#'   
+#' @return The function returns a list (an object of class \code{GGUM}) with 12
+#'   elements: \item{data}{Data matrix.} \item{C}{Vector \eqn{C}.} 
+#'   \item{alpha}{The estimated discrimination parameters for the GGUM.} 
+#'   \item{delta}{The estimated difficulty parameters.} \item{taus}{The
+#'   estimated threshold parameters.} \item{SE}{The standard errors of the item
+#'   parameters estimates.} \item{rows.rm}{Indices of rows removed from the data
+#'   before fitting the model, due to complete disagreement.} 
+#'   \item{N.nodes}{Number of nodes for numerical integration.} 
+#'   \item{tol.conv}{Loss function value at convergence (it is smaller than 
+#'   \code{tol} upon convergence).} \item{iter.inner}{Number of inner iterations
+#'   (it is equal to 1 upon convergence).} \item{model}{Model fitted.} 
+#'   \item{InformationCrit}{Loglikelihood, number of model parameters, AIC, BIC,
+#'   CAIC.}
+#'   
+#' @section Details: The generalized graded unfolding model (GGUM; Roberts &
+#'   Laughlin, 1996; Roberts et al., 2000) is given by \deqn{P(Z_i=z|\theta_n) =
+#'   \frac{f(z) + f(M-z)}{\sum_{w=0}^C\left[f(w)+f(M-w)\right]}, }{P(Z_i =
+#'   z|t_n) = ( f(z) + f(M-z) ) / (sum( f(w) + f(M - w); w = 0, ..., C )),}
+#'   
+#'   \deqn{f(w) = exp\left\{\alpha_i\left[w(\theta_n-\delta_i)- 
+#'   \sum_{k=0}^w\tau_{ik}\right]\right\}, }{f(w) = exp( alpha_i ( w(t_n -
+#'   delta_i) - sum( tau_ik; k = 0, ..., w) ) ),}
+#'   
+#'   where: \itemize{ \item The subscripts \eqn{i} and \eqn{n} identify the item
+#'   and person, respectively. \item \eqn{z=0,\ldots,C}{z = 0, ..., C} denotes
+#'   the observed answer response. \item \eqn{M = 2C + 1} is the number of
+#'   subjective response options minus 1. \item \eqn{\theta_n}{t_n} is the
+#'   latent trait score for person \eqn{n}. \item \eqn{\alpha_i}{alpha_i} is the
+#'   item slope (discrimination). \item \eqn{\delta_i}{delta_i} is the item
+#'   location. \item \eqn{\tau_{ik}}{tau_ik} (\eqn{k=1,\ldots,M}{k = 1, ..., M}
+#'   ) are the threshold parameters. }
+#'   
+#'   Parameter \eqn{\tau_{i0}}{tau_i0} is arbitrarily constrained to zero and
+#'   the threshold parameters are constrained to symmetry around zero, that is, 
+#'   \eqn{\tau_{i(C+1)}=0}{tau_{i(C+1)} = 0} and 
+#'   \eqn{\tau_{iz}=-\tau_{i(M-z+1)}}{tau_{iz} = -tau_{i(M-z+1)}} for 
+#'   \eqn{z\not= 0}{z != 0}.
+#'   
+#'   The marginal maximum likelihood algorithm of Roberts et al. (2000) was 
+#'   implemented.
+#'   
+#' @references \insertRef{RobertsLaughlin1996}{GGUM}
 #' 
 #' \insertRef{Robertsetal2000}{GGUM}
 #' 
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
-#' 
+#'   
 #' @examples
 #' \dontrun{
 #' # Example 1 - Same value C across items:
