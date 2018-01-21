@@ -36,9 +36,9 @@
 #'   \eqn{O_{iz}}{O_iz} is the observed frequency of choosing answer \eqn{z} for
 #'   item \eqn{i} and \eqn{\varphi(\theta)}{phi(th)} is the standard normal 
 #'   density. The equation above applies to single items ('singlets'). The 
-#'   formula is easily extendible to pairs and triples of items. For large
-#'   number of items the function selects suitable subsets of doublets and
-#'   triples to perform the computations, since its total number increases
+#'   formula is easily extendible to pairs and triples of items. For a large
+#'   number of items, the function selects suitable subsets of doublets and
+#'   triples to perform the computations since its total number increases
 #'   quickly with test length (Drasgow et al., 1995).
 #'   
 #'   The formula is adjusted to a sample size of 3,000, as follows (see also 
