@@ -15,7 +15,7 @@ response categories.}
 \item{C}{\eqn{C} is the number of observable response categories minus 1
 (i.e., the item scores will be in the set \eqn{\{0, 1, ..., C\}}{{0, 1,
 ..., C}}). It should either be a vector of \eqn{I} elements or a scalar. In
-the latter case it is assumed that \eqn{C} applies to all items.}
+the latter case, it is assumed that \eqn{C} applies to all items.}
 
 \item{SE}{Logical value: Estimate the standard errors of the item parameter 
 estimates? Default is \code{TRUE}.}

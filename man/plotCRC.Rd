@@ -38,7 +38,7 @@ gen <- GenData.GGUM(2000, 10, C, seed = 125)
 # Fit the GGUM:
 fit <- GGUM(gen$data, C)
 # Plot CRCs:
-plot.CRC(fit)
+plotCRC(fit)
 }
 
 }

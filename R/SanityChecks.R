@@ -86,7 +86,7 @@ Sanity.params <- function(alpha, delta, taus, theta, C)
   if (!(taus.mat & taus.nrows & taus.ncols)) 
   {
     stop('taus should be a matrix with number rows = number items and 
-    number columns = 2*max(C)+1. Also note the strict structure of the 
+    number columns = 2*max(C)+1. Also, note the strict structure of the 
     taus parameters (see Roberts et al., 2000). Aborted.')
   }
   if (!theta.vec) stop('theta should be a vector. Aborted.')

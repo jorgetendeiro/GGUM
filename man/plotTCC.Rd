@@ -37,7 +37,7 @@ gen <- GenData.GGUM(2000, 10, C, seed = 125)
 fit <- GGUM(gen$data, C)
 th  <- Theta.EAP(fit)
 # Plot the TCC:
-plot.TCC(fit, th)
+plotTCC(fit, th)
 }
 
 }

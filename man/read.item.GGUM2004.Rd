@@ -14,7 +14,7 @@ is "C:/GGUM2004/TEMPFILE".}
 }
 \value{
 \code{read.item.GGUM2004} returns a list cointaning the following 
-  components: \itemize{ \item{alpha}{The estimated discrimination parameters
+  components: \item{alpha}{The estimated discrimination parameters
   (for GGUM).} \item{delta}{The estimated difficulty parameters.} 
   \item{taus}{The estimated threshold parameters.} \item{alphaSE}{The
   standard errors for the estimated discrimination parameters (for GGUM).} 
@@ -24,7 +24,7 @@ is "C:/GGUM2004/TEMPFILE".}
   constrained to symmetry around zero, that is, 
   \eqn{\tau_{i(C+1)}=0}{tau_{i(C+1)} = 0} and 
   \eqn{\tau_{iz}=-\tau_{i(M-z+1)}}{tau_{iz} = -tau_{i(M-z+1)}} for 
-  \eqn{z\not= 0}{z != 0}.} }
+  \eqn{z\not= 0}{z != 0}.}
 }
 \description{
 \code{read.item.GGUM2004} reads the output files from GGUM2004 
@@ -33,7 +33,7 @@ is "C:/GGUM2004/TEMPFILE".}
 }
 \section{Details}{
  Observe that this function is optimized for the Windows
-  operating system, because GGUM2004 is a Windows program.
+  operating system because GGUM2004 is a Windows program.
 }
 
 \examples{

@@ -30,7 +30,7 @@ gen <- GenData.GGUM(2000, 10, C, seed = 125)
 fit <- GGUM(gen$data, C)
 th  <- Theta.EAP(fit)
 # Plot the TIF:
-plot.TIF(fit, th)
+plotTIF(fit, th)
 }
 
 }

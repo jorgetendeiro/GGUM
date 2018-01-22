@@ -23,12 +23,12 @@ installed (default: "C:/GGUM2004"). The data file identified by the
 }
 \value{
 \code{run.GGUM2004} returns a list cointaning the following 
-  components: \itemize{ \item{time}{The GGUM2004 execution time.} 
+  components: \item{time}{The GGUM2004 execution time.} 
   \item{alpha}{The estimated discrimination parameters (for GGUM).} 
   \item{delta}{The estimated difficulty parameters.} \item{taus}{The
   estimated threshold parameters.} \item{SE}{The standard errors for the
   estimated item parameters.} \item{theta}{The estimated person parameters
-  and their standard errors.} }
+  and their standard errors.}
 }
 \description{
 \code{run.GGUM2004} executes a previously exported GGUM2004 
@@ -42,7 +42,7 @@ installed (default: "C:/GGUM2004"). The data file identified by the
   estimates into R) and \code{\link[GGUM]{read.person.GGUM2004}} (to import 
   the GGUM2004 person estimates into R).
   
-  Observe that this function is optimized for the Windows operating system, 
+  Observe that this function is optimized for the Windows operating system 
   because GGUM2004 is a Windows program.
 }
 
