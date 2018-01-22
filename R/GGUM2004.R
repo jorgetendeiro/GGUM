@@ -44,9 +44,11 @@
 #' @author Sebastian Castro Alvarez, \email{secastroal@gmail.com}
 #'   
 #' @examples
+#' \dontrun{
 #' I <- 6
 #' C <- c(3, 3, 3, 5, 5, 5)
 #' write.GGUM2004(I, C, model = "GGUM")
+#' }
 #' @export
 write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM", 
                            cmd.file = "cmd", 
