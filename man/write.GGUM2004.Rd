@@ -46,7 +46,7 @@ A script file is saved in the directory where GGUM2004 is installed.
   Laughlin, 2000; Roberts et al., 2006). GGUM2004 may be executed directly or
   may be called from R, see \code{\link[GGUM]{run.GGUM2004}}.
   
-  Observe that this function is optimized for the Windows operating system, 
+  Observe that this function is optimized for the Windows operating system 
   because GGUM2004 is a Windows program.
   
   By default, both the data file (exported via 

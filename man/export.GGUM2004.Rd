@@ -26,7 +26,7 @@ installed (default: "C:/GGUM2004").}
   script (or using the GUI itself, of course). GGUM2004 may be executed
   directly or may be called from R, see \code{\link[GGUM]{run.GGUM2004}}.
   
-  Observe that this function is optimized for the Windows operating system, 
+  Observe that this function is optimized for the Windows operating system 
   because GGUM2004 is a Windows program.
   
   By default, both the data file exported by this function and the GGUM2004 

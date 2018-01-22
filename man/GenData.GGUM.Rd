@@ -14,7 +14,7 @@ GenData.GGUM(N, I, C, model = "GGUM", seed = 123)
 \item{C}{\eqn{C} is the number of observable response categories minus 1 
 (i.e., the item scores will be in the set \eqn{\{0, 1, ..., C\}}{{0, 1, 
 ..., C}}). It should either be a vector of \eqn{I} elements or a scalar. In
-the latter case it is assumed that \eqn{C} applies to all items.}
+the latter, case it is assumed that \eqn{C} applies to all items.}
 
 \item{model}{A string identifying the model. Possible values are "GUM" or 
 "GGUM" (default).}
@@ -67,7 +67,7 @@ The function returns a list with five elements: \item{alpha.gen}{The
   
   If \code{model = "GUM"} the data based on the GUM (Roberts and Laughlin, 
   1996) model are generated. The GUM is a constrained version of the GGUM, 
-  where all discrimination parameters are equalt to 1 and the item thresholds
+  where all discrimination parameters are equal to 1 and the item thresholds
   are shared by all items.
 }
 

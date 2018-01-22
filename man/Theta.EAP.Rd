@@ -7,7 +7,7 @@
 Theta.EAP(IP, SE = TRUE, precision = 4, N.nodes = 30)
 }
 \arguments{
-\item{IP}{Object of class \code{GGUM}.The GUM/ GGUM estimated item parameters
+\item{IP}{Object of class \code{GGUM}. The GUM/ GGUM estimated item parameters
 via functions \code{GUM()}/ \code{GGUM()}, respectively.}
 
 \item{SE}{Logical value: Estimate the standard errors of the theta estimates?

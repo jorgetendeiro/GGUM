@@ -33,7 +33,7 @@ gen <- GenData.GGUM(2000, 10, C, seed = 125)
 fit <- GGUM(gen$data, C)
 th  <- Theta.EAP(fit)
 # Plot the IIFs:
-plot.IIF(fit, th)
+plotIIF(fit, th)
 }
 
 }

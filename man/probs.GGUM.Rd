@@ -19,13 +19,13 @@ probs.GGUM(alpha, delta, taus, theta, C)
 \item{C}{\eqn{C} is the number of observable response categories minus 1
 (i.e., the item scores will be in the set \eqn{\{0, 1, ..., C\}}). It
 should either be a vector of \eqn{I} elements or a scalar. In the latter
-case it is assumed that \eqn{C} applies to all items.}
+case, it is assumed that \eqn{C} applies to all items.}
 }
 \value{
 The function returns an \eqn{N\times I\times K}{NxIxK} array with the
   GGUM probabilities, with \eqn{K=\max{C}+1}{K=max(C)+1}. To retrieve the
   GUM-based probabilities just constrain alpha to a unit vector of length {I}
-  (i.e., \code{alpha = rep(1, I)}). In this case make sure \code{C} is
+  (i.e., \code{alpha = rep(1, I)}). In this case, make sure \code{C} is
   constant across items.
 }
 \description{

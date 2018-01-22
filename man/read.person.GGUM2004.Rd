@@ -25,7 +25,7 @@ An \eqn{N\times 3}{Nx3} matrix is returned, where \eqn{N} is the
 }
 \section{Details}{
  Observe that this function is optimized for the Windows
-  operating system, because GGUM2004 is a Windows program.
+  operating system because GGUM2004 is a Windows program.
 }
 
 \examples{

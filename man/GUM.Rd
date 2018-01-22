@@ -50,17 +50,17 @@ The function returns a list (an object of class \code{GGUM}) with 12
 }
 \section{Details}{
  The graded unfolding model (GUM; Roberts & Laughlin, 1996)
-  is a constrained verson of the GGUM (Roberts et al., 2000; see
+  is a constrained version of the GGUM (Roberts et al., 2000; see
   \code{\link[GGUM]{GGUM}}). GUM is constrained in two ways: All
   discrimination parameters are fixed to unity and the threshold parameters
-  are shared across items. The last constraint in particular implies that
+  are shared across items. In particular, the last constraint implies that
   only data with the same response categories across items should be used
   (i.e., \eqn{C} is constant for all items).
   
   Estimated GUM parameters are used as the second step of fitting the more 
   general GGUM. Since under the GGUM data may include items with different 
   number of response categories, the code to fitting the GUM was internally 
-  extended to accomodate for this.
+  extended to accommodate for this.
   
   The marginal maximum likelihood algorithm of Roberts et al. (2000) was 
   implemented.
