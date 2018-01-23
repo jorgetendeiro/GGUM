@@ -5,7 +5,6 @@ Authors@R: c(
   person("Jorge N.", "Tendeiro", email = "j.n.tendeiro@rug.nl", role = c("aut","cre")),
   person("Sebastian Castro", "Alvarez", email = "secastroal@gmail.com", role = "aut"))
 Description: An implementation of the generalized graded unfolding model (GGUM) in R. It allows to simulate data sets based on the GGUM. It fits the GGUM and the GUM, and it retrieves item and person parameter estimates. Several plotting functions are available (item and test information functions; item and test characteristic curves; item category response curves). Additionally, there are some functions that facilitate the communication between R and GGUM2004. Finally, a model-fit checking utility (MODFIT) is also available.
-Depends: R (>= 3.4.3)
 Imports: stats, utils, psych, abind, viridis, Rdpack, xlsx
 RdMacros: Rdpack
 License: GPL (>=2)
