@@ -2,12 +2,12 @@
 % Please edit documentation in R/GGUM2004.R
 \name{read.person.GGUM2004}
 \alias{read.person.GGUM2004}
-\title{Read GGUM2004 person estimates into R}
+\title{Read 'GGUM2004' person estimates into R}
 \usage{
 read.person.GGUM2004(temp.dir = "C:/GGUM2004/TEMPFILE", precision = 4)
 }
 \arguments{
-\item{temp.dir}{The directory where GGUM2004 saved the output. By default, it
+\item{temp.dir}{The directory where 'GGUM2004' saved the output. By default, it
 is "C:/GGUM2004/TEMPFILE".}
 
 \item{precision}{Number of decimal places of the results (default = 4).}
@@ -19,18 +19,18 @@ An \eqn{N\times 3}{Nx3} matrix is returned, where \eqn{N} is the
   errors.
 }
 \description{
-\code{read.person.GGUM2004} reads the output files from GGUM2004
+\code{read.person.GGUM2004} reads the output files from 'GGUM2004'
   with the person parameters. Both the person parameter estimates and their 
   standard errors are imported into R.
 }
 \section{Details}{
  Observe that this function is optimized for the Windows
-  operating system because GGUM2004 is a Windows program.
+  operating system because 'GGUM2004' is a Windows program.
 }
 
 \examples{
 \dontrun{
-# If the GGUM2004 output files are in the default directory 
+# If the 'GGUM2004' output files are in the default directory 
 # (C:/GGUM2004/TEMPFILE), then simply execute
 read.person.GGUM2004()
 }
@@ -39,5 +39,5 @@ read.person.GGUM2004()
 \insertRef{Robertsetal2006}{GGUM}
 }
 \author{
-Sebastian Castro Alvarez, \email{secastroal@gmail.com}
+Sebastian Castro-Alvarez, \email{secastroal@gmail.com}
 }

@@ -2,10 +2,10 @@
 % Please edit documentation in R/GGUM2004.R
 \name{run.GGUM2004}
 \alias{run.GGUM2004}
-\title{Call GGUM2004 and import the estimated parameters into R}
+\title{Call 'GGUM2004' and import the estimated parameters into R}
 \usage{
-run.GGUM2004(cmd.file = "cmd", data.file = "data", dir = "C:/GGUM2004",
-  precision = 4)
+run.GGUM2004(cmd.file = "cmd", data.file = "data",
+  datacmd.dir = tempdir(), prog.dir = "C:/GGUM2004", precision = 4)
 }
 \arguments{
 \item{cmd.file}{A character string defining the name of the command file. No 
@@ -14,16 +14,20 @@ file extension is required.}
 \item{data.file}{A character string defining the name of the data file. No 
 file extension is required.}
 
-\item{dir}{A character string defining the directory where GGUM2004 is 
-installed (default: "C:/GGUM2004"). The data file identified by the 
-\code{data.file} parameter (exported by function 
-\code{\link[GGUM]{export.GGUM2004}}) should exist in this directory.}
+\item{datacmd.dir}{A character string defining the path to the directory 
+where both the data file (identified by the \code{data.file} parameter and 
+exported by function \code{\link[GGUM]{export.GGUM2004}}) and the command 
+file (identified by the \code{cmd.file} parameter and 
+exported by function \code{\link[GGUM]{write.GGUM2004}}) are saved.}
+
+\item{prog.dir}{A character string defining the directory where 'GGUM2004' is 
+installed (default: "C:/GGUM2004").}
 
 \item{precision}{Number of decimal places of the results (default = 4).}
 }
 \value{
 \code{run.GGUM2004} returns a list cointaning the following 
-  components: \item{time}{The GGUM2004 execution time.} 
+  components: \item{time}{The 'GGUM2004' execution time.} 
   \item{alpha}{The estimated discrimination parameters (for GGUM).} 
   \item{delta}{The estimated difficulty parameters.} \item{taus}{The
   estimated threshold parameters.} \item{SE}{The standard errors for the
@@ -31,19 +35,24 @@ installed (default: "C:/GGUM2004"). The data file identified by the
   and their standard errors.}
 }
 \description{
-\code{run.GGUM2004} executes a previously exported GGUM2004 
+\code{run.GGUM2004} executes a previously exported 'GGUM2004' 
   command file (via function \code{\link[GGUM]{write.GGUM2004}}). It returns 
   the execution time, the item parameter estimates, and the person parameter 
   estimates.
 }
 \section{Details}{
  Function \code{run.GGUM2004} runs internally both functions
-  \code{\link[GGUM]{read.item.GGUM2004}} (to import the GGUM2004 item 
+  \code{\link[GGUM]{read.item.GGUM2004}} (to import the 'GGUM2004' item 
   estimates into R) and \code{\link[GGUM]{read.person.GGUM2004}} (to import 
-  the GGUM2004 person estimates into R).
+  the 'GGUM2004' person estimates into R).
+  
+  By experience, we noticed that long directory paths (especially if spaces 
+  are included) make 'GGUM2004' fail to execute with error 
+  \code{file not found}. Therefore, a good advice is to choose 
+  \code{datacmd.dir} and \code{prog.dir} wisely (short paths, no spaces).
   
   Observe that this function is optimized for the Windows operating system 
-  because GGUM2004 is a Windows program.
+  because 'GGUM2004' is a Windows program.
 }
 
 \examples{
@@ -52,11 +61,11 @@ installed (default: "C:/GGUM2004"). The data file identified by the
 C   <- c(3, 3, 3, 5, 5, 5)
 I   <- 6
 gen <- GenData.GGUM(750, I, C, seed = 125)
-# Export data to GGUM2004:
+# Export data to 'GGUM2004':
 export.GGUM2004(gen$data)
 # Write command file:
 write.GGUM2004(I, C, model = "GGUM")
-# Run GGUM2004:
+# Run 'GGUM2004':
 res.GGUM2004 <- run.GGUM2004()
 }
 }
@@ -64,5 +73,5 @@ res.GGUM2004 <- run.GGUM2004()
 \insertRef{Robertsetal2006}{GGUM}
 }
 \author{
-Sebastian Castro Alvarez, \email{secastroal@gmail.com}
+Sebastian Castro-Alvarez, \email{secastroal@gmail.com}
 }

@@ -2,12 +2,12 @@
 % Please edit documentation in R/GGUM2004.R
 \name{read.item.GGUM2004}
 \alias{read.item.GGUM2004}
-\title{Read GGUM2004 item estimates into R}
+\title{Read 'GGUM2004' item estimates into R}
 \usage{
 read.item.GGUM2004(temp.dir = "C:/GGUM2004/TEMPFILE", precision = 4)
 }
 \arguments{
-\item{temp.dir}{The directory where GGUM2004 saved the output. By default, it
+\item{temp.dir}{The directory where 'GGUM2004' saved the output. By default, it
 is "C:/GGUM2004/TEMPFILE".}
 
 \item{precision}{Number of decimal places of the results (default = 4).}
@@ -27,18 +27,18 @@ is "C:/GGUM2004/TEMPFILE".}
   \eqn{z\not= 0}{z != 0}.}
 }
 \description{
-\code{read.item.GGUM2004} reads the output files from GGUM2004 
+\code{read.item.GGUM2004} reads the output files from 'GGUM2004' 
   with the item parameters. Both the item parameter estimates and their 
   standard errors are imported into R.
 }
 \section{Details}{
  Observe that this function is optimized for the Windows
-  operating system because GGUM2004 is a Windows program.
+  operating system because 'GGUM2004' is a Windows program.
 }
 
 \examples{
 \dontrun{
-# If the GGUM2004 output files are in the default directory 
+# If the 'GGUM2004' output files are in the default directory 
 # (C:/GGUM2004/TEMPFILE), then simply execute
 read.item.GGUM2004()
 }
@@ -49,5 +49,5 @@ read.item.GGUM2004()
 \insertRef{Robertsetal2006}{GGUM}
 }
 \author{
-Sebastian Castro Alvarez, \email{secastroal@gmail.com}
+Sebastian Castro-Alvarez, \email{secastroal@gmail.com}
 }

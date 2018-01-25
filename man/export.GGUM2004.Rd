@@ -2,9 +2,9 @@
 % Please edit documentation in R/GGUM2004.R
 \name{export.GGUM2004}
 \alias{export.GGUM2004}
-\title{Exports data in GGUM2004 friendly format}
+\title{Exports data in 'GGUM2004' friendly format}
 \usage{
-export.GGUM2004(data, data.file = "data", dir = "C:/GGUM2004")
+export.GGUM2004(data, data.file = "data", data.dir = tempdir())
 }
 \arguments{
 \item{data}{The R data matrix to be exported.}
@@ -12,27 +12,30 @@ export.GGUM2004(data, data.file = "data", dir = "C:/GGUM2004")
 \item{data.file}{A character string defining the name of the data file. No 
 file extension is required.}
 
-\item{dir}{A character string defining the directory where GGUM2004 is 
-installed (default: "C:/GGUM2004").}
+\item{data.dir}{A character string defining the path to the directory where 
+the data file (possibly exported by function 
+\code{\link[GGUM]{export.GGUM2004}}) is stored. By default a temporary 
+directory is used, but the user can naturally specify a directory of her 
+choice.}
 }
 \description{
 \code{export.GGUM2004} exports the data from R to a text file 
-  according to the format required by GGUM2004.
+  according to the format required by 'GGUM2004'
 }
 \section{Details}{
- This function exports the R matrix \code{data} in GGUM2004
+ This function exports the R matrix \code{data} in 'GGUM2004'
   (Roberts, Donoghue, & Laughlin, 2000; Roberts et al., 2006) friendly
-  format. This data file is to be used together with a GGUM2004 command
-  script (or using the GUI itself, of course). GGUM2004 may be executed
+  format. This data file is to be used together with a 'GGUM2004' command
+  script (or using the GUI itself, of course). 'GGUM2004' may be executed
   directly or may be called from R, see \code{\link[GGUM]{run.GGUM2004}}.
   
-  Observe that this function is optimized for the Windows operating system 
-  because GGUM2004 is a Windows program.
+  By experience, we noticed that long directory paths (especially if spaces 
+  are included) make 'GGUM2004' fail to execute with error 
+  \code{file not found}. Therefore, a good advice is to choose 
+  \code{data.dir} wisely (short paths, no spaces).
   
-  By default, both the data file exported by this function and the GGUM2004 
-  command script (exported via \code{\link[GGUM]{write.GGUM2004}}) are saved
-  in the directory \code{C:/GGUM2004}, where GGUM2004 is expected to be
-  installed (unzipped).
+  Observe that this function is optimized for the Windows operating system 
+  because 'GGUM2004' is a Windows program.
 }
 
 \examples{
@@ -41,7 +44,7 @@ installed (default: "C:/GGUM2004").}
 C   <- c(3, 3, 3, 5, 5, 5)
 I   <- 6
 gen <- GenData.GGUM(750, I, C, seed = 125)
-# Export data to GGUM2004:
+# Export data to 'GGUM2004':
 export.GGUM2004(gen$data)
 }
 }

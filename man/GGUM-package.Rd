@@ -131,7 +131,7 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Sebastian Castro Alvarez \email{secastroal@gmail.com}
+  \item Sebastian Castro-Alvarez \email{secastroal@gmail.com}
 }
 
 }
