@@ -4,7 +4,8 @@
 \alias{plotCRC}
 \title{Plot item category response curves (CRCs)}
 \usage{
-plotCRC(IP, items = NULL, x.lim = 4, ThetaminDelta = TRUE)
+plotCRC(IP, items = NULL, x.lim = 4, ThetaminDelta = TRUE,
+  quiet = FALSE)
 }
 \arguments{
 \item{IP}{Object of class \code{GGUM}.}
@@ -17,6 +18,9 @@ plotted. Default is all items.}
 \item{ThetaminDelta}{Logical; if \code{TRUE}, plot the CRCs centered at 0, 
 otherwise plot the CRCs centered at \eqn{\delta}{delta} (item's
 difficulty). Default is \code{TRUE}.}
+
+\item{quiet}{Render all plots for \code{items} at once? Default is 
+\code{FALSE}.}
 }
 \value{
 The function returns a three-dimensional array with the probabilities
@@ -31,14 +35,22 @@ The function returns a three-dimensional array with the probabilities
 }
 
 \examples{
+# For GUM:
+# Generate data:
+gen1 <- GenData.GGUM(400, 5, 3, "GUM", seed = 139)
+# Fit the GUM:
+fit1 <- GUM(gen1$data, 3)
+# Plot CRCs:
+plotCRC(fit1, items = 1, quiet = TRUE)
 \dontrun{
+# For GGUM:
 # Generate data:
 set.seed(1); C <- sample(3:5, 10, replace = TRUE)
-gen <- GenData.GGUM(2000, 10, C, seed = 125)
+gen2 <- GenData.GGUM(2000, 10, C, "GGUM", seed = 156)
 # Fit the GGUM:
-fit <- GGUM(gen$data, C)
+fit2 <- GGUM(gen2$data, C)
 # Plot CRCs:
-plotCRC(fit)
+plotCRC(fit2, items = 1, quiet = TRUE)
 }
 
 }

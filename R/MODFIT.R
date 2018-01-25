@@ -65,15 +65,32 @@
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #'   
 #' @examples
+#' # For GUM:
+#' # Generate data:
+#' gen1 <- GenData.GGUM(400, 5, 3, "GUM", seed = 139)
+#' # Fit the GUM:
+#' fit1 <- GUM(gen1$data, 3)
+#' # Compute the adjusted chi square degrees of freedom ratios:
+#' modfit.res1 <- MODFIT(fit1)
+#' modfit.res1$Singlets
+#' modfit.res1$Doublets
+#' modfit.res1$Triplets
+#' modfit.res1$Summary
 #' \dontrun{
+#' # For GGUM:
 #' # Generate data:
 #' set.seed(1); C <- sample(3:5, 10, replace = TRUE)
-#' gen <- GenData.GGUM(2000, 10, C, seed = 156)
+#' gen2 <- GenData.GGUM(2000, 10, C, "GGUM", seed = 156)
 #' # Fit the GGUM:
-#' fit <- GGUM(gen$data, C)
+#' fit2 <- GGUM(gen2$data, C)
 #' # Compute the adjusted chi square degrees of freedom ratios:
-#' MODFIT(fit)
+#' modfit.res2 <- MODFIT(fit1)
+#' modfit.res2$Singlets
+#' modfit.res2$Doublets
+#' modfit.res2$Triplets
+#' modfit.res2$Summary
 #' }
+#' 
 #' @export
 MODFIT <- function(IP, precision = 4)
 {

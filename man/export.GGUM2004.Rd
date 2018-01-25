@@ -39,14 +39,13 @@ choice.}
 }
 
 \examples{
-\dontrun{
 # Generate data:
 C   <- c(3, 3, 3, 5, 5, 5)
 I   <- 6
 gen <- GenData.GGUM(750, I, C, seed = 125)
 # Export data to 'GGUM2004':
 export.GGUM2004(gen$data)
-}
+
 }
 \references{
 \insertRef{Robertsetal2000}{GGUM}

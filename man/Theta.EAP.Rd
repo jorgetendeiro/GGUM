@@ -37,14 +37,25 @@ If \code{SE = TRUE}, the function returns an \eqn{N\times 2}{Nx2}
 }
 
 \examples{
-\dontrun{
-# Generate data: 
-data.gen <- GenData.GGUM(2000, 10, 3, seed = 133)
-data     <- data.gen$data
-# Fit the GGUM:
-GGUM.res <- GGUM(data, C = 3)
+# For GUM:
+# Generate data
+#   (toy example: Too few items (due to computation time constraints) for 
+#   accurate estimation of person parameters; larger number of items is 
+#   required in practice):
+gen1 <- GenData.GGUM(400, 5, 3, "GUM", seed = 139)
+# Fit the GUM:
+fit1 <- GUM(gen1$data, 3)
 # Estimate the theta parameters:
-Theta.EAP(GGUM.res)
+Theta.EAP(fit1)
+\dontrun{
+# For GGUM:
+# Generate data:
+set.seed(1); C <- sample(3:5, 10, replace = TRUE)
+gen2 <- GenData.GGUM(2000, 10, C, "GGUM", seed = 156)
+# Fit the GGUM:
+fit2 <- GGUM(gen2$data, C)
+# Estimate the theta parameters:
+Theta.EAP(fit2)
 }
 
 }

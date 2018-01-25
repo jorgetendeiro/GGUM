@@ -59,11 +59,10 @@ A script file is saved in the directory where 'GGUM2004' is installed.
 }
 
 \examples{
-\dontrun{
 I <- 6
 C <- c(3, 3, 3, 5, 5, 5)
 write.GGUM2004(I, C, model = "GGUM")
-}
+
 }
 \references{
 \insertRef{Robertsetal2000}{GGUM}

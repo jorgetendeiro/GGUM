@@ -54,15 +54,14 @@
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #'   
 #' @examples
-#' \dontrun{
 #' # Generate data:
-#' gen <- GenData.GGUM(2000, 10, 5, "GUM", seed = 125)
+#' gen <- GenData.GGUM(400, 5, 3, "GUM", seed = 139)
 #' # Fit the GUM:
-#' fit <- GUM(gen$data, 5)
+#' fit <- GUM(gen$data, 3)
 #' # Compare true and estimated item parameters:
 #' cbind(gen$delta, fit$delta)
-#' cbind(c(gen$taus[, 7:11]), c(fit$taus[,  7:11]))
-#' }
+#' cbind(c(gen$taus[, 5:7]), c(fit$taus[,  5:7]))
+#' 
 #' @export
 GUM <- function(data, C, SE = TRUE, precision = 4, 
                 N.nodes = 30, max.outer = 60, max.inner = 60, tol = .001)

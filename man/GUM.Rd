@@ -67,15 +67,14 @@ The function returns a list (an object of class \code{GGUM}) with 12
 }
 
 \examples{
-\dontrun{
 # Generate data:
-gen <- GenData.GGUM(2000, 10, 5, "GUM", seed = 125)
+gen <- GenData.GGUM(400, 5, 3, "GUM", seed = 139)
 # Fit the GUM:
-fit <- GUM(gen$data, 5)
+fit <- GUM(gen$data, 3)
 # Compare true and estimated item parameters:
 cbind(gen$delta, fit$delta)
-cbind(c(gen$taus[, 7:11]), c(fit$taus[,  7:11]))
-}
+cbind(c(gen$taus[, 5:7]), c(fit$taus[,  5:7]))
+
 }
 \references{
 \insertRef{RobertsLaughlin1996}{GGUM}

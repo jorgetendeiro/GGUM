@@ -10,6 +10,8 @@
 #' @param ThetaminDelta Logical; if \code{TRUE}, plot the CRCs centered at 0, 
 #'   otherwise plot the CRCs centered at \eqn{\delta}{delta} (item's
 #'   difficulty). Default is \code{TRUE}.
+#' @param quiet Render all plots for \code{items} at once? Default is 
+#' \code{FALSE}.
 #'   
 #' @return The function returns a three-dimensional array with the probabilities
 #'   associated to each item's CRC. These are the values shown in the plot.
@@ -20,18 +22,27 @@
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #'   
 #' @examples
+#' # For GUM:
+#' # Generate data:
+#' gen1 <- GenData.GGUM(400, 5, 3, "GUM", seed = 139)
+#' # Fit the GUM:
+#' fit1 <- GUM(gen1$data, 3)
+#' # Plot CRCs:
+#' plotCRC(fit1, items = 1, quiet = TRUE)
 #' \dontrun{
+#' # For GGUM:
 #' # Generate data:
 #' set.seed(1); C <- sample(3:5, 10, replace = TRUE)
-#' gen <- GenData.GGUM(2000, 10, C, seed = 125)
+#' gen2 <- GenData.GGUM(2000, 10, C, "GGUM", seed = 156)
 #' # Fit the GGUM:
-#' fit <- GGUM(gen$data, C)
+#' fit2 <- GGUM(gen2$data, C)
 #' # Plot CRCs:
-#' plotCRC(fit)
+#' plotCRC(fit2, items = 1, quiet = TRUE)
 #' }
 #' 
 #' @export
-plotCRC <- function(IP, items = NULL, x.lim = 4, ThetaminDelta = TRUE) 
+plotCRC <- function(IP, items = NULL, x.lim = 4, ThetaminDelta = TRUE, 
+                    quiet = FALSE) 
 {
   # Sanity check - class:
   Sanity.class(IP)
@@ -66,7 +77,7 @@ plotCRC <- function(IP, items = NULL, x.lim = 4, ThetaminDelta = TRUE)
   
   for (i in 1:length(I.plot)) {
     it <- I.plot[i]
-    invisible(readline(prompt="Press [enter] to continue"))
+    if (!quiet) invisible(readline(prompt="Press [enter] to continue"))
     #
     probs.arr[, 2, i] <- P.GGUM(0, alpha[it], delta[it], 
                                 taus[it, (C.max - C[it] + 1):(C.max - C[it] + M[it])], 
@@ -138,15 +149,27 @@ plotCRC <- function(IP, items = NULL, x.lim = 4, ThetaminDelta = TRUE)
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #'   
 #' @examples
+#' # For GUM:
+#' # Generate data
+#' #   (toy example: Too few items (due to computation time constraints) for 
+#' #   accurate estimation of person parameters; larger number of items is 
+#' #   required in practice):
+#' gen1 <- GenData.GGUM(400, 5, 3, "GUM", seed = 139)
+#' # Fit the GUM:
+#' fit1 <- GUM(gen1$data, 3)
+#' th1  <- Theta.EAP(fit1)
+#' # Plot TCC:
+#' plotTCC(fit1, th1)
 #' \dontrun{
+#' # For GGUM:
 #' # Generate data:
 #' set.seed(1); C <- sample(3:5, 10, replace = TRUE)
-#' gen <- GenData.GGUM(2000, 10, C, seed = 125)
+#' gen2 <- GenData.GGUM(2000, 10, C, "GGUM", seed = 156)
 #' # Fit the GGUM:
-#' fit <- GGUM(gen$data, C)
-#' th  <- Theta.EAP(fit)
-#' # Plot the TCC:
-#' plotTCC(fit, th)
+#' fit2 <- GGUM(gen2$data, C)
+#' th2  <- Theta.EAP(fit2)
+#' # Plot TCC:
+#' plotTCC(fit2, th2)
 #' }
 #' 
 #' @export
@@ -235,6 +258,8 @@ plotTCC <- function(IP, Th)
 #' @param Th Theta estimates from function \code{Theta.EAP()}.
 #' @param items Vector indicating the items for which the ICCs are to be 
 #'   plotted. Default is all items.
+#' @param quiet Render all plots for \code{items} at once? Default is 
+#' \code{FALSE}.
 #'   
 #' @return The function returns the correlation between observed and expected 
 #'   item scores (missing values pairwise removed).
@@ -244,19 +269,31 @@ plotTCC <- function(IP, Th)
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #'   
 #' @examples
+#' # For GUM:
+#' # Generate data
+#' #   (toy example: Too few items (due to computation time constraints) for 
+#' #   accurate estimation of person parameters; larger number of items is 
+#' #   required in practice):
+#' gen1 <- GenData.GGUM(400, 5, 3, "GUM", seed = 139)
+#' # Fit the GUM:
+#' fit1 <- GUM(gen1$data, 3)
+#' th1  <- Theta.EAP(fit1)
+#' # Plot ICCs:
+#' plotICC(fit1, th1, items = 1, quiet = TRUE)
 #' \dontrun{
+#' # For GGUM:
 #' # Generate data:
 #' set.seed(1); C <- sample(3:5, 10, replace = TRUE)
-#' gen <- GenData.GGUM(2000, 10, C, seed = 125)
+#' gen2 <- GenData.GGUM(2000, 10, C, "GGUM", seed = 156)
 #' # Fit the GGUM:
-#' fit <- GGUM(gen$data, C)
-#' th  <- Theta.EAP(fit)
-#' # Plot the ICCs:
-#' plotICC(fit, th)
+#' fit2 <- GGUM(gen2$data, C)
+#' th2  <- Theta.EAP(fit2)
+#' # Plot ICCs:
+#' plotICC(fit2, th2, items = 1, quiet = TRUE)
 #' }
 #' 
 #' @export
-plotICC <- function(IP, Th, items = NULL) 
+plotICC <- function(IP, Th, items = NULL, quiet = FALSE) 
 {
   # Sanity check - class:
   Sanity.class(IP)
@@ -302,7 +339,7 @@ plotICC <- function(IP, Th, items = NULL)
   if (is.null(items)) {I.plot <- 1:I} else {I.plot <- items}
   for (i in 1:length(I.plot)) {
     it <- I.plot[i]
-    invisible(readline(prompt="Press [enter] to continue"))
+    if (!quiet) invisible(readline(prompt="Press [enter] to continue"))
     #
     par(mar = c(6, 4.5, 1.5, .5))
     plot(res[[1]], res[[3]][, it], type = "l", lty = 1, lwd = 2,
@@ -349,15 +386,27 @@ plotICC <- function(IP, Th, items = NULL)
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #'   
 #' @examples
+#' # For GUM:
+#' # Generate data
+#' #   (toy example: Too few items (due to computation time constraints) for 
+#' #   accurate estimation of person parameters; larger number of items is 
+#' #   required in practice):
+#' gen1 <- GenData.GGUM(400, 5, 3, "GUM", seed = 139)
+#' # Fit the GUM:
+#' fit1 <- GUM(gen1$data, 3)
+#' th1  <- Theta.EAP(fit1)
+#' # Plot TIF:
+#' plotTIF(fit1, th1)
 #' \dontrun{
+#' # For GGUM:
 #' # Generate data:
 #' set.seed(1); C <- sample(3:5, 10, replace = TRUE)
-#' gen <- GenData.GGUM(2000, 10, C, seed = 125)
+#' gen2 <- GenData.GGUM(2000, 10, C, "GGUM", seed = 156)
 #' # Fit the GGUM:
-#' fit <- GGUM(gen$data, C)
-#' th  <- Theta.EAP(fit)
-#' # Plot the TIF:
-#' plotTIF(fit, th)
+#' fit2 <- GGUM(gen2$data, C)
+#' th2  <- Theta.EAP(fit2)
+#' # Plot TIF:
+#' plotTIF(fit2, th2)
 #' }
 #' 
 #' @export
@@ -407,6 +456,8 @@ plotTIF <- function(IP, Th)
 #' @param Th Theta estimates from function \code{Theta.EAP()}.
 #' @param items Vector indicating the items for which the ICCs are to be 
 #'   plotted. Default is all items.
+#' @param quiet Render all plots for \code{items} at once? Default is 
+#' \code{FALSE}.
 #'   
 #' @return The function returns the (x, y) coordinates of the IIFs.
 #'   
@@ -415,19 +466,31 @@ plotTIF <- function(IP, Th)
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #'   
 #' @examples
+#' # For GUM:
+#' # Generate data
+#' #   (toy example: Too few items (due to computation time constraints) for 
+#' #   accurate estimation of person parameters; larger number of items is 
+#' #   required in practice):
+#' gen1 <- GenData.GGUM(400, 5, 3, "GUM", seed = 139)
+#' # Fit the GUM:
+#' fit1 <- GUM(gen1$data, 3)
+#' th1  <- Theta.EAP(fit1)
+#' # Plot IIFs:
+#' plotIIF(fit1, th1, items = 1, quiet = TRUE)
 #' \dontrun{
+#' # For GGUM:
 #' # Generate data:
 #' set.seed(1); C <- sample(3:5, 10, replace = TRUE)
-#' gen <- GenData.GGUM(2000, 10, C, seed = 125)
+#' gen2 <- GenData.GGUM(2000, 10, C, "GGUM", seed = 156)
 #' # Fit the GGUM:
-#' fit <- GGUM(gen$data, C)
-#' th  <- Theta.EAP(fit)
-#' # Plot the IIFs:
-#' plotIIF(fit, th)
+#' fit2 <- GGUM(gen2$data, C)
+#' th2  <- Theta.EAP(fit2)
+#' # Plot IIFs:
+#' plotIIF(fit2, th2, items = 1, quiet = TRUE)
 #' }
 #' 
 #' @export
-plotIIF <- function(IP, Th, items = NULL) 
+plotIIF <- function(IP, Th, items = NULL, quiet = FALSE) 
 {
   # Sanity check - class:
   Sanity.class(IP)
@@ -455,7 +518,7 @@ plotIIF <- function(IP, Th, items = NULL)
   if (is.null(items)) {I.plot <- 1:I} else {I.plot <- items}
   for (i in 1:length(I.plot)) {
     it <- I.plot[i]
-    invisible(readline(prompt="Press [enter] to continue"))
+    if (!quiet) invisible(readline(prompt="Press [enter] to continue"))
     #
     par(mar = c(3.5, 5, 1.5, .5))
     plot(res[, 1], res[, it + 1], type = "l", lty = 1, lwd = 2,

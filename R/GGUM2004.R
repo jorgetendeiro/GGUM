@@ -47,11 +47,10 @@
 #' @author Sebastian Castro-Alvarez, \email{secastroal@gmail.com}
 #'   
 #' @examples
-#' \dontrun{
 #' I <- 6
 #' C <- c(3, 3, 3, 5, 5, 5)
 #' write.GGUM2004(I, C, model = "GGUM")
-#' }
+#' 
 #' @export
 write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM", 
                            cmd.file = "cmd", 
@@ -154,14 +153,13 @@ write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM",
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #'   
 #' @examples
-#' \dontrun{
 #' # Generate data:
 #' C   <- c(3, 3, 3, 5, 5, 5)
 #' I   <- 6
 #' gen <- GenData.GGUM(750, I, C, seed = 125)
 #' # Export data to 'GGUM2004':
 #' export.GGUM2004(gen$data)
-#' }
+#' 
 #' @export
 export.GGUM2004 <- function(data, data.file = "data", data.dir = tempdir()) 
 {
