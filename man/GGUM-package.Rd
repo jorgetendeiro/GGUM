@@ -41,10 +41,20 @@ GGUM2004, this packages provides a useful set of functions that allow
 exporting data and code to GGUM2004, running GGUM2004, and retrieving the
 parameter estimates. Thus, if desired, one can run GGUM2004 and retrieve the
 results completely from within the R environment.
+
+Versions:
+\itemize{
+\item Version 0.3.1 (January 2018)\cr
+\item Version 0.3.2 (July 2018)\cr
+Fixed a bug related to data preprocessing (removing response patterns with 
+all-disagree answers). Many thanks to JB Duck-Mayr for offering a fix in 
+GitHub, and also to Michael Hermann who independently spotted the same issue 
+(for dichotomous data).
+}
 }
 \details{
 \tabular{ll}{ Package: \tab GGUM\cr Type: \tab Package\cr Version:
-\tab 0.3.1\cr Date: \tab 2018-01-18\cr License: \tab GPL Version 2 or
+\tab 0.3.2\cr Date: \tab 2018-07-04\cr License: \tab GPL Version 2 or
 later\cr }
 
 The \pkg{GGUM} package contains useful functions, summarized below: \itemize{
