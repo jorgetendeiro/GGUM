@@ -98,10 +98,23 @@ GGUM <- function(data, C, SE = TRUE, precision = 4,
   # Sanity check - C:
   Sanity.C(C, I)
   
-  # Discard response patterns due to complete disagreement:
-  rows.rm <- which(rowSums(data<2, na.rm = TRUE) + rowSums(is.na(data)) == I)
+  # Discard response patterns due to complete disagreement;
+  # ceiling(C/2) gives for each item either the first agree category
+  # or the middle/neutral category (if one exists) --
+  # if a row has all responses as either missing or disagree,
+  # we want to remove that row.
+  # Note we use colSums(t(data) ...) rather than rowSums(data ...)
+  # for the first comparison so that vectorization over C
+  # coincides with the columns of the matrix
+  rows.rm <- which(colSums(t(data) < ceiling(C/2), na.rm = TRUE)
+                   + rowSums(is.na(data)) == I)
+  # If there are any such rows, we need to remove them;
+  # if there are no such rows, it's imperative we don't try to --
+  # if we do it will remove all such rows
   data.sv <- data
-  data    <- data[-rows.rm, ]
+  if ( length(rows.rm) > 0 ) {
+    data    <- data[-rows.rm, ]
+  }
   
   tmp            <- GGUM.data.condense(data)
   data.condensed <- tmp$data.condensed
