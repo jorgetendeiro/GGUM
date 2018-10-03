@@ -252,6 +252,7 @@ read.person.GGUM2004 <- function(temp.dir = "C:/GGUM2004/TEMPFILE",
   tmp <- trimws(tmp)
   tmp <- unlist(strsplit(tmp, " "))
   N.disc   <- as.numeric(tmp[1])
+  N.disc <- ifelse(is.integer(N.disc), N.disc, 0)
   rm(tmp)
   # 
   N <- N.used + N.disc
