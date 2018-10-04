@@ -90,9 +90,9 @@ modfit.res2$Summary
 
 }
 \references{
-\insertRef{Drasgow_etal1995}{GGUM}
+\insertRef{Drasgowetal1995}{GGUM}
 
-\insertRef{LaHuis_etal2011}{GGUM}
+\insertRef{LaHuisetal2011}{GGUM}
 
 \insertRef{MODFITsoftware}{GGUM}
 }

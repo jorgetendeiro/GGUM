@@ -56,9 +56,9 @@
 #'   This function produces the same numerical results as the MODFIT program 
 #'   (Stark, 2001) for the GGUM.
 #'   
-#' @references \insertRef{Drasgow_etal1995}{GGUM}
+#' @references \insertRef{Drasgowetal1995}{GGUM}
 #' 
-#' \insertRef{LaHuis_etal2011}{GGUM}
+#' \insertRef{LaHuisetal2011}{GGUM}
 #' 
 #' \insertRef{MODFITsoftware}{GGUM}
 #' 
