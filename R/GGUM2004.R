@@ -106,7 +106,7 @@ write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM",
             "50 NUMBER OF INNER CYCLES",
             "50 NUMBER OF FISHER SCORING ITERATIONS FOR THRESHOLDS",
             "50 NUMBER OF FISHER SCORING ITERATIONS FOR DELTAS & ALPHAS",
-            "0,001 CRITERION",
+            "0.001 CRITERION",
             "N WANT TO PLOT",
             "N WANT FIT STATISTICS")
   
