@@ -4,8 +4,15 @@
 \alias{write.GGUM2004}
 \title{Writes a command file for 'GGUM2004'}
 \usage{
-write.GGUM2004(I, C, cutoff = 2, model = "GGUM", cmd.file = "cmd",
-  data.file = "data", data.dir = tempdir())
+write.GGUM2004(
+  I,
+  C,
+  cutoff = 2,
+  model = "GGUM",
+  cmd.file = "cmd",
+  data.file = "data",
+  data.dir = tempdir()
+)
 }
 \arguments{
 \item{I}{The number of items.}

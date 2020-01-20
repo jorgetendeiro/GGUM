@@ -149,6 +149,7 @@ plotCRC <- function(IP, items = NULL, x.lim = 4, ThetaminDelta = TRUE,
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #'   
 #' @examples
+#' \dontrun{
 #' # For GUM:
 #' # Generate data
 #' #   (toy example: Too few items (due to computation time constraints) for 
@@ -160,6 +161,7 @@ plotCRC <- function(IP, items = NULL, x.lim = 4, ThetaminDelta = TRUE,
 #' th1  <- Theta.EAP(fit1)
 #' # Plot TCC:
 #' plotTCC(fit1, th1)
+#' }
 #' \dontrun{
 #' # For GGUM:
 #' # Generate data:
@@ -269,6 +271,7 @@ plotTCC <- function(IP, Th)
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #'   
 #' @examples
+#' \dontrun{
 #' # For GUM:
 #' # Generate data
 #' #   (toy example: Too few items (due to computation time constraints) for 
@@ -280,6 +283,7 @@ plotTCC <- function(IP, Th)
 #' th1  <- Theta.EAP(fit1)
 #' # Plot ICCs:
 #' plotICC(fit1, th1, items = 1, quiet = TRUE)
+#' }
 #' \dontrun{
 #' # For GGUM:
 #' # Generate data:
@@ -386,6 +390,7 @@ plotICC <- function(IP, Th, items = NULL, quiet = FALSE)
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #'   
 #' @examples
+#' \dontrun{
 #' # For GUM:
 #' # Generate data
 #' #   (toy example: Too few items (due to computation time constraints) for 
@@ -397,6 +402,7 @@ plotICC <- function(IP, Th, items = NULL, quiet = FALSE)
 #' th1  <- Theta.EAP(fit1)
 #' # Plot TIF:
 #' plotTIF(fit1, th1)
+#' }
 #' \dontrun{
 #' # For GGUM:
 #' # Generate data:
@@ -466,6 +472,7 @@ plotTIF <- function(IP, Th)
 #' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
 #'   
 #' @examples
+#' \dontrun{
 #' # For GUM:
 #' # Generate data
 #' #   (toy example: Too few items (due to computation time constraints) for 
@@ -477,6 +484,7 @@ plotTIF <- function(IP, Th)
 #' th1  <- Theta.EAP(fit1)
 #' # Plot IIFs:
 #' plotIIF(fit1, th1, items = 1, quiet = TRUE)
+#' }
 #' \dontrun{
 #' # For GGUM:
 #' # Generate data:

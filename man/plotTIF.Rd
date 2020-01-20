@@ -22,6 +22,7 @@ The function returns the (x, y) coordinates of the TIF.
 }
 
 \examples{
+\dontrun{
 # For GUM:
 # Generate data
 #   (toy example: Too few items (due to computation time constraints) for 
@@ -33,6 +34,7 @@ fit1 <- GUM(gen1$data, 3)
 th1  <- Theta.EAP(fit1)
 # Plot TIF:
 plotTIF(fit1, th1)
+}
 \dontrun{
 # For GGUM:
 # Generate data:

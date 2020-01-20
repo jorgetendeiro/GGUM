@@ -4,8 +4,13 @@
 \alias{run.GGUM2004}
 \title{Call 'GGUM2004' and import the estimated parameters into R}
 \usage{
-run.GGUM2004(cmd.file = "cmd", data.file = "data",
-  datacmd.dir = tempdir(), prog.dir = "C:/GGUM2004", precision = 4)
+run.GGUM2004(
+  cmd.file = "cmd",
+  data.file = "data",
+  datacmd.dir = tempdir(),
+  prog.dir = "C:/GGUM2004",
+  precision = 4
+)
 }
 \arguments{
 \item{cmd.file}{A character string defining the name of the command file. No 

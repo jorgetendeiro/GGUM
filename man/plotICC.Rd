@@ -29,6 +29,7 @@ The function returns the correlation between observed and expected
 }
 
 \examples{
+\dontrun{
 # For GUM:
 # Generate data
 #   (toy example: Too few items (due to computation time constraints) for 
@@ -40,6 +41,7 @@ fit1 <- GUM(gen1$data, 3)
 th1  <- Theta.EAP(fit1)
 # Plot ICCs:
 plotICC(fit1, th1, items = 1, quiet = TRUE)
+}
 \dontrun{
 # For GGUM:
 # Generate data:

@@ -629,12 +629,11 @@ Theta.EAP <- function(IP, SE = TRUE, precision = 4, N.nodes = 30)
     Th.full      <- res[ind]
     Th.full.all  <- rep(NA, N)
     
-    if ( length(rows.rm) > 0 ) {
+    if (length(rows.rm) > 0) {
       Th.full.all[-rows.rm] <- Th.full
-    }else{
+    } else {
       Th.full.all <- Th.full
     }
-    
     
     if (SE)
     {
@@ -646,13 +645,11 @@ Theta.EAP <- function(IP, SE = TRUE, precision = 4, N.nodes = 30)
       # 
       Th.SE.full.all           <- rep(NA, N)
       
-      if ( length(rows.rm) > 0 ) {
+      if (length(rows.rm) > 0) {
         Th.SE.full.all[-rows.rm] <- Th.SE.full
-      }else{
+      } else {
         Th.SE.full.all <- Th.SE.full
       }
-      
-      
       
       return(cbind(
         Person   = (1:N), 

@@ -10,5 +10,5 @@ RdMacros: Rdpack
 Encoding: UTF-8
 License: GPL (>=2)
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 7.0.2
 URL: http://github.com/jorgetendeiro/GGUM

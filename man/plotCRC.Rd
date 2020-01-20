@@ -4,8 +4,7 @@
 \alias{plotCRC}
 \title{Plot item category response curves (CRCs)}
 \usage{
-plotCRC(IP, items = NULL, x.lim = 4, ThetaminDelta = TRUE,
-  quiet = FALSE)
+plotCRC(IP, items = NULL, x.lim = 4, ThetaminDelta = TRUE, quiet = FALSE)
 }
 \arguments{
 \item{IP}{Object of class \code{GGUM}.}

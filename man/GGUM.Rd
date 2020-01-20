@@ -4,8 +4,16 @@
 \alias{GGUM}
 \title{Fit the generalized graded unfolding model (GGUM)}
 \usage{
-GGUM(data, C, SE = TRUE, precision = 4, N.nodes = 30,
-  max.outer = 60, max.inner = 60, tol = 0.001)
+GGUM(
+  data,
+  C,
+  SE = TRUE,
+  precision = 4,
+  N.nodes = 30,
+  max.outer = 60,
+  max.inner = 60,
+  tol = 0.001
+)
 }
 \arguments{
 \item{data}{The \eqn{N\times I}{NxI} data matrix. The item scores are coded 

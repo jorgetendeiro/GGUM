@@ -28,6 +28,7 @@ The function returns the (x, y) coordinates of the IIFs.
 }
 
 \examples{
+\dontrun{
 # For GUM:
 # Generate data
 #   (toy example: Too few items (due to computation time constraints) for 
@@ -39,6 +40,7 @@ fit1 <- GUM(gen1$data, 3)
 th1  <- Theta.EAP(fit1)
 # Plot IIFs:
 plotIIF(fit1, th1, items = 1, quiet = TRUE)
+}
 \dontrun{
 # For GGUM:
 # Generate data:

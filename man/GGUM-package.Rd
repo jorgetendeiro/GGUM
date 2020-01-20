@@ -50,11 +50,13 @@ Fixed a bug related to data preprocessing (removing response patterns with
 all-disagree answers). Many thanks to JB Duck-Mayr for offering a fix in 
 GitHub, and also to Michael Hermann who independently spotted the same issue 
 (for dichotomous data).
+\item Version 0.4 (January 2020)\cr
+Fixed two bugs (in Theta.EAP() and write.GGUM2004())
 }
 }
 \details{
 \tabular{ll}{ Package: \tab GGUM\cr Type: \tab Package\cr Version:
-\tab 0.3.2\cr Date: \tab 2018-07-04\cr License: \tab GPL Version 2 or
+\tab 0.4\cr Date: \tab 2020-01-20\cr License: \tab GPL Version 2 or
 later\cr }
 
 The \pkg{GGUM} package contains useful functions, summarized below: \itemize{
