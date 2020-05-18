@@ -1,6 +1,6 @@
 Package: GGUM
 Title: Generalized Graded Unfolding Model
-Version: 0.4
+Version: 0.4-1
 Authors@R: c(
   person("Jorge N.", "Tendeiro", email = "j.n.tendeiro@rug.nl", role = c("aut","cre")),
   person("Sebastian", "Castro-Alvarez", email = "secastroal@gmail.com", role = "aut"))
@@ -10,5 +10,5 @@ RdMacros: Rdpack
 Encoding: UTF-8
 License: GPL (>=2)
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 URL: http://github.com/jorgetendeiro/GGUM

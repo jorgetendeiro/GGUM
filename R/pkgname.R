@@ -50,10 +50,13 @@
 #' (for dichotomous data).
 #' \item Version 0.4 (January 2020)\cr
 #' Fixed two bugs (in Theta.EAP() and write.GGUM2004())
+#' \item Version 0.4-1 (May 2020)\cr
+#' Implemented two changes in GUM.R to adapt to R 4.1 (currently R-devel) and 
+#' survive CRAN's build checks.
 #' }
 #' 
 #' @details \tabular{ll}{ Package: \tab GGUM\cr Type: \tab Package\cr Version:
-#' \tab 0.4\cr Date: \tab 2020-01-20\cr License: \tab GPL Version 2 or
+#' \tab 0.4-1\cr Date: \tab 2020-05-18\cr License: \tab GPL Version 2 or
 #' later\cr }
 #' 
 #' The \pkg{GGUM} package contains useful functions, summarized below: \itemize{
