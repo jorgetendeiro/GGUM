@@ -72,7 +72,7 @@ P.GGUM <- function(z, alpha, delta, taus, theta, C)
 #'   (person, item, response category) combinations. For the GGUM formula see
 #'   the help for function \code{GGUM} (\code{\link[GGUM]{GGUM}}).
 #'   
-#' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+#' @author Jorge N. Tendeiro, \email{tendeiro@hiroshima-u.ac.jp}
 #'   
 #' @examples
 #' C <- c(3, 3, 3, 5, 5)

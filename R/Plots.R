@@ -19,7 +19,7 @@
 #' @section Details: This function plots the item category response curves
 #'   (CRCs) for the requested items.
 #'   
-#' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+#' @author Jorge N. Tendeiro, \email{tendeiro@hiroshima-u.ac.jp}
 #'   
 #' @examples
 #' # For GUM:
@@ -146,7 +146,7 @@ plotCRC <- function(IP, items = NULL, x.lim = 4, ThetaminDelta = TRUE,
 #'   
 #' @section Details: This function plots the test characteristic curve (TCC).
 #'   
-#' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+#' @author Jorge N. Tendeiro, \email{tendeiro@hiroshima-u.ac.jp}
 #'   
 #' @examples
 #' \dontrun{
@@ -268,7 +268,7 @@ plotTCC <- function(IP, Th)
 #'   
 #' @section Details: This function plots the item characteristic curves (ICCs).
 #'   
-#' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+#' @author Jorge N. Tendeiro, \email{tendeiro@hiroshima-u.ac.jp}
 #'   
 #' @examples
 #' \dontrun{
@@ -387,7 +387,7 @@ plotICC <- function(IP, Th, items = NULL, quiet = FALSE)
 #'   
 #' @section Details: This function plots the test information function (TIF).
 #'   
-#' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+#' @author Jorge N. Tendeiro, \email{tendeiro@hiroshima-u.ac.jp}
 #'   
 #' @examples
 #' \dontrun{
@@ -469,7 +469,7 @@ plotTIF <- function(IP, Th)
 #'   
 #' @section Details: This function plots the item information functions (IIFs).
 #'   
-#' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+#' @author Jorge N. Tendeiro, \email{tendeiro@hiroshima-u.ac.jp}
 #'   
 #' @examples
 #' \dontrun{

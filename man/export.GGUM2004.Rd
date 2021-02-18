@@ -53,5 +53,5 @@ export.GGUM2004(gen$data)
 \insertRef{Robertsetal2006}{GGUM}
 }
 \author{
-Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+Jorge N. Tendeiro, \email{tendeiro@hiroshima-u.ac.jp}
 }

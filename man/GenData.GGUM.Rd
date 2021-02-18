@@ -81,5 +81,5 @@ gen2 <- GenData.GGUM(500, 5, c(5, 5, 5, 4, 4), seed = 789)
 
 }
 \author{
-Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+Jorge N. Tendeiro, \email{tendeiro@hiroshima-u.ac.jp}
 }

@@ -68,7 +68,7 @@
 #'   where all discrimination parameters are equal to 1 and the item thresholds
 #'   are shared by all items.
 #'   
-#' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+#' @author Jorge N. Tendeiro, \email{tendeiro@hiroshima-u.ac.jp}
 #'   
 #' @examples
 #' gen1 <- GenData.GGUM(500, 10, 5, seed = 456)
@@ -558,7 +558,7 @@ DlogL.dphi <- function(param = "alphadelta", dP, r.bar.izf, P.izf.arr)
 #'   approximation to the standard deviation of the posterior distribution. See
 #'   Roberts et al. (2000) for more details.
 #'   
-#' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+#' @author Jorge N. Tendeiro, \email{tendeiro@hiroshima-u.ac.jp}
 #'   
 #' @examples
 #' # For GUM:

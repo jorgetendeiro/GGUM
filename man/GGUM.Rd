@@ -115,5 +115,5 @@ cbind(c(gen2$taus[, 7:11]), c(fit2$taus[, 7:11]))
 \insertRef{Robertsetal2000}{GGUM}
 }
 \author{
-Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+Jorge N. Tendeiro, \email{tendeiro@hiroshima-u.ac.jp}
 }

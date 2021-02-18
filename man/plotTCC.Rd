@@ -56,5 +56,5 @@ plotTCC(fit2, th2)
 
 }
 \author{
-Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+Jorge N. Tendeiro, \email{tendeiro@hiroshima-u.ac.jp}
 }

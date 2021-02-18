@@ -55,6 +55,8 @@ Fixed two bugs (in Theta.EAP() and write.GGUM2004())
 \item Version 0.4-1 (May 2020)\cr
 Implemented two changes in GUM.R to adapt to R 4.1 (currently R-devel) and 
 survive CRAN's build checks.
+\item Version 0.4-2 (February 2021)\cr
+Updated affiliation.
 }
 }
 \details{
@@ -142,7 +144,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jorge N. Tendeiro \email{j.n.tendeiro@rug.nl}
+\strong{Maintainer}: Jorge N. Tendeiro \email{tendeiro@hiroshima-u.ac.jp}
 
 Authors:
 \itemize{

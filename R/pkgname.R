@@ -53,6 +53,8 @@
 #' \item Version 0.4-1 (May 2020)\cr
 #' Implemented two changes in GUM.R to adapt to R 4.1 (currently R-devel) and 
 #' survive CRAN's build checks.
+#' \item Version 0.4-2 (February 2021)\cr
+#' Updated affiliation.
 #' }
 #' 
 #' @details \tabular{ll}{ Package: \tab GGUM\cr Type: \tab Package\cr Version:

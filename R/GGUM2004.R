@@ -150,7 +150,7 @@ write.GGUM2004 <- function(I, C, cutoff = 2, model = "GGUM",
 #' 
 #' \insertRef{Robertsetal2006}{GGUM}
 #' 
-#' @author Jorge N. Tendeiro, \email{j.n.tendeiro@rug.nl}
+#' @author Jorge N. Tendeiro, \email{tendeiro@hiroshima-u.ac.jp}
 #'   
 #' @examples
 #' # Generate data:
