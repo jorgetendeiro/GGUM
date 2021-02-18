@@ -139,7 +139,7 @@ res.GGUM2004 <- run.GGUM2004()
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://github.com/jorgetendeiro/GGUM}
+  \item \url{https://github.com/jorgetendeiro/GGUM/}
 }
 
 }
