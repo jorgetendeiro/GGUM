@@ -6,8 +6,9 @@
 # initial values for the GGUM.
 # 
 
-#' @import stats utils graphics psych abind viridis xlsx
+#' @import stats utils graphics psych abind viridis xlsx 
 #' @importFrom Rdpack reprompt
+#' @importFrom fGarch rsnorm
 
 # GenData.GGUM ----
 #' @title Generate data from the GUM/GGUM
@@ -21,6 +22,7 @@
 #'   (i.e., the item scores will be in the set \eqn{\{0, 1, ..., C\}}{{0, 1, 
 #'   ..., C}}). It should either be a vector of \eqn{I} elements or a scalar. In
 #'   the latter, case it is assumed that \eqn{C} applies to all items.
+#' @param xi Skewness parameter
 #' @param model A string identifying the model. Possible values are "GUM" or 
 #'   "GGUM" (default).
 #' @param seed An integer, allowing the user to control the generation process 
@@ -79,7 +81,7 @@
 #' gen2 <- GenData.GGUM(500, 5, c(5, 5, 5, 4, 4), seed = 789)
 #' 
 #' @export
-GenData.GGUM <- function(N, I, C, model = "GGUM", seed = 123)
+GenData.GGUM <- function(N, I, C, xi = 1, model = "GGUM", seed = 123)
 {
     set.seed(seed)
     
@@ -135,7 +137,7 @@ GenData.GGUM <- function(N, I, C, model = "GGUM", seed = 123)
     }
     
     # Thetas:
-    theta <- round(rnorm(N, 0, 1), 4)
+    theta <- round(rsnorm(N, 0, 1, xi), 4)
     
     # Generate data:
     M           <- 2 * C + 1
