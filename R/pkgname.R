@@ -55,10 +55,13 @@
 #' survive CRAN's build checks.
 #' \item Version 0.4-2 (February 2021)\cr
 #' Updated affiliation.
+#' \item Version 0.4-3 (October 2021)\cr
+#' Implemented further changes to adapt to R 4.1, similar to 
+#' what was done in Version 0.4-1.
 #' }
 #' 
 #' @details \tabular{ll}{ Package: \tab GGUM\cr Type: \tab Package\cr Version:
-#' \tab 0.4-1\cr Date: \tab 2020-05-18\cr License: \tab GPL Version 2 or
+#' \tab 0.4-3\cr Date: \tab 2021-10-07\cr License: \tab GPL Version 2 or
 #' later\cr }
 #' 
 #' The \pkg{GGUM} package contains useful functions, summarized below: \itemize{

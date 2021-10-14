@@ -213,7 +213,11 @@ GGUM <- function(data, C, SE = TRUE, precision = 4,
                                param = "taus")
       D1             <- DlogL.dphi (param = "taus", dP, r.bar.izf.taus, 
                                     P.izf.arr.taus)
-      DlogL.taus     <- D1$taus
+      
+      # Dirty fix for R 4.1:
+      tmp.dims   <- dim(D1$taus)
+      DlogL.taus <- matrix(unlist(D1$taus), tmp.dims)
+      
       # 
       P.izf.arr.taus.taus <- array(rep(P.izf.arr.taus, C.max), 
                                    dim = c(N.nodes, I, C.max+1, C.max, C.max))
@@ -253,6 +257,10 @@ GGUM <- function(data, C, SE = TRUE, precision = 4,
       D1               <- DlogL.dphi (param = "alphadelta", dP, r.bar.izf, 
                                       P.izf.arr)
       DlogL.alphadelta <- rbind(D1$alpha, D1$delta)
+      
+      # Dirty fix for R 4.1:
+      DlogL.alphadelta <- matrix(unlist(DlogL.alphadelta), 2)
+      
       # 
       dP.alpha.alpha   <- (dP$alpha)^2
       dP.alpha.delta   <- dP$alpha * dP$delta

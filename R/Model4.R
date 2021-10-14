@@ -71,7 +71,11 @@ Model4 <- function(data, C,
       # dP:
       dP             <- dP.phi(alpha, delta.old, taus.old, nodes, C, param = "taus")
       D1             <- DlogL.dphi(param = "taus", dP, r.bar.izf.taus, P.izf.arr.taus)
-      DlogL.taus     <- D1$taus # C.max
+      
+      # Dirty fix for R 4.1:
+      tmp.dims   <- dim(D1$taus)
+      DlogL.taus <- matrix(unlist(D1$taus), tmp.dims) # C.max
+      
       # 
       P.izf.arr.taus.taus <- array(rep(P.izf.arr.taus, C.max), dim = c(N.nodes, I, C.max + 1, C.max, C.max))
       dP.taus.taus        <- array(NA, c(N.nodes, I, C.max + 1, C.max, C.max))
@@ -112,7 +116,10 @@ Model4 <- function(data, C,
       dP.delta.delta <- (dP$delta)^2
       Inf.arr        <- apply(N.bar.if.arr * dP.delta.delta / P.izf.arr, 2, sum, na.rm = TRUE)
       # 
-      delta.new <- delta.old + (1/Inf.arr) * DlogL.delta
+      # 
+      # Dirty fix for R 4.1:
+      delta.new <- delta.old + (1/Inf.arr) * unlist(DlogL.delta)
+      
       # Extra control (needed in weird cases):
       delta.new[delta.new < -10] <- -10
       delta.new[delta.new >  10] <-  10
