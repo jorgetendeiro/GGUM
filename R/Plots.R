@@ -189,7 +189,7 @@ plotTCC <- function(IP, Th)
   alpha     <- IP$alpha
   delta     <- IP$delta
   taus      <- IP$taus
-  theta     <- if (class(Th) == "matrix") Th[, "Theta"] else Th
+  theta     <- if ("matrix" %in% class(Th)) Th[, "Theta"] else Th
   
   # Test characteristic curve:
   OBS.scores      <- IP$data
@@ -311,7 +311,7 @@ plotICC <- function(IP, Th, items = NULL, quiet = FALSE)
   alpha     <- IP$alpha
   delta     <- IP$delta
   taus      <- IP$taus
-  theta     <- if (class(Th) == "matrix") Th[, "Theta"] else Th
+  theta     <- if ("matrix" %in% class(Th)) Th[, "Theta"] else Th
   
   # Item characteristic curves:
   OBS.scores      <- IP$data
@@ -426,7 +426,7 @@ plotTIF <- function(IP, Th)
   alpha <- IP$alpha
   delta <- IP$delta
   taus  <- IP$taus
-  theta <- if (class(Th) == "matrix") Th[, "Theta"] else Th
+  theta <- if ("matrix" %in% class(Th)) Th[, "Theta"] else Th
   
   d2res         <- d2logP.dtheta2.arr(data, alpha, delta, taus, theta, C)
   # Nodes:
@@ -509,7 +509,7 @@ plotIIF <- function(IP, Th, items = NULL, quiet = FALSE)
   alpha <- IP$alpha
   delta <- IP$delta
   taus  <- IP$taus
-  theta <- if (class(Th) == "matrix") Th[, "Theta"] else Th
+  theta <- if ("matrix" %in% class(Th)) Th[, "Theta"] else Th
   
   #
   d2res <- d2logP.dtheta2.arr(data, alpha, delta, taus, theta, C)
