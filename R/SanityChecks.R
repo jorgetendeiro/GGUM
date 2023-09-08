@@ -39,7 +39,7 @@ Sanity.data <- function(data)
 # Sanity.class(): Sanity check - class ----
 Sanity.class <- function(obj)
 {
-  if (class(obj) != "GGUM")
+  if (!inherits(obj, "GGUM"))
   {
     warning('Parameter "IP" is not of class "GGUM". Please make sure the item parameters 
                 object is correctly created.')

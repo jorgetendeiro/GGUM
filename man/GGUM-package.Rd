@@ -60,14 +60,14 @@ Updated affiliation.
 \item Version 0.4-3 (October 2021)\cr
 Implemented further changes to adapt to R 4.1, similar to 
 what was done in Version 0.4-1.
-\item Version 0.5 (September 2022)\cr
+\item Version 0.5 (September 2023)\cr
 Updated some functions to fix a bug related to identifying 
 the class of objects.
 }
 }
 \details{
 \tabular{ll}{ Package: \tab GGUM\cr Type: \tab Package\cr Version:
-\tab 0.5\cr Date: \tab 2022-09-12\cr License: \tab GPL Version 2 or
+\tab 0.5\cr Date: \tab 2023-09-08\cr License: \tab GPL Version 2 or
 later\cr }
 
 The \pkg{GGUM} package contains useful functions, summarized below: \itemize{
