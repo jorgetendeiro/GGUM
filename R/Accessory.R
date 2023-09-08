@@ -356,8 +356,8 @@ g.mat <- function(alpha, delta, taus, nodes, C)
                  c(1, 3), sum, na.rm = TRUE)
     return(res)
 }
-# t.mat
-t.mat <- function(delta, nodes)
+# t_mat # v0.5: avoid using t_mat as it creates and S3 generic/method consistency warning
+t_mat <- function(delta, nodes)
 {
     I   <- length(delta)
     res <- t(sapply(1:I, function(i) {nodes - delta[i]}))
@@ -379,7 +379,7 @@ dP.alpha.arr <- function(alpha, delta, taus, nodes, C)
     #
     z.arr   <- arr.ind * aperm(array(rep(0:C.max, I * N.nodes), 
                                      dim = c(C.max + 1, I, N.nodes)), c(2, 1, 3))
-    t.arr   <- aperm(array(rep(t.mat(delta, nodes), C.max + 1), 
+    t.arr   <- aperm(array(rep(t_mat(delta, nodes), C.max + 1), 
                            dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2))
     g.arr   <- aperm(array(rep(g.mat(alpha, delta, taus, nodes, C), C.max + 1), 
                            dim = c(I, N.nodes, C.max + 1)), c(1, 3, 2))
